@@ -2,4 +2,9 @@
 
 
 #include "GameModes/BaseGameMode.h"
+#include "BasePlayer.h"
 
+ABaseGameMode::ABaseGameMode()
+{
+	DefaultPawnClass = ABasePlayer::StaticClass();
+}
