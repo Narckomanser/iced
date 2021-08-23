@@ -3,8 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "BasePlayer.generated.h"
+
+class USpringArmComponent;
+class UCameraComponent;
 
 UCLASS()
 class ICED_API ABasePlayer : public ACharacter
@@ -14,12 +19,17 @@ class ICED_API ABasePlayer : public ACharacter
 public:
 	ABasePlayer();
 
+	virtual void Tick(float DeltaTime) override;
+
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 protected:
 	virtual void BeginPlay() override;
 
-public:	
-	virtual void Tick(float DeltaTime) override;
-	
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	USpringArmComponent* SpringArmComponent;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UCameraComponent* CameraComponent;
 };
