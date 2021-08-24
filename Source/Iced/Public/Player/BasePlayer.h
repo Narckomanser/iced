@@ -32,4 +32,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	UCameraComponent* CameraComponent;
+
+private:
+	void MoveForward(float Amount);
+	void MoveRight(float Amount);
 };
