@@ -34,6 +34,8 @@ protected:
 	UCameraComponent* CameraComponent;
 
 private:
-	void MoveForward(float Amount);
-	void MoveRight(float Amount);
+	void MoveForward(const float Amount);
+	void MoveRight(const float Amount);
+
+	FRotator GetYawBasedRotator() const;
 };
