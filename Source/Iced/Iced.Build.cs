@@ -15,7 +15,8 @@ public class Iced : ModuleRules
 		PublicIncludePaths.AddRange(new string[]
 		{
 			"Iced/Public/Player",
-			"Iced/Public/GameModes"
+			"Iced/Public/GameModes",
+			"Iced/Public/Components"
 		});
 
 		// Uncomment if you are using Slate UI

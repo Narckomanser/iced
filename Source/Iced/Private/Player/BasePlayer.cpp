@@ -1,4 +1,6 @@
 #include "Player/BasePlayer.h"
+
+#include "PlayerMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -6,7 +8,9 @@
 
 DEFINE_LOG_CATEGORY_STATIC(LogBasePlayer, All, All);
 
-ABasePlayer::ABasePlayer()
+ABasePlayer::ABasePlayer(const FObjectInitializer& ObjectInitializer) :
+	Super(ObjectInitializer.SetDefaultSubobjectClass<UPlayerMovementComponent>(
+		ACharacter::CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -44,6 +48,11 @@ FRotator ABasePlayer::GetYawBasedRotator() const
 	return FRotator(0.f, GetControlRotation().Yaw, 0.f);
 }
 
+void ABasePlayer::ChangeRunState()
+{
+	IsRun = !IsRun;
+}
+
 void ABasePlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -57,4 +66,8 @@ void ABasePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("MoveRight", this, &ABasePlayer::MoveRight);
 	PlayerInputComponent->BindAxis("LookUp", this, &ABasePlayer::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("TurnAround", this, &ABasePlayer::AddControllerYawInput);
+
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ABasePlayer::Jump);
+	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ABasePlayer::ChangeRunState);
+	PlayerInputComponent->BindAction("Run", IE_Released, this, &ABasePlayer::ChangeRunState);
 }

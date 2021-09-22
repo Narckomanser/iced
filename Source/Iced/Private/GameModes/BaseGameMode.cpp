@@ -4,6 +4,8 @@
 #include "GameModes/BaseGameMode.h"
 #include "BasePlayer.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogBaseGameMode, All, All);
+
 ABaseGameMode::ABaseGameMode()
 {
 	DefaultPawnClass = ABasePlayer::StaticClass();

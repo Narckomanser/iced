@@ -17,11 +17,13 @@ class ICED_API ABasePlayer : public ACharacter
 	GENERATED_BODY()
 
 public:
-	ABasePlayer();
+	ABasePlayer(const FObjectInitializer& ObjectInitializer);
 
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	bool IsRunning() const { return IsRun; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -38,4 +40,9 @@ private:
 	void MoveRight(const float Amount);
 
 	FRotator GetYawBasedRotator() const;
+
+	void ChangeRunState();
+
+private:
+	bool IsRun = false;
 };
