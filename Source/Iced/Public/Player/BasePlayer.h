@@ -41,12 +41,18 @@ private:
 	FRotator GetYawBasedRotator() const;
 
 	void Attack();
-	void TakeUpArms();
+
+	void Equip();
 
 private:
 	bool IsRun = false;
 	bool IsAttack = false;
 
-	UPROPERTY(EditDefaultsOnly, Category = "State Animations")
-	TMap<FName, UAnimInstance*> ArmStateAnimationBluePrints;
+	int32 CurrentEquipAnimation = 0;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Equipped State Animations")
+	TArray<TSubclassOf<UAnimInstance>> EquippedStateAnimationBluePrints;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Equip Animation")
+	TArray<UAnimMontage*> EquipAnimations;
 };

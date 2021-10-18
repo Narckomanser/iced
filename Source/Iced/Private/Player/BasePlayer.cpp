@@ -54,9 +54,10 @@ void ABasePlayer::Attack()
 	UE_LOG(LogBasePlayer, Display, TEXT("Attack state: %s"), IsAttack ? *FString("true") : *FString("false"));
 }
 
-void ABasePlayer::TakeUpArms()
+void ABasePlayer::Equip()
 {
-	
+	CurrentEquipAnimation = (CurrentEquipAnimation + 1) % EquipAnimations.Num();
+	PlayAnimMontage(EquipAnimations[CurrentEquipAnimation]);
 }
 
 void ABasePlayer::Tick(float DeltaTime)
@@ -78,5 +79,5 @@ void ABasePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &ABasePlayer::ChangeRunState);
 
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ABasePlayer::Attack);
-	PlayerInputComponent->BindAction("TakeUpArms", IE_Pressed, this, &ABasePlayer::TakeUpArms);
+	PlayerInputComponent->BindAction("Equip", IE_Pressed, this, &ABasePlayer::Equip);
 }
