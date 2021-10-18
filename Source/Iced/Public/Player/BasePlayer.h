@@ -3,9 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "BasePlayer.generated.h"
 
 class USpringArmComponent;
@@ -38,11 +36,17 @@ protected:
 private:
 	void MoveForward(const float Amount);
 	void MoveRight(const float Amount);
+	void ChangeRunState() { IsRun = !IsRun; }
 
 	FRotator GetYawBasedRotator() const;
 
-	void ChangeRunState();
+	void Attack();
+	void TakeUpArms();
 
 private:
 	bool IsRun = false;
+	bool IsAttack = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "State Animations")
+	TMap<FName, UAnimInstance*> ArmStateAnimationBluePrints;
 };
