@@ -48,9 +48,15 @@ FRotator ABasePlayer::GetYawBasedRotator() const
 	return FRotator(0.f, GetControlRotation().Yaw, 0.f);
 }
 
-void ABasePlayer::ChangeRunState()
+void ABasePlayer::Attack()
 {
-	IsRun = !IsRun;
+	IsAttack = !IsAttack;
+	UE_LOG(LogBasePlayer, Display, TEXT("Attack state: %s"), IsAttack ? *FString("true") : *FString("false"));
+}
+
+void ABasePlayer::TakeUpArms()
+{
+	
 }
 
 void ABasePlayer::Tick(float DeltaTime)
@@ -70,4 +76,7 @@ void ABasePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ABasePlayer::Jump);
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ABasePlayer::ChangeRunState);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &ABasePlayer::ChangeRunState);
+
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ABasePlayer::Attack);
+	PlayerInputComponent->BindAction("TakeUpArms", IE_Pressed, this, &ABasePlayer::TakeUpArms);
 }
