@@ -36,7 +36,6 @@ protected:
 private:
 	void MoveForward(const float Amount);
 	void MoveRight(const float Amount);
-	void ChangeRunState() { IsRun = !IsRun; }
 	void Attack();
 	void Equip();
 
@@ -45,6 +44,9 @@ private:
 	void OnEquipFinished(USkeletalMeshComponent* MeshComp);
 
 	FRotator GetYawBasedRotator() const;
+
+	void ChangeRunState() { IsRun = !IsRun; }
+	void ChangeEquipState() { EquipInProgress = !EquipInProgress; }
 
 private:
 	bool IsRun = false;

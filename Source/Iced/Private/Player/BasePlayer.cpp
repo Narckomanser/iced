@@ -56,8 +56,10 @@ void ABasePlayer::Attack()
 
 void ABasePlayer::Equip()
 {
-	EquipInProgress = true;
+	ChangeEquipState();
 	UE_LOG(LogBasePlayer, Display, TEXT("Equip In Progress"));
+	
+	GetController()->SetIgnoreMoveInput(true);
 	
 	CurrentEquipAnimation = (CurrentEquipAnimation + 1) % EquipAnimations.Num();
 	PlayAnimMontage(EquipAnimations[CurrentEquipAnimation]);
@@ -77,7 +79,9 @@ void ABasePlayer::InitAnimNotifies()
 void ABasePlayer::OnEquipFinished(USkeletalMeshComponent* MeshComp)
 {
 	if (GetMesh() != MeshComp) { return; }
-	EquipInProgress = false;
+	ChangeEquipState();
+
+	GetController()->SetIgnoreMoveInput(false);
 
 	UE_LOG(LogBasePlayer, Display, TEXT("Equip Finished"));
 }
