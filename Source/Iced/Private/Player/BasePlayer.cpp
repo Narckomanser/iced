@@ -5,6 +5,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Notifies/EquipFinishedAnimNotify.h"
+#include "Notifies/NotifyUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBasePlayer, All, All);
 
@@ -29,6 +31,8 @@ ABasePlayer::ABasePlayer(const FObjectInitializer& ObjectInitializer) :
 void ABasePlayer::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	InitAnimNotifies();
 }
 
 void ABasePlayer::MoveForward(const float Amount)
@@ -43,10 +47,6 @@ void ABasePlayer::MoveRight(const float Amount)
 	AddMovementInput(RightVector, Amount);
 }
 
-FRotator ABasePlayer::GetYawBasedRotator() const
-{
-	return FRotator(0.f, GetControlRotation().Yaw, 0.f);
-}
 
 void ABasePlayer::Attack()
 {
@@ -56,8 +56,35 @@ void ABasePlayer::Attack()
 
 void ABasePlayer::Equip()
 {
+	EquipInProgress = true;
+	UE_LOG(LogBasePlayer, Display, TEXT("Equip In Progress"));
+	
 	CurrentEquipAnimation = (CurrentEquipAnimation + 1) % EquipAnimations.Num();
 	PlayAnimMontage(EquipAnimations[CurrentEquipAnimation]);
+}
+
+void ABasePlayer::InitAnimNotifies()
+{
+	for (const auto EquipAnimation : EquipAnimations)
+	{
+		const auto EquipFinishedNotify = FNotifyUtils::FindNotifyByClass<UEquipFinishedAnimNotify>(EquipAnimation);
+		if (!EquipFinishedNotify) continue;
+		
+		EquipFinishedNotify->OnNotified.AddUObject(this, &ABasePlayer::OnEquipFinished);
+	}
+}
+
+void ABasePlayer::OnEquipFinished(USkeletalMeshComponent* MeshComp)
+{
+	if (GetMesh() != MeshComp) { return; }
+	EquipInProgress = false;
+
+	UE_LOG(LogBasePlayer, Display, TEXT("Equip Finished"));
+}
+
+FRotator ABasePlayer::GetYawBasedRotator() const
+{
+	return FRotator(0.f, GetControlRotation().Yaw, 0.f);
 }
 
 void ABasePlayer::Tick(float DeltaTime)

@@ -37,16 +37,19 @@ private:
 	void MoveForward(const float Amount);
 	void MoveRight(const float Amount);
 	void ChangeRunState() { IsRun = !IsRun; }
+	void Attack();
+	void Equip();
+
+	void InitAnimNotifies();
+
+	void OnEquipFinished(USkeletalMeshComponent* MeshComp);
 
 	FRotator GetYawBasedRotator() const;
-
-	void Attack();
-
-	void Equip();
 
 private:
 	bool IsRun = false;
 	bool IsAttack = false;
+	bool EquipInProgress = false;
 
 	int32 CurrentEquipAnimation = 0;
 
