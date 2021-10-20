@@ -49,16 +49,19 @@ private:
 
 	void ChangeRunState() { IsRun = !IsRun; }
 	void AllowMove(bool Allow) const;
+	void UseBattleMode(const bool Mode);
 
 private:
 	bool IsRun = false;
 	bool IsAttack = false;
 	bool EquipInProgress = false;
+	bool IsBattleMode = false;
 
 	int32 CurrentEquipAnimation = 0;
+	int32 CurrentEquipState = 0;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Equipped State Animations")
-	TArray<TSubclassOf<UAnimInstance>> EquippedStateAnimationBluePrints;
+	TArray<TSubclassOf<UAnimInstance>> EquippedStateAnimInstances;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Equip Animation")
 	TArray<UAnimMontage*> EquipAnimations;

@@ -15,9 +15,7 @@ ABasePlayer::ABasePlayer(const FObjectInitializer& ObjectInitializer) :
 		ACharacter::CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	bUseControllerRotationYaw = false;
-
+	
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
 	SpringArmComponent->SetupAttachment(GetRootComponent());
 	SpringArmComponent->bUsePawnControlRotation = true;
@@ -25,7 +23,7 @@ ABasePlayer::ABasePlayer(const FObjectInitializer& ObjectInitializer) :
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
-	GetCharacterMovement()->bOrientRotationToMovement = true;
+	UseBattleMode(IsBattleMode);
 }
 
 void ABasePlayer::BeginPlay()
@@ -61,13 +59,26 @@ void ABasePlayer::Equip()
 	EquipInProgress = true;
 	AllowMove(false);
 
+	const auto CharacterMesh = GetMesh();
+	if (!CharacterMesh) { return; }
+
+	CurrentEquipState = (CurrentEquipState + 1) % EquippedStateAnimInstances.Num();
+	if (EquippedStateAnimInstances[CurrentEquipState])
+	{
+		CharacterMesh->SetAnimInstanceClass(EquippedStateAnimInstances[CurrentEquipState]);
+		IsBattleMode = !IsBattleMode;
+		UseBattleMode(IsBattleMode);
+	}
+
 	CurrentEquipAnimation = (CurrentEquipAnimation + 1) % EquipAnimations.Num();
-	PlayAnimMontage(EquipAnimations[CurrentEquipAnimation]);
+	if (EquipAnimations[CurrentEquipAnimation])
+	{
+		PlayAnimMontage(EquipAnimations[CurrentEquipAnimation]);
+	}
 }
 
 bool ABasePlayer::CanEquip() const
 {
-	// jump, attack, equip
 	return !EquipInProgress && !GetMovementComponent()->IsFalling();
 }
 
@@ -84,7 +95,8 @@ void ABasePlayer::InitAnimNotifies()
 
 void ABasePlayer::OnEquipFinished(USkeletalMeshComponent* MeshComp)
 {
-	if (GetMesh() != MeshComp) { return; }
+	const auto CharacterMesh = GetMesh();
+	if (!CharacterMesh || CharacterMesh != MeshComp) { return; }
 
 	EquipInProgress = false;
 	AllowMove(true);
@@ -99,6 +111,12 @@ void ABasePlayer::AllowMove(bool Allow) const
 {
 	GetController()->SetIgnoreMoveInput(!Allow);
 	GetMovementComponent()->SetJumpAllowed(Allow);
+}
+
+void ABasePlayer::UseBattleMode(const bool Mode)
+{
+	bUseControllerRotationYaw = Mode;
+	GetCharacterMovement()->bOrientRotationToMovement = !Mode;
 }
 
 void ABasePlayer::Tick(float DeltaTime)
