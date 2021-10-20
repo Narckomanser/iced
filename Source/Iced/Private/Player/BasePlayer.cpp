@@ -31,7 +31,7 @@ ABasePlayer::ABasePlayer(const FObjectInitializer& ObjectInitializer) :
 void ABasePlayer::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	InitAnimNotifies();
 }
 
@@ -56,13 +56,19 @@ void ABasePlayer::Attack()
 
 void ABasePlayer::Equip()
 {
-	ChangeEquipState();
-	UE_LOG(LogBasePlayer, Display, TEXT("Equip In Progress"));
-	
-	GetController()->SetIgnoreMoveInput(true);
-	
+	if (!CanEquip()) return;
+
+	EquipInProgress = true;
+	AllowMove(false);
+
 	CurrentEquipAnimation = (CurrentEquipAnimation + 1) % EquipAnimations.Num();
 	PlayAnimMontage(EquipAnimations[CurrentEquipAnimation]);
+}
+
+bool ABasePlayer::CanEquip() const
+{
+	// jump, attack, equip
+	return !EquipInProgress && !GetMovementComponent()->IsFalling();
 }
 
 void ABasePlayer::InitAnimNotifies()
@@ -71,7 +77,7 @@ void ABasePlayer::InitAnimNotifies()
 	{
 		const auto EquipFinishedNotify = FNotifyUtils::FindNotifyByClass<UEquipFinishedAnimNotify>(EquipAnimation);
 		if (!EquipFinishedNotify) continue;
-		
+
 		EquipFinishedNotify->OnNotified.AddUObject(this, &ABasePlayer::OnEquipFinished);
 	}
 }
@@ -79,16 +85,20 @@ void ABasePlayer::InitAnimNotifies()
 void ABasePlayer::OnEquipFinished(USkeletalMeshComponent* MeshComp)
 {
 	if (GetMesh() != MeshComp) { return; }
-	ChangeEquipState();
 
-	GetController()->SetIgnoreMoveInput(false);
-
-	UE_LOG(LogBasePlayer, Display, TEXT("Equip Finished"));
+	EquipInProgress = false;
+	AllowMove(true);
 }
 
 FRotator ABasePlayer::GetYawBasedRotator() const
 {
 	return FRotator(0.f, GetControlRotation().Yaw, 0.f);
+}
+
+void ABasePlayer::AllowMove(bool Allow) const
+{
+	GetController()->SetIgnoreMoveInput(!Allow);
+	GetMovementComponent()->SetJumpAllowed(Allow);
 }
 
 void ABasePlayer::Tick(float DeltaTime)

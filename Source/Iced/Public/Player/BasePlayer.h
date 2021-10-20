@@ -39,6 +39,8 @@ private:
 	void Attack();
 	void Equip();
 
+	bool CanEquip() const;
+
 	void InitAnimNotifies();
 
 	void OnEquipFinished(USkeletalMeshComponent* MeshComp);
@@ -46,7 +48,7 @@ private:
 	FRotator GetYawBasedRotator() const;
 
 	void ChangeRunState() { IsRun = !IsRun; }
-	void ChangeEquipState() { EquipInProgress = !EquipInProgress; }
+	void AllowMove(bool Allow) const;
 
 private:
 	bool IsRun = false;
