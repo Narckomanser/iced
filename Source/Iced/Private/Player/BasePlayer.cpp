@@ -15,7 +15,7 @@ ABasePlayer::ABasePlayer(const FObjectInitializer& ObjectInitializer) :
 		ACharacter::CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
-	
+
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
 	SpringArmComponent->SetupAttachment(GetRootComponent());
 	SpringArmComponent->bUsePawnControlRotation = true;
@@ -24,6 +24,18 @@ ABasePlayer::ABasePlayer(const FObjectInitializer& ObjectInitializer) :
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
 	UseBattleMode(IsBattleMode);
+}
+
+float ABasePlayer::GetMovementDirection() const
+{
+	if (GetVelocity().IsZero()) return 0.f;
+
+	const FVector VelocityNormal = GetVelocity().GetSafeNormal();
+	const float AngleBetween = FMath::Acos(FVector::DotProduct(GetActorForwardVector(), VelocityNormal));
+	const FVector CrossProduct = FVector::CrossProduct(GetActorForwardVector(), VelocityNormal);
+	const float Degrees = FMath::RadiansToDegrees(AngleBetween);
+
+	return CrossProduct.IsZero() ? Degrees : Degrees * FMath::Sign(CrossProduct.Z);
 }
 
 void ABasePlayer::BeginPlay()
@@ -59,21 +71,22 @@ void ABasePlayer::Equip()
 	EquipInProgress = true;
 	AllowMove(false);
 
+	IsBattleMode = !IsBattleMode;
+	UseBattleMode(IsBattleMode);
+
 	const auto CharacterMesh = GetMesh();
 	if (!CharacterMesh) { return; }
 
-	CurrentEquipState = (CurrentEquipState + 1) % EquippedStateAnimInstances.Num();
+	CurrentEquipState = (++CurrentEquipState) % EquippedStateAnimInstances.Num();
 	if (EquippedStateAnimInstances[CurrentEquipState])
 	{
 		CharacterMesh->SetAnimInstanceClass(EquippedStateAnimInstances[CurrentEquipState]);
-		IsBattleMode = !IsBattleMode;
-		UseBattleMode(IsBattleMode);
 	}
 
-	CurrentEquipAnimation = (CurrentEquipAnimation + 1) % EquipAnimations.Num();
 	if (EquipAnimations[CurrentEquipAnimation])
 	{
 		PlayAnimMontage(EquipAnimations[CurrentEquipAnimation]);
+		CurrentEquipAnimation = (++CurrentEquipAnimation) % EquipAnimations.Num();
 	}
 }
 

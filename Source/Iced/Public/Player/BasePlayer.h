@@ -23,6 +23,9 @@ public:
 
 	bool IsRunning() const { return IsRun; }
 
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	float GetMovementDirection() const;
+
 protected:
 	virtual void BeginPlay() override;
 
