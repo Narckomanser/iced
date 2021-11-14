@@ -3,7 +3,6 @@
 #include "PlayerMovementComponent.h"
 #include "HealthComponent.h"
 #include "Camera/CameraComponent.h"
-#include "Components/CapsuleComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -28,10 +27,11 @@ ABasePlayer::ABasePlayer(const FObjectInitializer& ObjectInitializer) :
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
 
+	UseBattleMode(BattleMode);
+
+	// remove after UI implemented
 	HealthText = CreateDefaultSubobject<UTextRenderComponent>("Health Text");
 	HealthText->SetupAttachment(GetRootComponent());
-
-	UseBattleMode(BattleMode);
 }
 
 float ABasePlayer::GetMovementDirection() const
