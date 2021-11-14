@@ -9,6 +9,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class UHealthComponent;
+class UTextRenderComponent;
 
 UCLASS()
 class ICED_API ABasePlayer : public ACharacter
@@ -40,6 +41,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	UHealthComponent* HealthComponent;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UTextRenderComponent* HealthText;
 private:
 	void MoveForward(const float Amount);
 	void MoveRight(const float Amount);

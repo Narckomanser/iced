@@ -3,6 +3,7 @@
 #include "PlayerMovementComponent.h"
 #include "HealthComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/TextRenderComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -25,6 +26,9 @@ ABasePlayer::ABasePlayer(const FObjectInitializer& ObjectInitializer) :
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
+
+	HealthText = CreateDefaultSubobject<UTextRenderComponent>("Health Text");
+	HealthText->SetupAttachment(GetRootComponent());
 
 	UseBattleMode(BattleMode);
 }
@@ -138,6 +142,9 @@ void ABasePlayer::UseBattleMode(const bool Mode)
 void ABasePlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// remove after UI implemented
+	HealthText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), HealthComponent->GetHealth())));
 }
 
 void ABasePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
