@@ -8,6 +8,7 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class UHealthComponent;
 
 UCLASS()
 class ICED_API ABasePlayer : public ACharacter
@@ -36,6 +37,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	UCameraComponent* CameraComponent;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UHealthComponent* HealthComponent;
+
 private:
 	void MoveForward(const float Amount);
 	void MoveRight(const float Amount);
@@ -51,6 +55,7 @@ private:
 	FRotator GetYawBasedRotator() const;
 
 	void ChangeRunState() { IsRun = !IsRun; }
+	void ChangeBattleMode() { BattleMode = !BattleMode; }
 	void AllowMove(bool Allow) const;
 	void UseBattleMode(const bool Mode);
 
@@ -58,7 +63,7 @@ private:
 	bool IsRun = false;
 	bool IsAttack = false;
 	bool EquipInProgress = false;
-	bool IsBattleMode = false;
+	bool BattleMode = false;
 
 	int32 CurrentEquipAnimation = 0;
 	int32 CurrentEquipState = 0;

@@ -1,6 +1,7 @@
 #include "Player/BasePlayer.h"
 
 #include "PlayerMovementComponent.h"
+#include "HealthComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -23,7 +24,9 @@ ABasePlayer::ABasePlayer(const FObjectInitializer& ObjectInitializer) :
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
-	UseBattleMode(IsBattleMode);
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
+
+	UseBattleMode(BattleMode);
 }
 
 float ABasePlayer::GetMovementDirection() const
@@ -71,8 +74,8 @@ void ABasePlayer::Equip()
 	EquipInProgress = true;
 	AllowMove(false);
 
-	IsBattleMode = !IsBattleMode;
-	UseBattleMode(IsBattleMode);
+	ChangeBattleMode();
+	UseBattleMode(BattleMode);
 
 	const auto CharacterMesh = GetMesh();
 	if (!CharacterMesh) { return; }
