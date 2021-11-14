@@ -33,8 +33,19 @@ void UHealthComponent::OnTakeRadialDamage(AActor* DamagedActor, float Damage, co
                                           FVector Origin, FHitResult HitInfo, AController* InstigatedBy,
                                           AActor* DamageCauser)
 {
+	ApplyDamage(Damage);
+}
+
+void UHealthComponent::ApplyDamage(float Damage)
+{
+	if (Damage <= 0.f || IsDead()) return;
+	
 	SetHealth(CurrentHealth - Damage);
-	UE_LOG(LogHealthComponent, Display, TEXT("Current Health: %f"), CurrentHealth);
+
+	if (IsDead())
+	{
+		OnDeath.Broadcast();
+	}
 }
 
 void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType,

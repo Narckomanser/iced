@@ -3,6 +3,7 @@
 #include "PlayerMovementComponent.h"
 #include "HealthComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -50,6 +51,8 @@ void ABasePlayer::BeginPlay()
 	Super::BeginPlay();
 
 	InitAnimNotifies();
+
+	HealthComponent->OnDeath.AddUObject(this, &ABasePlayer::OnDeath);
 }
 
 void ABasePlayer::MoveForward(const float Amount)
@@ -127,16 +130,29 @@ FRotator ABasePlayer::GetYawBasedRotator() const
 	return FRotator(0.f, GetControlRotation().Yaw, 0.f);
 }
 
-void ABasePlayer::AllowMove(bool Allow) const
+void ABasePlayer::AllowMove(const bool Allow) const
 {
+	//GetCharacterMovement()->DisableMovement();
 	GetController()->SetIgnoreMoveInput(!Allow);
-	GetMovementComponent()->SetJumpAllowed(Allow);
+	GetCharacterMovement()->SetJumpAllowed(Allow);
 }
 
 void ABasePlayer::UseBattleMode(const bool Mode)
 {
 	bUseControllerRotationYaw = Mode;
 	GetCharacterMovement()->bOrientRotationToMovement = !Mode;
+}
+
+void ABasePlayer::OnDeath()
+{
+	AllowMove(false);
+	SetLifeSpan(5.f);
+
+	//uncomment it after the collision will be set
+	//GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
+
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetMesh()->SetSimulatePhysics(true);
 }
 
 void ABasePlayer::Tick(float DeltaTime)

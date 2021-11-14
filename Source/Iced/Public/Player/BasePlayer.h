@@ -62,6 +62,9 @@ private:
 	void AllowMove(bool Allow) const;
 	void UseBattleMode(const bool Mode);
 
+	UFUNCTION()
+	void OnDeath();
+
 private:
 	bool IsRun = false;
 	bool IsAttack = false;
