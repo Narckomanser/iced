@@ -79,10 +79,9 @@ void ABasePlayer::Equip()
 	if (!CanEquip()) return;
 
 	EquipInProgress = true;
-	AllowMove(false);
-
-	ChangeBattleMode();
-	UseBattleMode(BattleMode);
+	AllowMove(EMovementMode::MOVE_None);
+	
+	UseBattleMode(ChangeBattleMode());
 
 	const auto CharacterMesh = GetMesh();
 	if (!CharacterMesh) { return; }
@@ -122,7 +121,7 @@ void ABasePlayer::OnEquipFinished(USkeletalMeshComponent* MeshComp)
 	if (!CharacterMesh || CharacterMesh != MeshComp) { return; }
 
 	EquipInProgress = false;
-	AllowMove(true);
+	AllowMove(EMovementMode::MOVE_Walking);
 }
 
 FRotator ABasePlayer::GetYawBasedRotator() const
@@ -130,11 +129,18 @@ FRotator ABasePlayer::GetYawBasedRotator() const
 	return FRotator(0.f, GetControlRotation().Yaw, 0.f);
 }
 
-void ABasePlayer::AllowMove(const bool Allow) const
+bool ABasePlayer::ChangeBattleMode()
 {
-	//GetCharacterMovement()->DisableMovement();
-	GetController()->SetIgnoreMoveInput(!Allow);
-	GetCharacterMovement()->SetJumpAllowed(Allow);
+	BattleMode = !BattleMode;
+	return BattleMode;
+}
+
+void ABasePlayer::AllowMove(EMovementMode NewMovementMode) const
+{
+	const auto MovementComponent = GetCharacterMovement();
+	if (!MovementComponent) return;
+	
+	MovementComponent->SetMovementMode(NewMovementMode);
 }
 
 void ABasePlayer::UseBattleMode(const bool Mode)
@@ -145,7 +151,7 @@ void ABasePlayer::UseBattleMode(const bool Mode)
 
 void ABasePlayer::OnDeath()
 {
-	AllowMove(false);
+	AllowMove(MOVE_None);
 	SetLifeSpan(5.f);
 
 	//uncomment it after the collision will be set

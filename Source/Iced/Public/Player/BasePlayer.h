@@ -58,8 +58,8 @@ private:
 	FRotator GetYawBasedRotator() const;
 
 	void ChangeRunState() { IsRun = !IsRun; }
-	void ChangeBattleMode() { BattleMode = !BattleMode; }
-	void AllowMove(bool Allow) const;
+	bool ChangeBattleMode();
+	void AllowMove(EMovementMode NewMovementMode) const;
 	void UseBattleMode(const bool Mode);
 
 	UFUNCTION()
