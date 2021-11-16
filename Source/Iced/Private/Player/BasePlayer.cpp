@@ -9,6 +9,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Notifies/EquipFinishedAnimNotify.h"
 #include "Notifies/NotifyUtils.h"
+#include "WeaponComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBasePlayer, All, All);
 
@@ -26,6 +27,7 @@ ABasePlayer::ABasePlayer(const FObjectInitializer& ObjectInitializer) :
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
+	WeaponComponent->CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
 
 	UseBattleMode(BattleMode);
 
@@ -67,13 +69,14 @@ void ABasePlayer::MoveRight(const float Amount)
 	AddMovementInput(RightVector, Amount);
 }
 
-
+// Move to WC
 void ABasePlayer::Attack()
 {
 	IsAttack = !IsAttack;
 	UE_LOG(LogBasePlayer, Display, TEXT("Attack state: %s"), IsAttack ? *FString("true") : *FString("false"));
 }
 
+//Move to WC
 void ABasePlayer::Equip()
 {
 	if (!CanEquip()) return;
@@ -99,11 +102,13 @@ void ABasePlayer::Equip()
 	}
 }
 
+//Move to WC
 bool ABasePlayer::CanEquip() const
 {
 	return !EquipInProgress && !GetMovementComponent()->IsFalling();
 }
 
+//Move to WC
 void ABasePlayer::InitAnimNotifies()
 {
 	for (const auto EquipAnimation : EquipAnimations)
@@ -115,6 +120,7 @@ void ABasePlayer::InitAnimNotifies()
 	}
 }
 
+//Move to WC
 void ABasePlayer::OnEquipFinished(USkeletalMeshComponent* MeshComp)
 {
 	const auto CharacterMesh = GetMesh();
@@ -129,12 +135,14 @@ FRotator ABasePlayer::GetYawBasedRotator() const
 	return FRotator(0.f, GetControlRotation().Yaw, 0.f);
 }
 
+//TO DO think about place
 bool ABasePlayer::ChangeBattleMode()
 {
 	BattleMode = !BattleMode;
 	return BattleMode;
 }
 
+//Make public???
 void ABasePlayer::AllowMove(EMovementMode NewMovementMode) const
 {
 	const auto MovementComponent = GetCharacterMovement();
@@ -143,6 +151,7 @@ void ABasePlayer::AllowMove(EMovementMode NewMovementMode) const
 	MovementComponent->SetMovementMode(NewMovementMode);
 }
 
+//WC???
 void ABasePlayer::UseBattleMode(const bool Mode)
 {
 	bUseControllerRotationYaw = Mode;
