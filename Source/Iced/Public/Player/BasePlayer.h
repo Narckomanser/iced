@@ -26,6 +26,8 @@ public:
 
 	bool IsRunning() const { return IsRun; }
 
+	void AllowMove(EMovementMode NewMovementMode) const;
+
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	float GetMovementDirection() const;
 
@@ -47,41 +49,21 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UWeaponComponent* WeaponComponent;
-	
+
 private:
 	void MoveForward(const float Amount);
 	void MoveRight(const float Amount);
-	void Attack();
-	void Equip();
-
-	bool CanEquip() const;
-
-	void InitAnimNotifies();
-
-	void OnEquipFinished(USkeletalMeshComponent* MeshComp);
-
 	FRotator GetYawBasedRotator() const;
 
 	void ChangeRunState() { IsRun = !IsRun; }
-	bool ChangeBattleMode();
-	void AllowMove(EMovementMode NewMovementMode) const;
-	void UseBattleMode(const bool Mode);
 
 	UFUNCTION()
 	void OnDeath();
 
+	// TODO remove or call WC same methods
+	void Attack();
+	void Equip();
+
 private:
 	bool IsRun = false;
-	bool IsAttack = false;
-	bool EquipInProgress = false;
-	bool BattleMode = false;
-
-	int32 CurrentEquipAnimation = 0;
-	int32 CurrentEquipState = 0;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Equipped State Animations")
-	TArray<TSubclassOf<UAnimInstance>> EquippedStateAnimInstances;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Equip Animation")
-	TArray<UAnimMontage*> EquipAnimations;
 };

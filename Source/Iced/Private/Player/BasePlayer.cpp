@@ -7,8 +7,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Notifies/EquipFinishedAnimNotify.h"
-#include "Notifies/NotifyUtils.h"
 #include "WeaponComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBasePlayer, All, All);
@@ -27,13 +25,19 @@ ABasePlayer::ABasePlayer(const FObjectInitializer& ObjectInitializer) :
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
-	WeaponComponent->CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
+	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
 
-	UseBattleMode(BattleMode);
-
-	// remove after UI implemented
+	// TODO remove after UI implemented
 	HealthText = CreateDefaultSubobject<UTextRenderComponent>("Health Text");
 	HealthText->SetupAttachment(GetRootComponent());
+}
+
+void ABasePlayer::AllowMove(EMovementMode NewMovementMode) const
+{
+	const auto MovementComponent = GetCharacterMovement();
+	if (!MovementComponent) return;
+
+	MovementComponent->SetMovementMode(NewMovementMode);
 }
 
 float ABasePlayer::GetMovementDirection() const
@@ -52,8 +56,6 @@ void ABasePlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	InitAnimNotifies();
-
 	HealthComponent->OnDeath.AddUObject(this, &ABasePlayer::OnDeath);
 }
 
@@ -69,65 +71,14 @@ void ABasePlayer::MoveRight(const float Amount)
 	AddMovementInput(RightVector, Amount);
 }
 
-// Move to WC
 void ABasePlayer::Attack()
 {
-	IsAttack = !IsAttack;
-	UE_LOG(LogBasePlayer, Display, TEXT("Attack state: %s"), IsAttack ? *FString("true") : *FString("false"));
+	WeaponComponent->Attack();
 }
 
-//Move to WC
 void ABasePlayer::Equip()
 {
-	if (!CanEquip()) return;
-
-	EquipInProgress = true;
-	AllowMove(EMovementMode::MOVE_None);
-	
-	UseBattleMode(ChangeBattleMode());
-
-	const auto CharacterMesh = GetMesh();
-	if (!CharacterMesh) { return; }
-
-	CurrentEquipState = (++CurrentEquipState) % EquippedStateAnimInstances.Num();
-	if (EquippedStateAnimInstances[CurrentEquipState])
-	{
-		CharacterMesh->SetAnimInstanceClass(EquippedStateAnimInstances[CurrentEquipState]);
-	}
-
-	if (EquipAnimations[CurrentEquipAnimation])
-	{
-		PlayAnimMontage(EquipAnimations[CurrentEquipAnimation]);
-		CurrentEquipAnimation = (++CurrentEquipAnimation) % EquipAnimations.Num();
-	}
-}
-
-//Move to WC
-bool ABasePlayer::CanEquip() const
-{
-	return !EquipInProgress && !GetMovementComponent()->IsFalling();
-}
-
-//Move to WC
-void ABasePlayer::InitAnimNotifies()
-{
-	for (const auto EquipAnimation : EquipAnimations)
-	{
-		const auto EquipFinishedNotify = FNotifyUtils::FindNotifyByClass<UEquipFinishedAnimNotify>(EquipAnimation);
-		if (!EquipFinishedNotify) continue;
-
-		EquipFinishedNotify->OnNotified.AddUObject(this, &ABasePlayer::OnEquipFinished);
-	}
-}
-
-//Move to WC
-void ABasePlayer::OnEquipFinished(USkeletalMeshComponent* MeshComp)
-{
-	const auto CharacterMesh = GetMesh();
-	if (!CharacterMesh || CharacterMesh != MeshComp) { return; }
-
-	EquipInProgress = false;
-	AllowMove(EMovementMode::MOVE_Walking);
+	WeaponComponent->Equip();
 }
 
 FRotator ABasePlayer::GetYawBasedRotator() const
@@ -135,35 +86,13 @@ FRotator ABasePlayer::GetYawBasedRotator() const
 	return FRotator(0.f, GetControlRotation().Yaw, 0.f);
 }
 
-//TO DO think about place
-bool ABasePlayer::ChangeBattleMode()
-{
-	BattleMode = !BattleMode;
-	return BattleMode;
-}
-
-//Make public???
-void ABasePlayer::AllowMove(EMovementMode NewMovementMode) const
-{
-	const auto MovementComponent = GetCharacterMovement();
-	if (!MovementComponent) return;
-	
-	MovementComponent->SetMovementMode(NewMovementMode);
-}
-
-//WC???
-void ABasePlayer::UseBattleMode(const bool Mode)
-{
-	bUseControllerRotationYaw = Mode;
-	GetCharacterMovement()->bOrientRotationToMovement = !Mode;
-}
 
 void ABasePlayer::OnDeath()
 {
 	AllowMove(MOVE_None);
 	SetLifeSpan(5.f);
 
-	//uncomment it after the collision will be set
+	// TODO setup collision and uncomment line
 	//GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
 
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -174,7 +103,7 @@ void ABasePlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// remove after UI implemented
+	// TODO remove after UI implemented
 	HealthText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), HealthComponent->GetHealth())));
 }
 
