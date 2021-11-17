@@ -2,11 +2,15 @@
 
 
 #include "Weapon/BaseWeapon.h"
+#include "Components/CapsuleComponent.h"
 
 ABaseWeapon::ABaseWeapon()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>("Capsule Component");
+	SetRootComponent(CapsuleComponent);
+	
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>("Weapon Mesh");
 	WeaponMesh->SetupAttachment(GetRootComponent());
 
