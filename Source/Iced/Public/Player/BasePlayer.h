@@ -11,6 +11,7 @@ class UCameraComponent;
 class UHealthComponent;
 class UTextRenderComponent;
 class UWeaponComponent;
+class UGrabComponent;
 
 UCLASS()
 class ICED_API ABasePlayer : public ACharacter
@@ -49,6 +50,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UWeaponComponent* WeaponComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UGrabComponent* GrabComponent;
 
 private:
 	void MoveForward(const float Amount);

@@ -1,5 +1,6 @@
 #include "Player/BasePlayer.h"
 
+#include "GrabComponent.h"
 #include "PlayerMovementComponent.h"
 #include "HealthComponent.h"
 #include "Camera/CameraComponent.h"
@@ -26,6 +27,7 @@ ABasePlayer::ABasePlayer(const FObjectInitializer& ObjectInitializer) :
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
 	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
+	GrabComponent = CreateDefaultSubobject<UGrabComponent>("GrabComponent");
 
 	// TODO remove after UI implemented
 	HealthText = CreateDefaultSubobject<UTextRenderComponent>("Health Text");
