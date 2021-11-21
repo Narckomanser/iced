@@ -2,10 +2,11 @@
 
 
 #include "Components/GrabComponent.h"
-
 #include "BasePlayer.h"
+#include "BaseWeapon.h"
 #include "DrawDebugHelpers.h"
-#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+
 
 DEFINE_LOG_CATEGORY_STATIC(LogGrabComponent, All, All);
 
@@ -19,33 +20,52 @@ void UGrabComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
+AActor* UGrabComponent::DetectItem() const
+{
+	FHitResult HitResult;
+	GetWorld()->LineTraceSingleByChannel(HitResult,
+	                                     GetStartPoint(),
+	                                     GetEndPoint(),
+	                                     ECC_Visibility);
+
+	return HitResult.GetActor();
+}
+
+FVector UGrabComponent::GetStartPoint() const
+{
+	const auto Owner = Cast<ABasePlayer>(GetOwner());
+
+	return Owner ? Owner->GetMesh()->GetBoneLocation(BoneName) : FVector{};
+}
+
+FVector UGrabComponent::GetEndPoint() const
+{
+	const auto Owner = Cast<ABasePlayer>(GetOwner());
+	if (!Owner) return FVector{};
+
+	const auto SpringArmComponent = Owner->FindComponentByClass<USpringArmComponent>();
+	if (!SpringArmComponent) return FVector{};
+
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
+
+	return CameraLocation + (CameraRotation.Vector() * (SpringArmComponent->
+		TargetArmLength + GrabDistance));
+}
+
+void UGrabComponent::UseItem() const
+{
+	//TODO do something with founded item
+	if (DetectItem() && DetectItem()->IsA(ABaseWeapon::StaticClass()))
+	{
+		UE_LOG(LogGrabComponent, Display, TEXT("%s detected"), *DetectItem()->GetName())
+	}
+}
+
 void UGrabComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	//TODO rework it, added for test. Replace ByChannel to ByObject
-	const auto Owner = GetOwner();
-	FHitResult HitResult;
-
-	FVector CameraLocation;
-	FRotator CameraRotation;
-	Cast<ABasePlayer>(Owner)->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
-
-	DrawDebugLine(GetWorld(),
-	              Owner->GetActorLocation(),
-	              CameraLocation + (CameraRotation.Vector() * 800),
-	              FColor::Red,
-	              false,
-	              -1,
-	              5,
-	              2);
-
-	GetWorld()->LineTraceSingleByChannel(HitResult,
-	                                     Owner->GetActorLocation(),
-	                                     CameraLocation + (CameraRotation.Vector() * 800),
-	                                     ECC_Visibility);
-	if (HitResult.Actor.Get())
-	{
-		UE_LOG(LogGrabComponent, Display, TEXT("%s detected"), *HitResult.GetActor()->GetName())
-	}
+	UseItem();
 }
