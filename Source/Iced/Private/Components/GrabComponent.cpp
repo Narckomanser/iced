@@ -28,7 +28,9 @@ AActor* UGrabComponent::DetectItem() const
 	                                     GetEndPoint(),
 	                                     ECC_Visibility);
 
-	return HitResult.GetActor();
+	const auto Founded = HitResult.GetActor();
+
+	return Founded->IsA(ABaseItem::StaticClass()) ? Founded : nullptr;
 }
 
 FVector UGrabComponent::GetStartPoint() const
@@ -54,12 +56,15 @@ FVector UGrabComponent::GetEndPoint() const
 		TargetArmLength + GrabDistance));
 }
 
-void UGrabComponent::UseItem() const
+void UGrabComponent::GrabItem() const
 {
 	//TODO do something with founded item
-	if (DetectItem() && DetectItem()->IsA(ABaseItem::StaticClass()))
+	if (const auto Found = Cast<ABaseItem>(DetectItem()))
 	{
-		UE_LOG(LogGrabComponent, Display, TEXT("%s detected"), *DetectItem()->GetName())
+		const auto Owner = Cast<ABasePlayer>(GetOwner());
+		if (!Owner) return;
+
+		Owner->TakeItem(Found);
 	}
 }
 
@@ -67,5 +72,5 @@ void UGrabComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	UseItem();
+	GrabItem();
 }

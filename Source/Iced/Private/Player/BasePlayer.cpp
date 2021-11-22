@@ -9,6 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "WeaponComponent.h"
+#include "BaseItem.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBasePlayer, All, All);
 
@@ -52,6 +53,12 @@ float ABasePlayer::GetMovementDirection() const
 	const float Degrees = FMath::RadiansToDegrees(AngleBetween);
 
 	return CrossProduct.IsZero() ? Degrees : Degrees * FMath::Sign(CrossProduct.Z);
+}
+
+void ABasePlayer::TakeItem(ABaseItem* TakenItem)
+{
+	const FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget, false};
+	AttachToComponent(GetMesh(), AttachmentTransformRules, WeaponSocketName);
 }
 
 void ABasePlayer::BeginPlay()

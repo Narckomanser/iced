@@ -27,7 +27,7 @@ private:
 	FVector GetStartPoint() const;
 	FVector GetEndPoint() const;
 
-	void UseItem() const;
+	void GrabItem() const;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Start Distance Bone")

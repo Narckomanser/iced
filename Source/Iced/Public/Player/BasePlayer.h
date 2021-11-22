@@ -12,6 +12,7 @@ class UHealthComponent;
 class UTextRenderComponent;
 class UWeaponComponent;
 class UGrabComponent;
+class ABaseItem;
 
 UCLASS()
 class ICED_API ABasePlayer : public ACharacter
@@ -31,6 +32,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	float GetMovementDirection() const;
+
+	void TakeItem(ABaseItem* TakenItem);
 
 protected:
 	virtual void BeginPlay() override;
@@ -70,4 +73,7 @@ private:
 
 private:
 	bool IsRun = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon Socket")
+	FName WeaponSocketName = "hand_rSocket";
 };
