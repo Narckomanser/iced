@@ -1,26 +1,26 @@
 // Narckomanser's game
 
 
-#include "Weapon/BaseWeapon.h"
+#include "BaseItem.h"
 #include "Components/CapsuleComponent.h"
 
-ABaseWeapon::ABaseWeapon()
+ABaseItem::ABaseItem()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>("Capsule Component");
 	SetRootComponent(CapsuleComponent);
 	
-	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>("Weapon Mesh");
-	WeaponMesh->SetupAttachment(GetRootComponent());
+	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>("Item Mesh");
+	ItemMesh->SetupAttachment(GetRootComponent());
 }
 
-void ABaseWeapon::BeginPlay()
+void ABaseItem::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void ABaseWeapon::Tick(float DeltaTime)
+void ABaseItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }

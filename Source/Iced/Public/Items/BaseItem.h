@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "BaseWeapon.generated.h"
+#include "BaseItem.generated.h"
 
 class UCapsuleComponent;
 
 UCLASS()
-class ICED_API ABaseWeapon : public AActor
+class ICED_API ABaseItem : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
-	ABaseWeapon();
+	ABaseItem();
 	virtual void Tick(float DeltaTime) override;
 
 protected:
@@ -22,7 +22,7 @@ protected:
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UStaticMeshComponent* WeaponMesh;
+	UStaticMeshComponent* ItemMesh;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCapsuleComponent* CapsuleComponent;

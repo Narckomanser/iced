@@ -3,7 +3,7 @@
 
 #include "Components/GrabComponent.h"
 #include "BasePlayer.h"
-#include "BaseWeapon.h"
+#include "BaseItem.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -57,7 +57,7 @@ FVector UGrabComponent::GetEndPoint() const
 void UGrabComponent::UseItem() const
 {
 	//TODO do something with founded item
-	if (DetectItem() && DetectItem()->IsA(ABaseWeapon::StaticClass()))
+	if (DetectItem() && DetectItem()->IsA(ABaseItem::StaticClass()))
 	{
 		UE_LOG(LogGrabComponent, Display, TEXT("%s detected"), *DetectItem()->GetName())
 	}

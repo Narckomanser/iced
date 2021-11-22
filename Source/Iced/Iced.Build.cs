@@ -17,7 +17,9 @@ public class Iced : ModuleRules
 			"Iced/Public/Player",
 			"Iced/Public/GameModes",
 			"Iced/Public/Components",
-			"Iced/Public/Weapon"
+			"Iced/Public/Items",
+			 "Iced/Public/Develop",
+			 "Iced/Public/Notifies"
 		});
 
 		// Uncomment if you are using Slate UI
