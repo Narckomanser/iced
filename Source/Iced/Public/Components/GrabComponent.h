@@ -18,14 +18,12 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	AActor* GetFoundedItem() const { return ItemToGrab; }
+	AActor* DetectItem() const;
 
 protected:
 	virtual void BeginPlay() override;
 
 private:
-	void DetectItem();
-
 	FVector GetStartPoint() const;
 	FVector GetEndPoint() const;
 
@@ -35,7 +33,4 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Grab Distance")
 	float GrabDistance = 200.f;
-
-	UPROPERTY()
-	AActor* ItemToGrab = nullptr;
 };

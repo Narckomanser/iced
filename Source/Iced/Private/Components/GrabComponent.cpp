@@ -20,14 +20,19 @@ void UGrabComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-void UGrabComponent::DetectItem()
+AActor* UGrabComponent::DetectItem() const
 {
 	FHitResult HitResult;
 	GetWorld()->LineTraceSingleByChannel(HitResult,
 	                                     GetStartPoint(),
 	                                     GetEndPoint(),
 	                                     ECC_Visibility);
-	ItemToGrab = HitResult.GetActor();
+	if (HitResult.GetActor())
+	{
+		UE_LOG(LogGrabComponent, Display, TEXT("%s Detected"), *HitResult.GetActor()->GetName());
+	}
+
+	return HitResult.GetActor();
 }
 
 FVector UGrabComponent::GetStartPoint() const
@@ -58,8 +63,4 @@ void UGrabComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	DetectItem();
-	if (ItemToGrab)
-	{
-		UE_LOG(LogGrabComponent, Display, TEXT("%s Detected"), *ItemToGrab->GetName());
-	}
 }
