@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "GrabComponent.generated.h"
 
-class ABaseWeapon;
+class ABaseItem;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ICED_API UGrabComponent : public UActorComponent
@@ -18,16 +18,16 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
+	AActor* GetFoundedItem() const { return ItemToGrab; }
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
-	AActor* DetectItem() const;
+	void DetectItem();
 
 	FVector GetStartPoint() const;
 	FVector GetEndPoint() const;
-
-	void GrabItem() const;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Start Distance Bone")
@@ -35,4 +35,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Grab Distance")
 	float GrabDistance = 200.f;
+
+	UPROPERTY()
+	AActor* ItemToGrab = nullptr;
 };

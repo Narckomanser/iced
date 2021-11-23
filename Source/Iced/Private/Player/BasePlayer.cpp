@@ -55,16 +55,19 @@ float ABasePlayer::GetMovementDirection() const
 	return CrossProduct.IsZero() ? Degrees : Degrees * FMath::Sign(CrossProduct.Z);
 }
 
-void ABasePlayer::TakeItem(ABaseItem* TakenItem)
+void ABasePlayer::Grab()
 {
+	GrabComponent->GetFoundedItem()->Destroy();
+
+	const auto SpawnedWeapon = GetWorld()->SpawnActor<ABaseItem>(Weapon);
+	
 	const FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget, false};
-	AttachToComponent(GetMesh(), AttachmentTransformRules, WeaponSocketName);
+	SpawnedWeapon->AttachToComponent(GetMesh(), AttachmentTransformRules, WeaponSocketName);
 }
 
 void ABasePlayer::BeginPlay()
 {
 	Super::BeginPlay();
-
 	HealthComponent->OnDeath.AddUObject(this, &ABasePlayer::OnDeath);
 }
 
@@ -131,4 +134,5 @@ void ABasePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ABasePlayer::Attack);
 	PlayerInputComponent->BindAction("Equip", IE_Pressed, this, &ABasePlayer::Equip);
+	PlayerInputComponent->BindAction("Grab", IE_Pressed, this, &ABasePlayer::Grab);
 }

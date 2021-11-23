@@ -33,7 +33,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	float GetMovementDirection() const;
 
-	void TakeItem(ABaseItem* TakenItem);
+	void Grab();
 
 protected:
 	virtual void BeginPlay() override;
@@ -76,4 +76,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon Socket")
 	FName WeaponSocketName = "hand_rSocket";
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> Weapon;
 };

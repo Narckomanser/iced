@@ -20,17 +20,14 @@ void UGrabComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-AActor* UGrabComponent::DetectItem() const
+void UGrabComponent::DetectItem()
 {
 	FHitResult HitResult;
 	GetWorld()->LineTraceSingleByChannel(HitResult,
 	                                     GetStartPoint(),
 	                                     GetEndPoint(),
 	                                     ECC_Visibility);
-
-	const auto Founded = HitResult.GetActor();
-
-	return Founded->IsA(ABaseItem::StaticClass()) ? Founded : nullptr;
+	ItemToGrab = HitResult.GetActor();
 }
 
 FVector UGrabComponent::GetStartPoint() const
@@ -56,21 +53,13 @@ FVector UGrabComponent::GetEndPoint() const
 		TargetArmLength + GrabDistance));
 }
 
-void UGrabComponent::GrabItem() const
-{
-	//TODO do something with founded item
-	if (const auto Found = Cast<ABaseItem>(DetectItem()))
-	{
-		const auto Owner = Cast<ABasePlayer>(GetOwner());
-		if (!Owner) return;
-
-		Owner->TakeItem(Found);
-	}
-}
-
 void UGrabComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	GrabItem();
+	DetectItem();
+	if (ItemToGrab)
+	{
+		UE_LOG(LogGrabComponent, Display, TEXT("%s Detected"), *ItemToGrab->GetName());
+	}
 }
