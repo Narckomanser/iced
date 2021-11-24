@@ -10,7 +10,6 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "WeaponComponent.h"
 #include "BaseItem.h"
-#include "Components/CapsuleComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBasePlayer, All, All);
 
@@ -63,7 +62,7 @@ void ABasePlayer::Grab()
 	if (!EquippedWeapon) { return; }
 
 	UE_LOG(LogBasePlayer, Display, TEXT("ItemToGrab: %s"), *EquippedWeapon->GetName());
-	
+
 	EquippedWeapon->DisableComponentsSimulatePhysics();
 
 	const FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget, false};
