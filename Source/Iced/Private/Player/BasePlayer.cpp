@@ -10,6 +10,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "WeaponComponent.h"
 #include "BaseItem.h"
+#include "Components/CapsuleComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBasePlayer, All, All);
 
@@ -57,12 +58,16 @@ float ABasePlayer::GetMovementDirection() const
 
 void ABasePlayer::Grab()
 {
-	GrabComponent->GetFoundedItem()->Destroy();
+	FoundedItem = GrabComponent->DetectItem().GetActor();
+	if (!FoundedItem) { return; }
 
-	const auto SpawnedWeapon = GetWorld()->SpawnActor<ABaseItem>(Weapon);
-	
+	UE_LOG(LogBasePlayer, Display, TEXT("ItemToGrab: %s"), *FoundedItem->GetName());
+	const auto Item = Cast<ABaseItem>(FoundedItem);
+	if (!Item) { return; }
+	Item->DisableComponentsSimulatePhysics();
+
 	const FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget, false};
-	SpawnedWeapon->AttachToComponent(GetMesh(), AttachmentTransformRules, WeaponSocketName);
+	FoundedItem->AttachToComponent(GetMesh(), AttachmentTransformRules, WeaponSocketName);
 }
 
 void ABasePlayer::BeginPlay()

@@ -20,19 +20,19 @@ void UGrabComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-AActor* UGrabComponent::DetectItem() const
+FHitResult UGrabComponent::DetectItem() const
 {
 	FHitResult HitResult;
 	GetWorld()->LineTraceSingleByChannel(HitResult,
 	                                     GetStartPoint(),
 	                                     GetEndPoint(),
 	                                     ECC_Visibility);
-	if (HitResult.GetActor())
-	{
-		UE_LOG(LogGrabComponent, Display, TEXT("%s Detected"), *HitResult.GetActor()->GetName());
-	}
 
-	return HitResult.GetActor();
+	if(HitResult.GetActor())
+	{
+		UE_LOG(LogGrabComponent, Display, TEXT("ItemToGrab: %s"), *HitResult.GetActor()->GetName());
+	}
+	return HitResult;
 }
 
 FVector UGrabComponent::GetStartPoint() const

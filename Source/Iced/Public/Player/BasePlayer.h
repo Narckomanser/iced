@@ -77,6 +77,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon Socket")
 	FName WeaponSocketName = "hand_rSocket";
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AActor> Weapon;
+	UPROPERTY()
+	AActor* FoundedItem = nullptr;
 };
