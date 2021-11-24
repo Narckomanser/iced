@@ -7,12 +7,12 @@
 ABaseItem::ABaseItem()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>("Capsule Component");
-	SetRootComponent(CapsuleComponent);
 	
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>("Item Mesh");
-	ItemMesh->SetupAttachment(GetRootComponent());
+	SetRootComponent(ItemMesh);
+
+	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>("Capsule Component");
+	CapsuleComponent->SetupAttachment(GetRootComponent());
 }
 
 void ABaseItem::BeginPlay()
@@ -24,4 +24,3 @@ void ABaseItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
-

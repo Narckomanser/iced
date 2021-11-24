@@ -76,7 +76,8 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon Socket")
 	FName WeaponSocketName = "hand_rSocket";
-
+	
+	//TODO move to new component for wearable items???
 	UPROPERTY()
-	AActor* FoundedItem = nullptr;
+	AActor* EquippedWeapon = nullptr;
 };

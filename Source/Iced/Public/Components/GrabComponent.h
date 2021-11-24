@@ -18,7 +18,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	FHitResult DetectItem() const;
+	AActor* DetectItem() const;
 
 protected:
 	virtual void BeginPlay() override;

@@ -56,18 +56,18 @@ float ABasePlayer::GetMovementDirection() const
 	return CrossProduct.IsZero() ? Degrees : Degrees * FMath::Sign(CrossProduct.Z);
 }
 
+//TODO move to new component for wearable items???
 void ABasePlayer::Grab()
 {
-	FoundedItem = GrabComponent->DetectItem().GetActor();
-	if (!FoundedItem) { return; }
+	EquippedWeapon = GrabComponent->DetectItem();
+	if (!EquippedWeapon) { return; }
 
-	UE_LOG(LogBasePlayer, Display, TEXT("ItemToGrab: %s"), *FoundedItem->GetName());
-	const auto Item = Cast<ABaseItem>(FoundedItem);
-	if (!Item) { return; }
-	Item->DisableComponentsSimulatePhysics();
+	UE_LOG(LogBasePlayer, Display, TEXT("ItemToGrab: %s"), *EquippedWeapon->GetName());
+	
+	EquippedWeapon->DisableComponentsSimulatePhysics();
 
 	const FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget, false};
-	FoundedItem->AttachToComponent(GetMesh(), AttachmentTransformRules, WeaponSocketName);
+	EquippedWeapon->AttachToComponent(GetMesh(), AttachmentTransformRules, WeaponSocketName);
 }
 
 void ABasePlayer::BeginPlay()
