@@ -6,8 +6,6 @@
 #include "Components/ActorComponent.h"
 #include "GrabComponent.generated.h"
 
-class ABaseItem;
-
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ICED_API UGrabComponent : public UActorComponent
 {

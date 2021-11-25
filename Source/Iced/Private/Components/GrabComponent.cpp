@@ -3,7 +3,6 @@
 
 #include "Components/GrabComponent.h"
 #include "BasePlayer.h"
-#include "BaseItem.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/SpringArmComponent.h"
 

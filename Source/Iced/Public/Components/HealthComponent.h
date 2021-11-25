@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnDealthSignature);
+DECLARE_MULTICAST_DELEGATE(FOnDeathSignature);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ICED_API UHealthComponent : public UActorComponent
@@ -26,7 +26,7 @@ public:
 	bool IsDead() const { return FMath::IsNearlyZero(CurrentHealth); }
 
 public:
-	FOnDealthSignature OnDeath;
+	FOnDeathSignature OnDeath;
 
 protected:
 	virtual void BeginPlay() override;

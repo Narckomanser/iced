@@ -24,6 +24,8 @@ void UWeaponComponent::BeginPlay()
 	Super::BeginPlay();
 
 	InitAnimNotifies();
+	
+	Cast<ABasePlayer>(GetOwner())->OnGrabItem.AddUObject(this, &UWeaponComponent::EqiupWeapon);
 }
 
 bool UWeaponComponent::CanEquip() const
@@ -90,20 +92,41 @@ void UWeaponComponent::Equip()
 		CharacterMesh->SetAnimInstanceClass(EquippedStateAnimInstances[CurrentEquipState]);
 	}
 
-	if (EquipAnimations[CurrentEquipAnimation])
+	if (EquipData[CurrentEquipAnimation].TransitionAnimation)
 	{
-		Owner->PlayAnimMontage(EquipAnimations[CurrentEquipAnimation]);
-		CurrentEquipAnimation = (++CurrentEquipAnimation) % EquipAnimations.Num();
+		Owner->PlayAnimMontage(EquipData[CurrentEquipAnimation].TransitionAnimation);
+		CurrentEquipAnimation = (++CurrentEquipAnimation) % EquipData.Num();
 	}
+
+	//TODO reattach weapon to current state socket
 }
 
 void UWeaponComponent::InitAnimNotifies()
 {
-	for (const auto EquipAnimation : EquipAnimations)
+	for (const auto OneEquipData : EquipData)
 	{
-		const auto EquipFinishedNotify = FNotifyUtils::FindNotifyByClass<UEquipFinishedAnimNotify>(EquipAnimation);
+		const auto EquipFinishedNotify = FNotifyUtils::FindNotifyByClass<UEquipFinishedAnimNotify>(OneEquipData.TransitionAnimation);
 		if (!EquipFinishedNotify) continue;
 
 		EquipFinishedNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnEquipFinished);
 	}
+}
+
+void UWeaponComponent::EqiupWeapon(AActor* NewWeapon)
+{
+	//TODO delete old weapon
+	
+	EquippedWeapon = NewWeapon;
+	if (!EquippedWeapon) { return; }
+
+	const auto Owner = Cast<ACharacter>(GetOwner());
+	if(!Owner) return;
+
+	UE_LOG(LogWeaponComponent, Display, TEXT("ItemToGrab: %s"), *EquippedWeapon->GetName());
+
+	//TODO if learn how to set collision with SM without offset and enable physics on SM - uncomment it
+	//EquippedWeapon->DisableComponentsSimulatePhysics();
+	
+	const FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget, false};
+	EquippedWeapon->AttachToComponent(Owner->GetMesh(), AttachmentTransformRules, EquipData[CurrentEquipAnimation].EquipSocketName);
 }

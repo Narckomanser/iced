@@ -3,8 +3,10 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Iced/Public/CoreTypes.h"
 #include "WeaponComponent.generated.h"
 
+//TODO unite Current* variables and setup EquipData
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ICED_API UWeaponComponent : public UActorComponent
@@ -31,6 +33,8 @@ private:
 
 	void InitAnimNotifies();
 
+	void EqiupWeapon(AActor* NewWeapon);
+
 private:
 	bool EquipInProgress = false;
 	bool BattleMode = false;
@@ -41,6 +45,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Equipped State Animations")
 	TArray<TSubclassOf<UAnimInstance>> EquippedStateAnimInstances;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Equip Animation")
-	TArray<UAnimMontage*> EquipAnimations;
+	UPROPERTY(EditDefaultsOnly, Category = "Equip Data")
+	TArray<FEquipData> EquipData;
+
+	UPROPERTY()
+	AActor* EquippedWeapon = nullptr;
 };
