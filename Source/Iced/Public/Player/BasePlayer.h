@@ -74,10 +74,12 @@ private:
 private:
 	bool IsRun = false;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon Socket")
-	FName WeaponSocketName = "hand_rSocket";
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon Arm Socket")
+	FName ArmSocketName = "beltWeapon";
 	
-	//TODO move to new component for wearable items???
+UPROPERTY(EditDefaultsOnly, Category = "Weapon Belt Socket")
+	FName BeltSocketName = "hand_rSocket";
+
 	UPROPERTY()
 	AActor* EquippedWeapon = nullptr;
 };

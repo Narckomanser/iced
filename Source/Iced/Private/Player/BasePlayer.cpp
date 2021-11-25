@@ -66,7 +66,7 @@ void ABasePlayer::Grab()
 	EquippedWeapon->DisableComponentsSimulatePhysics();
 
 	const FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget, false};
-	EquippedWeapon->AttachToComponent(GetMesh(), AttachmentTransformRules, WeaponSocketName);
+	EquippedWeapon->AttachToComponent(GetMesh(), AttachmentTransformRules, ArmSocketName);
 }
 
 void ABasePlayer::BeginPlay()
