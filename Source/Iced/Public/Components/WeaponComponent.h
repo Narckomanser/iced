@@ -34,7 +34,8 @@ private:
 	void InitAnimNotifies();
 
 	void Eqiup(AActor* NewWeapon);
-
+	void AttachItemToSocket(FName SocketName) const;
+	
 private:
 	bool EquipInProgress = false;
 	bool BattleMode = false;

@@ -24,7 +24,7 @@ void UWeaponComponent::BeginPlay()
 	Super::BeginPlay();
 
 	InitAnimNotifies();
-	
+
 	Cast<ABasePlayer>(GetOwner())->OnGrabItem.AddUObject(this, &UWeaponComponent::Eqiup);
 }
 
@@ -106,7 +106,8 @@ void UWeaponComponent::InitAnimNotifies()
 {
 	for (const auto OneEquipData : EquipData)
 	{
-		const auto EquipFinishedNotify = FNotifyUtils::FindNotifyByClass<UEquipFinishedAnimNotify>(OneEquipData.TransitionAnimation);
+		const auto EquipFinishedNotify = FNotifyUtils::FindNotifyByClass<UEquipFinishedAnimNotify>(
+			OneEquipData.TransitionAnimation);
 		if (!EquipFinishedNotify) continue;
 
 		EquipFinishedNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnEquipFinished);
@@ -115,17 +116,21 @@ void UWeaponComponent::InitAnimNotifies()
 
 void UWeaponComponent::Eqiup(AActor* NewWeapon)
 {
+	if (!NewWeapon) { return; }
 	//TODO delete old weapon
-	
 	EquippedWeapon = NewWeapon;
-	if (!EquippedWeapon) { return; }
 
+	AttachItemToSocket(EquipData[CurrentEquipAnimation].EquipSocketName);
+}
+
+void UWeaponComponent::AttachItemToSocket(FName SocketName) const
+{
 	const auto Owner = Cast<ACharacter>(GetOwner());
-	if(!Owner) return;
-	
+	if (!Owner) return;
+
 	//TODO if learn how to set collision with SM without offset and enable physics on SM - uncomment it
 	//EquippedWeapon->DisableComponentsSimulatePhysics();
-	
+
 	const FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget, false};
-	EquippedWeapon->AttachToComponent(Owner->GetMesh(), AttachmentTransformRules, EquipData[CurrentEquipAnimation].EquipSocketName);
+	EquippedWeapon->AttachToComponent(Owner->GetMesh(), AttachmentTransformRules, SocketName);
 }
