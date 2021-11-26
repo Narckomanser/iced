@@ -129,6 +129,6 @@ void ABasePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &ABasePlayer::ChangeRunState);
 
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ABasePlayer::Attack);
-	PlayerInputComponent->BindAction("f", IE_Pressed, this, &ABasePlayer::ChangeStance);
+	PlayerInputComponent->BindAction("ChangeStance", IE_Pressed, this, &ABasePlayer::ChangeStance);
 	PlayerInputComponent->BindAction("Grab", IE_Pressed, this, &ABasePlayer::Grab);
 }
