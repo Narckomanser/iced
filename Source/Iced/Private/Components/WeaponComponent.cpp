@@ -25,7 +25,7 @@ void UWeaponComponent::BeginPlay()
 
 	InitAnimNotifies();
 	
-	Cast<ABasePlayer>(GetOwner())->OnGrabItem.AddUObject(this, &UWeaponComponent::EqiupWeapon);
+	Cast<ABasePlayer>(GetOwner())->OnGrabItem.AddUObject(this, &UWeaponComponent::Eqiup);
 }
 
 bool UWeaponComponent::CanEquip() const
@@ -73,7 +73,7 @@ void UWeaponComponent::Attack()
 	UE_LOG(LogWeaponComponent, Display, TEXT("Attack Pressed"));
 }
 
-void UWeaponComponent::Equip()
+void UWeaponComponent::ChangeStance()
 {
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!CanEquip() || !Owner) return;
@@ -98,7 +98,8 @@ void UWeaponComponent::Equip()
 		CurrentEquipAnimation = (++CurrentEquipAnimation) % EquipData.Num();
 	}
 
-	//TODO reattach weapon to current state socket
+	//TODO reattach weapon using anim notifies
+	Eqiup(EquippedWeapon);
 }
 
 void UWeaponComponent::InitAnimNotifies()
@@ -112,7 +113,7 @@ void UWeaponComponent::InitAnimNotifies()
 	}
 }
 
-void UWeaponComponent::EqiupWeapon(AActor* NewWeapon)
+void UWeaponComponent::Eqiup(AActor* NewWeapon)
 {
 	//TODO delete old weapon
 	
@@ -121,9 +122,7 @@ void UWeaponComponent::EqiupWeapon(AActor* NewWeapon)
 
 	const auto Owner = Cast<ACharacter>(GetOwner());
 	if(!Owner) return;
-
-	UE_LOG(LogWeaponComponent, Display, TEXT("ItemToGrab: %s"), *EquippedWeapon->GetName());
-
+	
 	//TODO if learn how to set collision with SM without offset and enable physics on SM - uncomment it
 	//EquippedWeapon->DisableComponentsSimulatePhysics();
 	

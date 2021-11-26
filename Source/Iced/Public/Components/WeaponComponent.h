@@ -19,7 +19,7 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	void Attack();
-	void Equip();
+	void ChangeStance();
 
 protected:
 	virtual void BeginPlay() override;
@@ -33,7 +33,7 @@ private:
 
 	void InitAnimNotifies();
 
-	void EqiupWeapon(AActor* NewWeapon);
+	void Eqiup(AActor* NewWeapon);
 
 private:
 	bool EquipInProgress = false;

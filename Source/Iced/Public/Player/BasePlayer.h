@@ -72,7 +72,7 @@ private:
 
 	// TODO remove or call WC same methods
 	void Attack();
-	void Equip();
+	void ChangeStance();
 
 	void Grab();
 

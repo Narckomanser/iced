@@ -84,9 +84,9 @@ void ABasePlayer::Attack()
 	WeaponComponent->Attack();
 }
 
-void ABasePlayer::Equip()
+void ABasePlayer::ChangeStance()
 {
-	WeaponComponent->Equip();
+	WeaponComponent->ChangeStance();
 }
 
 FRotator ABasePlayer::GetYawBasedRotator() const
@@ -129,6 +129,6 @@ void ABasePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &ABasePlayer::ChangeRunState);
 
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ABasePlayer::Attack);
-	PlayerInputComponent->BindAction("Equip", IE_Pressed, this, &ABasePlayer::Equip);
+	PlayerInputComponent->BindAction("f", IE_Pressed, this, &ABasePlayer::ChangeStance);
 	PlayerInputComponent->BindAction("Grab", IE_Pressed, this, &ABasePlayer::Grab);
 }
