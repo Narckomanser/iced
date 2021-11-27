@@ -7,7 +7,8 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
-#include "Notifies/EquipFinishedAnimNotify.h"
+#include "EquipFinishedAnimNotify.h"
+#include "AttachItemAnimNotify.h"
 #include "Notifies/NotifyUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
@@ -45,6 +46,16 @@ void UWeaponComponent::OnEquipFinished(USkeletalMeshComponent* MeshComp)
 
 	EquipInProgress = false;
 	Owner->AllowMove(EMovementMode::MOVE_Walking);
+}
+
+void UWeaponComponent::OnAttachItem(USkeletalMeshComponent* MeshComp)
+{
+	const auto Owner = GetOwner<ACharacter>();
+
+	const auto CharacterMesh = Owner->GetMesh();
+	if (!CharacterMesh || CharacterMesh != MeshComp) { return; }
+
+	AttachItemToSocket();
 }
 
 bool UWeaponComponent::ChangeBattleMode()
@@ -97,9 +108,6 @@ void UWeaponComponent::ChangeStance()
 		Owner->PlayAnimMontage(EquipData[CurrentEquipAnimation].TransitionAnimation);
 		CurrentEquipAnimation = (++CurrentEquipAnimation) % EquipData.Num();
 	}
-
-	//TODO reattach weapon using anim notifies
-	Eqiup(EquippedWeapon);
 }
 
 void UWeaponComponent::InitAnimNotifies()
@@ -111,6 +119,12 @@ void UWeaponComponent::InitAnimNotifies()
 		if (!EquipFinishedNotify) continue;
 
 		EquipFinishedNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnEquipFinished);
+		
+		const auto AttachWeaponNotify = FNotifyUtils::FindNotifyByClass<UAttachItemAnimNotify>(
+			OneEquipData.TransitionAnimation);
+		if (!AttachWeaponNotify) continue;
+
+		AttachWeaponNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnAttachItem);
 	}
 }
 
@@ -120,17 +134,17 @@ void UWeaponComponent::Eqiup(AActor* NewWeapon)
 	//TODO delete old weapon
 	EquippedWeapon = NewWeapon;
 
-	AttachItemToSocket(EquipData[CurrentEquipAnimation].EquipSocketName);
+	AttachItemToSocket();
 }
 
-void UWeaponComponent::AttachItemToSocket(FName SocketName) const
+void UWeaponComponent::AttachItemToSocket()
 {
 	const auto Owner = Cast<ACharacter>(GetOwner());
-	if (!Owner) return;
+	if (!Owner || !EquippedWeapon) return;
 
 	//TODO if learn how to set collision with SM without offset and enable physics on SM - uncomment it
 	//EquippedWeapon->DisableComponentsSimulatePhysics();
 
 	const FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget, false};
-	EquippedWeapon->AttachToComponent(Owner->GetMesh(), AttachmentTransformRules, SocketName);
+	EquippedWeapon->AttachToComponent(Owner->GetMesh(), AttachmentTransformRules, EquipData[CurrentEquipAnimation].EquipSocketName);
 }

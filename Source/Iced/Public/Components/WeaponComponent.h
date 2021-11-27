@@ -27,6 +27,7 @@ protected:
 private:
 	bool CanEquip() const;
 	void OnEquipFinished(USkeletalMeshComponent* MeshComp);
+	void OnAttachItem(USkeletalMeshComponent* MeshComp);
 
 	bool ChangeBattleMode();
 	void UseBattleMode(const bool Mode) const;
@@ -34,7 +35,7 @@ private:
 	void InitAnimNotifies();
 
 	void Eqiup(AActor* NewWeapon);
-	void AttachItemToSocket(FName SocketName) const;
+	void AttachItemToSocket();
 	
 private:
 	bool EquipInProgress = false;
