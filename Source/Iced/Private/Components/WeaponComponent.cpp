@@ -10,6 +10,7 @@
 #include "EquipFinishedAnimNotify.h"
 #include "AttachItemAnimNotify.h"
 #include "BaseItem.h"
+#include "Components/CapsuleComponent.h"
 #include "Notifies/NotifyUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
@@ -139,14 +140,17 @@ void UWeaponComponent::InitAnimNotifies()
 
 void UWeaponComponent::Eqiup(AActor* NewWeapon)
 {
-	//TODO add condition to add new weapon
+	//TODO add conditions to add new weapon
 	const auto ProbableWeapon = Cast<ABaseItem>(NewWeapon);
 	if (!ProbableWeapon) { return; }
 	
 	DropEqippedWeapon();
 	
 	EquippedWeapon = ProbableWeapon;
-	
+
+	EquippedWeapon->GetCollisionComponent()->IgnoreActorWhenMoving(GetOwner(), true);
+	Cast<ACharacter>(GetOwner())->FindComponentByClass<UCapsuleComponent>()->IgnoreActorWhenMoving(EquippedWeapon, true);
+
 	EquippedWeapon->OnActorHit.AddDynamic(EquippedWeapon, &ABaseItem::OnActorHitHandle);
 	AttachItemToSocket();
 }

@@ -12,13 +12,15 @@ UCLASS()
 class ICED_API ABaseItem : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	ABaseItem();
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
 	void OnActorHitHandle(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+
+	UCapsuleComponent* GetCollisionComponent() const { return CapsuleComponent; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -26,7 +28,7 @@ protected:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* ItemMesh;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCapsuleComponent* CapsuleComponent;
 };
