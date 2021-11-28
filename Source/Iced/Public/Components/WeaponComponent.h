@@ -2,6 +2,7 @@
 
 #pragma once
 #include "CoreMinimal.h"
+#include "BaseItem.h"
 #include "Components/ActorComponent.h"
 #include "Iced/Public/CoreTypes.h"
 #include "WeaponComponent.generated.h"
@@ -55,5 +56,5 @@ private:
 	FAnimList AnimList;
 
 	UPROPERTY()
-	AActor* EquippedWeapon = nullptr;
+	ABaseItem* EquippedWeapon = nullptr;
 };

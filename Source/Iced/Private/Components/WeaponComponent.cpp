@@ -9,6 +9,7 @@
 #include "GameFramework/PawnMovementComponent.h"
 #include "EquipFinishedAnimNotify.h"
 #include "AttachItemAnimNotify.h"
+#include "BaseItem.h"
 #include "Notifies/NotifyUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
@@ -139,11 +140,14 @@ void UWeaponComponent::InitAnimNotifies()
 void UWeaponComponent::Eqiup(AActor* NewWeapon)
 {
 	//TODO add condition to add new weapon
-	if (!NewWeapon) { return; }
+	const auto ProbableWeapon = Cast<ABaseItem>(NewWeapon);
+	if (!ProbableWeapon) { return; }
 	
 	DropEqippedWeapon();
 	
-	EquippedWeapon = NewWeapon;
+	EquippedWeapon = ProbableWeapon;
+	
+	EquippedWeapon->OnActorHit.AddDynamic(EquippedWeapon, &ABaseItem::OnActorHitHandle);
 	AttachItemToSocket();
 }
 
@@ -151,7 +155,8 @@ void UWeaponComponent::DropEqippedWeapon()
 {
 	const auto Owner = Cast<ACharacter>(GetOwner());
 	if (!Owner || !EquippedWeapon) return;
-	
+
+	EquippedWeapon->OnActorHit.RemoveAll(EquippedWeapon);
 	EquippedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	EquippedWeapon = nullptr;
 }

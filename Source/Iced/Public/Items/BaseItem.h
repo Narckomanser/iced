@@ -17,6 +17,9 @@ public:
 	ABaseItem();
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION()
+	void OnActorHitHandle(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+
 protected:
 	virtual void BeginPlay() override;
 
