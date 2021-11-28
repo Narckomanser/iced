@@ -35,6 +35,7 @@ private:
 	void InitAnimNotifies();
 
 	void Eqiup(AActor* NewWeapon);
+	void DropEqippedWeapon();
 	void AttachItemToSocket();
 	
 private:
@@ -49,6 +50,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Equip Data")
 	TArray<FEquipData> EquipData;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Anim Data")
+	FAnimList AnimList;
 
 	UPROPERTY()
 	AActor* EquippedWeapon = nullptr;

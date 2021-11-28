@@ -19,3 +19,12 @@ struct FEquipData
 
 	//TODO may be need to move here AnimBPs???
 };
+
+USTRUCT(BlueprintType)
+struct FAnimList
+{
+	GENERATED_USTRUCT_BODY()
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Anim")
+	UAnimMontage* AttackAnim;;
+};

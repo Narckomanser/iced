@@ -13,6 +13,9 @@
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
+//TODO if add new items need to create one more component to hold them
+//TODO add logic to equip and pick up other items(now only shield) ENUM???
+
 UWeaponComponent::UWeaponComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -81,7 +84,12 @@ void UWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UWeaponComponent::Attack()
 {
-	UE_LOG(LogWeaponComponent, Display, TEXT("Attack Pressed"));
+	//TODO forbid if not weapon, in air, in run(make separate method to check it)
+	const auto Owner = Cast<ACharacter>(GetOwner());
+	if (!EquippedWeapon || !Owner) return;
+
+	//TODO may be this method will be the wrapper, create other method which will play different AMs dependent on combo
+	Owner->PlayAnimMontage(AnimList.AttackAnim);
 }
 
 void UWeaponComponent::ChangeStance()
@@ -119,7 +127,7 @@ void UWeaponComponent::InitAnimNotifies()
 		if (!EquipFinishedNotify) continue;
 
 		EquipFinishedNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnEquipFinished);
-		
+
 		const auto AttachWeaponNotify = FNotifyUtils::FindNotifyByClass<UAttachItemAnimNotify>(
 			OneEquipData.TransitionAnimation);
 		if (!AttachWeaponNotify) continue;
@@ -130,11 +138,22 @@ void UWeaponComponent::InitAnimNotifies()
 
 void UWeaponComponent::Eqiup(AActor* NewWeapon)
 {
+	//TODO add condition to add new weapon
 	if (!NewWeapon) { return; }
-	//TODO delete old weapon
+	
+	DropEqippedWeapon();
+	
 	EquippedWeapon = NewWeapon;
-
 	AttachItemToSocket();
+}
+
+void UWeaponComponent::DropEqippedWeapon()
+{
+	const auto Owner = Cast<ACharacter>(GetOwner());
+	if (!Owner || !EquippedWeapon) return;
+	
+	EquippedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	EquippedWeapon = nullptr;
 }
 
 void UWeaponComponent::AttachItemToSocket()
@@ -146,5 +165,6 @@ void UWeaponComponent::AttachItemToSocket()
 	//EquippedWeapon->DisableComponentsSimulatePhysics();
 
 	const FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget, false};
-	EquippedWeapon->AttachToComponent(Owner->GetMesh(), AttachmentTransformRules, EquipData[CurrentEquipAnimation].EquipSocketName);
+	EquippedWeapon->AttachToComponent(Owner->GetMesh(), AttachmentTransformRules,
+	                                  EquipData[CurrentEquipAnimation].EquipSocketName);
 }
