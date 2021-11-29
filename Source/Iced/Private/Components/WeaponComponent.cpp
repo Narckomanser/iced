@@ -149,9 +149,11 @@ void UWeaponComponent::Eqiup(AActor* NewWeapon)
 	EquippedWeapon = ProbableWeapon;
 
 	EquippedWeapon->GetCollisionComponent()->IgnoreActorWhenMoving(GetOwner(), true);
-	Cast<ACharacter>(GetOwner())->FindComponentByClass<UCapsuleComponent>()->IgnoreActorWhenMoving(EquippedWeapon, true);
+	EquippedWeapon->FindComponentByClass<UMeshComponent>()->OnComponentBeginOverlap.AddDynamic(EquippedWeapon, &ABaseItem::OnComponentBeginOverlapHandle);
 
-	EquippedWeapon->OnActorHit.AddDynamic(EquippedWeapon, &ABaseItem::OnActorHitHandle);
+	Cast<ACharacter>(GetOwner())->FindComponentByClass<UCapsuleComponent>()->IgnoreActorWhenMoving(EquippedWeapon, true);
+	Cast<ACharacter>(GetOwner())->FindComponentByClass<UMeshComponent>()->IgnoreActorWhenMoving(EquippedWeapon, true);
+
 	AttachItemToSocket();
 }
 
