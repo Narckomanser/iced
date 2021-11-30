@@ -27,8 +27,8 @@ void ABaseItem::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ABaseItem::OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+	void ABaseItem::OnComponentHitHandle(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	const FHitResult HitResult = SweepResult;
+	const FHitResult HitResult = Hit;
 	UE_LOG(LogBaseItem, Display, TEXT("HitResult: %s"), *HitResult.ToString());
 }
