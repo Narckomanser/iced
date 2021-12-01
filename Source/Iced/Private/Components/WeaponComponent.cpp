@@ -147,6 +147,7 @@ void UWeaponComponent::Eqiup(AActor* NewWeapon)
 	DropEqippedWeapon();
 
 	EquippedWeapon = ProbableWeapon;
+	EquippedWeapon->SetOwner(GetOwner());
 
 	const auto Owner = Cast<ACharacter>(GetOwner());
 	if (!Owner) { return; }
@@ -170,6 +171,7 @@ void UWeaponComponent::DropEqippedWeapon()
 	if (!Owner || !EquippedWeapon) return;
 
 	EquippedWeapon->OnActorHit.RemoveAll(EquippedWeapon);
+	EquippedWeapon->SetOwner(nullptr);
 	EquippedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	EquippedWeapon = nullptr;
 }

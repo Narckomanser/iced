@@ -18,6 +18,7 @@ void UHealthComponent::BeginPlay()
 	if (Owner)
 	{
 		Owner->OnTakeRadialDamage.AddDynamic(this, &UHealthComponent::OnTakeRadialDamage);
+		Owner->OnTakePointDamage.AddDynamic(this, &UHealthComponent::OnTakePointDamage);
 	}
 
 
@@ -36,10 +37,26 @@ void UHealthComponent::OnTakeRadialDamage(AActor* DamagedActor, float Damage, co
 	ApplyDamage(Damage);
 }
 
+void UHealthComponent::OnTakePointDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy,
+                                         FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName,
+                                         FVector ShotFromDirection,
+                                         const UDamageType* DamageType, AActor* DamageCauser)
+{
+	UE_LOG(LogHealthComponent, Display, TEXT("OnTakePointDamage"));
+	ApplyDamage(Damage);
+}
+
+void UHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
+                                       AController* InstigatedBy, AActor* DamageCauser)
+{
+	UE_LOG(LogHealthComponent, Display, TEXT("OnTakePointDamage"));
+	ApplyDamage(Damage);
+}
+
 void UHealthComponent::ApplyDamage(float Damage)
 {
 	if (Damage <= 0.f || IsDead()) return;
-	
+
 	SetHealth(CurrentHealth - Damage);
 
 	if (IsDead())

@@ -38,11 +38,19 @@ private:
 	void OnTakeRadialDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, FVector Origin,
 	                        FHitResult HitInfo, class AController* InstigatedBy, AActor* DamageCauser);
 
+	UFUNCTION()
+	void OnTakePointDamage(AActor* DamagedActor, float Damage, class AController* InstigatedBy, FVector HitLocation,
+	                       class UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection,
+	                       const class UDamageType* DamageType, AActor* DamageCauser);
+
+	UFUNCTION()
+	void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser );
+
+
 	void ApplyDamage(float Damage);
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Health", meta = (ClampMin = 0.f, ClampMax = 1000))
-	;
 	float MaxHealth = 100.f;
 
 	float CurrentHealth;
