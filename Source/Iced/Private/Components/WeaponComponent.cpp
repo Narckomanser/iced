@@ -143,16 +143,23 @@ void UWeaponComponent::Eqiup(AActor* NewWeapon)
 	//TODO add conditions to add new weapon
 	const auto ProbableWeapon = Cast<ABaseItem>(NewWeapon);
 	if (!ProbableWeapon) { return; }
-	
+
 	DropEqippedWeapon();
-	
+
 	EquippedWeapon = ProbableWeapon;
 
-	EquippedWeapon->GetCollisionComponent()->IgnoreActorWhenMoving(GetOwner(), true);
-	EquippedWeapon->FindComponentByClass<UMeshComponent>()->OnComponentHit.AddDynamic(EquippedWeapon, &ABaseItem::OnComponentHitHandle);
+	const auto Owner = Cast<ACharacter>(GetOwner());
+	if (!Owner) { return; }
 
-	Cast<ACharacter>(GetOwner())->FindComponentByClass<UCapsuleComponent>()->IgnoreActorWhenMoving(EquippedWeapon, true);
-	Cast<ACharacter>(GetOwner())->FindComponentByClass<UMeshComponent>()->IgnoreActorWhenMoving(EquippedWeapon, true);
+	const auto OwnerCollisionComponent = Owner->FindComponentByClass<UCapsuleComponent>();
+	const auto OwnerMeshComponent = Owner->FindComponentByClass<UMeshComponent>();
+	if (!OwnerCollisionComponent || !OwnerMeshComponent) { return; }
+	
+	EquippedWeapon->FindComponentByClass<UMeshComponent>()->OnComponentBeginOverlap.AddDynamic(EquippedWeapon, &ABaseItem::OnComponentBeginOverlapHandle);
+
+	EquippedWeapon->GetCollisionComponent()->IgnoreActorWhenMoving(GetOwner(), true);
+	OwnerCollisionComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
+	OwnerMeshComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
 
 	AttachItemToSocket();
 }
