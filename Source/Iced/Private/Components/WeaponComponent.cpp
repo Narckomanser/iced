@@ -91,7 +91,7 @@ void UWeaponComponent::Attack()
 	if (!EquippedWeapon || !Owner) return;
 
 	//TODO may be this method will be the wrapper, create other method which will play different AMs dependent on combo
-	Owner->PlayAnimMontage(AnimList.AttackAnim);
+	const float AnimTime = Owner->PlayAnimMontage(AnimList.AttackAnim);
 }
 
 void UWeaponComponent::ChangeStance()
@@ -157,8 +157,7 @@ void UWeaponComponent::Eqiup(AActor* NewWeapon)
 	if (!OwnerCollisionComponent || !OwnerMeshComponent) { return; }
 	
 	EquippedWeapon->FindComponentByClass<UMeshComponent>()->OnComponentBeginOverlap.AddDynamic(EquippedWeapon, &ABaseItem::OnComponentBeginOverlapHandle);
-
-	EquippedWeapon->GetCollisionComponent()->IgnoreActorWhenMoving(GetOwner(), true);
+	
 	OwnerCollisionComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
 	OwnerMeshComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
 

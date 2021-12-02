@@ -38,7 +38,7 @@ private:
 	void Eqiup(AActor* NewWeapon);
 	void DropEqippedWeapon();
 	void AttachItemToSocket();
-	
+
 private:
 	bool EquipInProgress = false;
 	bool BattleMode = false;

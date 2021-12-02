@@ -20,9 +20,6 @@ void UHealthComponent::BeginPlay()
 		Owner->OnTakeRadialDamage.AddDynamic(this, &UHealthComponent::OnTakeRadialDamage);
 		Owner->OnTakePointDamage.AddDynamic(this, &UHealthComponent::OnTakePointDamage);
 	}
-
-
-	UE_LOG(LogHealthComponent, Display, TEXT("Current Health: %f"), CurrentHealth);
 }
 
 void UHealthComponent::SetHealth(const float NewHealth)
@@ -42,7 +39,6 @@ void UHealthComponent::OnTakePointDamage(AActor* DamagedActor, float Damage, ACo
                                          FVector ShotFromDirection,
                                          const UDamageType* DamageType, AActor* DamageCauser)
 {
-	UE_LOG(LogHealthComponent, Display, TEXT("OnTakePointDamage"));
 	ApplyDamage(Damage);
 }
 

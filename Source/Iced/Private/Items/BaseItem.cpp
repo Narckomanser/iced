@@ -37,7 +37,6 @@ void ABaseItem::OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedCom
 		//TODO Take damage only when actor in attack, in battle stance. add delay to handle multiple events in single attack
 		//TODO calculate damage with some modifiers, 
 		OtherActor->TakeDamage(10.f, FPointDamageEvent{}, ItemOwner->GetController(), this);
-		UE_LOG(LogBaseItem, Warning, TEXT("send event to %s"), *OtherActor->GetName());
 	}
 	else
 	{
