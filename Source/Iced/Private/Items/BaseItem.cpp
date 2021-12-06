@@ -32,14 +32,15 @@ void ABaseItem::OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedCom
                                               UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                               const FHitResult& SweepResult)
 {
+	if (GetWorld()->GetTimerManager().GetTimerRemaining(OverlapTimer) > 0) { return; }
+
+	//TODO Take damage only when actor in attack, in battle stance
+	//TODO set overlap enable only when attack in progress???
 	if (const auto ItemOwner = Cast<APawn>(GetOwner()))
 	{
-		//TODO Take damage only when actor in attack, in battle stance. add delay to handle multiple events in single attack
-		//TODO calculate damage with some modifiers, 
-		OtherActor->TakeDamage(10.f, FPointDamageEvent{}, ItemOwner->GetController(), this);
-	}
-	else
-	{
-		UE_LOG(LogBaseItem, Warning, TEXT("Item doesn't have an owner"));
+		//TODO calculate damage with some modifiers
+		OtherActor->TakeDamage(DamageAmount, FPointDamageEvent{}, ItemOwner->GetController(), this);
+
+		GetWorld()->GetTimerManager().SetTimer(OverlapTimer, OverlapTimerDelay, false);
 	}
 }

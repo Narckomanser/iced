@@ -33,4 +33,13 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCapsuleComponent* CapsuleComponent;
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	float DamageAmount = 10.f;
+	
+	FTimerHandle OverlapTimer;
+
+	UPROPERTY(EditDefaultsOnly)
+	float OverlapTimerDelay = 1.f;
 };
