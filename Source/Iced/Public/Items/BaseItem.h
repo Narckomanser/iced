@@ -23,6 +23,7 @@ public:
 	                                   const FHitResult& SweepResult);
 
 	UCapsuleComponent* GetCollisionComponent() const { return CapsuleComponent; }
+	UStaticMeshComponent* GetMeshComponent() const { return ItemMesh; }
 
 protected:
 	virtual void BeginPlay() override;

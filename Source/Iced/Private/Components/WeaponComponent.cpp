@@ -90,8 +90,12 @@ void UWeaponComponent::Attack()
 	const auto Owner = Cast<ACharacter>(GetOwner());
 	if (!EquippedWeapon || !Owner) return;
 
+	const auto WeaponMeshComponent = EquippedWeapon->GetMeshComponent();
+
 	//TODO may be this method will be the wrapper, create other method which will play different AMs dependent on combo
-	const float AnimTime = Owner->PlayAnimMontage(AnimList.AttackAnim);
+	WeaponMeshComponent->SetGenerateOverlapEvents(true);
+	Owner->PlayAnimMontage(CombatAnimList.AttackAnim);
+	WeaponMeshComponent->SetGenerateOverlapEvents(false);
 }
 
 void UWeaponComponent::ChangeStance()

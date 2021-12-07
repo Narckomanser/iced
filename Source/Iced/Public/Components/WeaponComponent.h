@@ -53,7 +53,7 @@ private:
 	TArray<FEquipData> EquipData;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Anim Data")
-	FAnimList AnimList;
+	FAnimList CombatAnimList;
 
 	UPROPERTY()
 	ABaseItem* EquippedWeapon = nullptr;
