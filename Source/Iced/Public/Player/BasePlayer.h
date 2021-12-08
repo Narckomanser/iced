@@ -14,8 +14,6 @@ class UWeaponComponent;
 class UGrabComponent;
 class ABaseItem;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnGrabItem, AActor*);
-
 UCLASS()
 class ICED_API ABasePlayer : public ACharacter
 {
@@ -34,9 +32,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	float GetMovementDirection() const;
-
-public:
-	FOnGrabItem OnGrabItem;
 
 protected:
 	virtual void BeginPlay() override;
@@ -69,12 +64,6 @@ private:
 
 	UFUNCTION()
 	void OnDeath();
-
-	// TODO remove or call WC same methods
-	void Attack();
-	void ChangeStance();
-
-	void Grab();
 
 private:
 	bool IsRun = false;

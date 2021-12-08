@@ -2,12 +2,13 @@
 
 #pragma once
 #include "CoreMinimal.h"
-#include "BaseItem.h"
 #include "Components/ActorComponent.h"
 #include "Iced/Public/CoreTypes.h"
 #include "WeaponComponent.generated.h"
 
 //TODO unite Current* variables and setup EquipData
+
+class ABaseItem;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ICED_API UWeaponComponent : public UActorComponent
@@ -19,13 +20,17 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	void Attack();
-	void ChangeStance();
-
 protected:
 	virtual void BeginPlay() override;
 
 private:
+	void SetupPlayerInputComponent();
+	
+	void Attack();
+	void ChangeStance();
+
+	void GrabSubscriber();
+	
 	bool CanEquip() const;
 	void OnEquipFinished(USkeletalMeshComponent* MeshComp);
 	void OnAttachItem(USkeletalMeshComponent* MeshComp);
@@ -40,6 +45,9 @@ private:
 	void AttachItemToSocket();
 
 private:
+	UPROPERTY()
+	UInputComponent* InputComponent;
+	
 	bool EquipInProgress = false;
 	bool BattleMode = false;
 

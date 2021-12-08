@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Iced/Public/CoreTypes.h"
 #include "GrabComponent.generated.h"
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -18,14 +19,24 @@ public:
 
 	AActor* DetectItem() const;
 
+public:
+	FOnGrabItem OnGrabItem;
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
+	void SetupPlayerInputComponent();
+	
 	FVector GetStartPoint() const;
 	FVector GetEndPoint() const;
 
+	void Grab();
+
 private:
+	UPROPERTY()
+	UInputComponent* InputComponent;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Start Distance Bone")
 	FName BoneName = "head";
 

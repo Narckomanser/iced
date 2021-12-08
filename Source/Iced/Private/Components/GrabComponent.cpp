@@ -17,6 +17,16 @@ UGrabComponent::UGrabComponent()
 void UGrabComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SetupPlayerInputComponent();
+}
+
+void UGrabComponent::SetupPlayerInputComponent()
+{
+	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+	if (!InputComponent) { return; }
+
+	InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabComponent::Grab);
 }
 
 AActor* UGrabComponent::DetectItem() const
@@ -26,7 +36,7 @@ AActor* UGrabComponent::DetectItem() const
 	                                     GetStartPoint(),
 	                                     GetEndPoint(),
 	                                     ECC_Visibility);
-	
+
 	return HitResult.GetActor();
 }
 
@@ -53,9 +63,15 @@ FVector UGrabComponent::GetEndPoint() const
 		TargetArmLength + GrabDistance));
 }
 
+void UGrabComponent::Grab()
+{
+	OnGrabItem.Broadcast(DetectItem());
+}
+
 void UGrabComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	DetectItem();
+	//TODO uncomment after ui implemented
+	//DetectItem();
 }

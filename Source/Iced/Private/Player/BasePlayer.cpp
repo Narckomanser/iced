@@ -57,12 +57,6 @@ float ABasePlayer::GetMovementDirection() const
 	return CrossProduct.IsZero() ? Degrees : Degrees * FMath::Sign(CrossProduct.Z);
 }
 
-//TODO move to component???
-void ABasePlayer::Grab()
-{
-	OnGrabItem.Broadcast(GrabComponent->DetectItem());
-}
-
 void ABasePlayer::BeginPlay()
 {
 	Super::BeginPlay();
@@ -79,16 +73,6 @@ void ABasePlayer::MoveRight(const float Amount)
 {
 	const FVector RightVector(UKismetMathLibrary::GetRightVector(GetYawBasedRotator()));
 	AddMovementInput(RightVector, Amount);
-}
-
-void ABasePlayer::Attack()
-{
-	WeaponComponent->Attack();
-}
-
-void ABasePlayer::ChangeStance()
-{
-	WeaponComponent->ChangeStance();
 }
 
 FRotator ABasePlayer::GetYawBasedRotator() const
@@ -129,8 +113,4 @@ void ABasePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ABasePlayer::Jump);
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ABasePlayer::ChangeRunState);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &ABasePlayer::ChangeRunState);
-
-	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ABasePlayer::Attack);
-	PlayerInputComponent->BindAction("ChangeStance", IE_Pressed, this, &ABasePlayer::ChangeStance);
-	PlayerInputComponent->BindAction("Grab", IE_Pressed, this, &ABasePlayer::Grab);
 }

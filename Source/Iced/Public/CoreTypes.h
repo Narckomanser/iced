@@ -4,7 +4,7 @@
 
 #include "CoreTypes.generated.h"
 
-//TODO move all delegates here
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnGrabItem, AActor*);
 
 USTRUCT(BlueprintType)
 struct FEquipData

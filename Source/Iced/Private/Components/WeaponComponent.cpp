@@ -1,17 +1,17 @@
 // Narckomanser's game
 
 
-#include "Components/WeaponComponent.h"
-
-#include "BasePlayer.h"
+#include "WeaponComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "BasePlayer.h"
+#include "BaseItem.h"
+#include "GrabComponent.h"
+#include "Notifies/NotifyUtils.h"
 #include "EquipFinishedAnimNotify.h"
 #include "AttachItemAnimNotify.h"
-#include "BaseItem.h"
-#include "Components/CapsuleComponent.h"
-#include "Notifies/NotifyUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
@@ -29,9 +29,18 @@ void UWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	SetupPlayerInputComponent();
 	InitAnimNotifies();
+	GrabSubscriber();
+}
 
-	Cast<ABasePlayer>(GetOwner())->OnGrabItem.AddUObject(this, &UWeaponComponent::Eqiup);
+void UWeaponComponent::SetupPlayerInputComponent()
+{
+	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+	if (!InputComponent) { return; }
+
+	InputComponent->BindAction("Attack", IE_Pressed, this, &UWeaponComponent::Attack);
+	InputComponent->BindAction("ChangeStance", IE_Pressed, this, &UWeaponComponent::ChangeStance);
 }
 
 bool UWeaponComponent::CanEquip() const
@@ -89,13 +98,13 @@ void UWeaponComponent::Attack()
 	//TODO forbid if not weapon, in air, in run(make separate method to check it)
 	const auto Owner = Cast<ACharacter>(GetOwner());
 	if (!EquippedWeapon || !Owner) return;
-
-	const auto WeaponMeshComponent = EquippedWeapon->GetMeshComponent();
-
+	
 	//TODO may be this method will be the wrapper, create other method which will play different AMs dependent on combo
-	WeaponMeshComponent->SetGenerateOverlapEvents(true);
+	//const auto WeaponMeshComponent = EquippedWeapon->GetMeshComponent();
+	//WeaponMeshComponent->SetGenerateOverlapEvents(true);
 	Owner->PlayAnimMontage(CombatAnimList.AttackAnim);
-	WeaponMeshComponent->SetGenerateOverlapEvents(false);
+	//TODO call after the montage end 
+	//WeaponMeshComponent->SetGenerateOverlapEvents(false);
 }
 
 void UWeaponComponent::ChangeStance()
@@ -122,6 +131,14 @@ void UWeaponComponent::ChangeStance()
 		Owner->PlayAnimMontage(EquipData[CurrentEquipAnimation].TransitionAnimation);
 		CurrentEquipAnimation = (++CurrentEquipAnimation) % EquipData.Num();
 	}
+}
+
+void UWeaponComponent::GrabSubscriber()
+{
+	const auto GrabComponent = GetOwner()->FindComponentByClass<UGrabComponent>();
+	if (!GrabComponent) { return; }
+
+	GrabComponent->OnGrabItem.AddUObject(this, &UWeaponComponent::Eqiup);
 }
 
 void UWeaponComponent::InitAnimNotifies()
@@ -159,9 +176,10 @@ void UWeaponComponent::Eqiup(AActor* NewWeapon)
 	const auto OwnerCollisionComponent = Owner->FindComponentByClass<UCapsuleComponent>();
 	const auto OwnerMeshComponent = Owner->FindComponentByClass<UMeshComponent>();
 	if (!OwnerCollisionComponent || !OwnerMeshComponent) { return; }
-	
-	EquippedWeapon->FindComponentByClass<UMeshComponent>()->OnComponentBeginOverlap.AddDynamic(EquippedWeapon, &ABaseItem::OnComponentBeginOverlapHandle);
-	
+
+	EquippedWeapon->FindComponentByClass<UMeshComponent>()->OnComponentBeginOverlap.AddDynamic(
+		EquippedWeapon, &ABaseItem::OnComponentBeginOverlapHandle);
+
 	OwnerCollisionComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
 	OwnerMeshComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
 
