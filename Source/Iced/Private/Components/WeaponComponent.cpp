@@ -98,13 +98,12 @@ void UWeaponComponent::Attack()
 	//TODO forbid if not weapon, in air, in run(make separate method to check it)
 	const auto Owner = Cast<ACharacter>(GetOwner());
 	if (!EquippedWeapon || !Owner) return;
-	
+
 	//TODO may be this method will be the wrapper, create other method which will play different AMs dependent on combo
-	//const auto WeaponMeshComponent = EquippedWeapon->GetMeshComponent();
-	//WeaponMeshComponent->SetGenerateOverlapEvents(true);
-	Owner->PlayAnimMontage(CombatAnimList.AttackAnim);
-	//TODO call after the montage end 
-	//WeaponMeshComponent->SetGenerateOverlapEvents(false);
+
+	WeaponOverlapEventSwitcher();
+	const float AnimDuration = Owner->PlayAnimMontage(CombatAnimList.AttackAnim);
+	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, this, &UWeaponComponent::WeaponOverlapEventSwitcher, AnimDuration);
 }
 
 void UWeaponComponent::ChangeStance()
@@ -208,4 +207,12 @@ void UWeaponComponent::AttachItemToSocket()
 	const FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget, false};
 	EquippedWeapon->AttachToComponent(Owner->GetMesh(), AttachmentTransformRules,
 	                                  EquipData[CurrentEquipAnimation].EquipSocketName);
+}
+
+void UWeaponComponent::WeaponOverlapEventSwitcher()
+{
+	const auto WeaponMeshComponent = EquippedWeapon->GetMeshComponent();
+	if (!WeaponMeshComponent) { return; }
+	
+	WeaponMeshComponent->SetGenerateOverlapEvents(!WeaponMeshComponent->GetGenerateOverlapEvents());
 }

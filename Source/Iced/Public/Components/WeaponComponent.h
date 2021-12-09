@@ -44,6 +44,8 @@ private:
 	void DropEqippedWeapon();
 	void AttachItemToSocket();
 
+	void WeaponOverlapEventSwitcher();
+
 private:
 	UPROPERTY()
 	UInputComponent* InputComponent;
@@ -65,4 +67,6 @@ private:
 
 	UPROPERTY()
 	ABaseItem* EquippedWeapon = nullptr;
+
+	FTimerHandle OverlapEnableTimer;
 };
