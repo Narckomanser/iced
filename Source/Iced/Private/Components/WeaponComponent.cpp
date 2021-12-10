@@ -95,7 +95,7 @@ void UWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UWeaponComponent::Attack()
 {
-	//TODO forbid if not weapon, in air, in run(make separate method to check it)
+	//TODO forbid if not weapon, in attack, in air, in run(make separate method to check it)
 	const auto Owner = Cast<ACharacter>(GetOwner());
 	if (!EquippedWeapon || !Owner) return;
 
