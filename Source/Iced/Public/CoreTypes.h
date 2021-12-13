@@ -4,7 +4,9 @@
 
 #include "CoreTypes.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnGrabItem, AActor*);
+class ABaseItem;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnGrabItem, ABaseItem*);
 
 USTRUCT(BlueprintType)
 struct FEquipData

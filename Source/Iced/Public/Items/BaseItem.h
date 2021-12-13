@@ -22,8 +22,8 @@ public:
 	                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	                                   const FHitResult& SweepResult);
 
-	UCapsuleComponent* GetCollisionComponent() const { return CapsuleComponent; }
-	UStaticMeshComponent* GetMeshComponent() const { return ItemMesh; }
+	UCapsuleComponent* GetCapsuleComponent() const { return CapsuleComponent; }
+	UStaticMeshComponent* GetMesh() const { return ItemMesh; }
 
 protected:
 	virtual void BeginPlay() override;

@@ -2,6 +2,8 @@
 
 
 #include "Components/GrabComponent.h"
+
+#include "BaseItem.h"
 #include "BasePlayer.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -29,7 +31,7 @@ void UGrabComponent::SetupPlayerInputComponent()
 	InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabComponent::Grab);
 }
 
-AActor* UGrabComponent::DetectItem() const
+ABaseItem* UGrabComponent::DetectItem() const
 {
 	FHitResult HitResult;
 	GetWorld()->LineTraceSingleByChannel(HitResult,
@@ -37,7 +39,7 @@ AActor* UGrabComponent::DetectItem() const
 	                                     GetEndPoint(),
 	                                     ECC_Visibility);
 
-	return HitResult.GetActor();
+	return Cast<ABaseItem>(HitResult.GetActor());
 }
 
 FVector UGrabComponent::GetStartPoint() const

@@ -40,7 +40,7 @@ private:
 
 	void InitAnimNotifies();
 
-	void Eqiup(AActor* NewWeapon);
+	void Eqiup(ABaseItem* NewWeapon);
 	void DropEqippedWeapon();
 	void AttachItemToSocket();
 

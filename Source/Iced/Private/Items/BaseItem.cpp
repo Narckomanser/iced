@@ -41,6 +41,7 @@ void ABaseItem::OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedCom
 		//TODO calculate damage with some modifiers
 		OtherActor->TakeDamage(DamageAmount, FPointDamageEvent{}, ItemOwner->GetController(), this);
 
+		//TODO try replace timer with AnimNotify
 		GetWorld()->GetTimerManager().SetTimer(OverlapTimer, OverlapTimerDelay, false);
 	}
 }

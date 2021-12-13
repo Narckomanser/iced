@@ -7,6 +7,8 @@
 #include "Iced/Public/CoreTypes.h"
 #include "GrabComponent.generated.h"
 
+class ABaseItem;
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ICED_API UGrabComponent : public UActorComponent
 {
@@ -17,7 +19,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	AActor* DetectItem() const;
+	ABaseItem* DetectItem() const;
 
 public:
 	FOnGrabItem OnGrabItem;
