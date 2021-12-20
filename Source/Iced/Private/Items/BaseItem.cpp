@@ -32,7 +32,8 @@ void ABaseItem::OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedCom
                                               UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                               const FHitResult& SweepResult)
 {
-	if (GetWorld()->GetTimerManager().GetTimerRemaining(OverlapTimer) > 0) { return; }
+	//if (GetWorld()->GetTimerManager().GetTimerRemaining(OverlapTimer) > 0) { return; }
+	if (!CanAttack()) { return; }
 
 	//TODO Take damage only when actor in attack, in battle stance
 	//TODO set overlap enable only when attack in progress???
@@ -42,6 +43,11 @@ void ABaseItem::OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedCom
 		OtherActor->TakeDamage(DamageAmount, FPointDamageEvent{}, ItemOwner->GetController(), this);
 
 		//TODO try replace timer with AnimNotify
-		GetWorld()->GetTimerManager().SetTimer(OverlapTimer, OverlapTimerDelay, false);
+		//GetWorld()->GetTimerManager().SetTimer(OverlapTimer, OverlapTimerDelay, false);
 	}
+}
+
+void ABaseItem::OnActorHitHandle(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+{
+	UE_LOG(LogBaseItem, Display, TEXT("Damaged actor: %s"), *OtherActor->GetName());
 }

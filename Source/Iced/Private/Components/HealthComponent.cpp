@@ -45,8 +45,8 @@ void UHealthComponent::OnTakePointDamage(AActor* DamagedActor, float Damage, ACo
 void UHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
                                        AController* InstigatedBy, AActor* DamageCauser)
 {
-	UE_LOG(LogHealthComponent, Display, TEXT("OnTakePointDamage"));
-	ApplyDamage(Damage);
+	UE_LOG(LogHealthComponent, Display, TEXT("OnTakeAnyDamage"));
+	//ApplyDamage(Damage);
 }
 
 void UHealthComponent::ApplyDamage(float Damage)

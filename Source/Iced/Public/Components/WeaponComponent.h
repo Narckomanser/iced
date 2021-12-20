@@ -44,7 +44,7 @@ private:
 	void DropEqippedWeapon();
 	void AttachItemToSocket();
 
-	void WeaponOverlapEventSwitcher();
+	void WeaponOverlapEventEnabler();
 
 private:
 	UPROPERTY()

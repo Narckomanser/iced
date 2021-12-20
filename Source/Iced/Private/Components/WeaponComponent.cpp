@@ -12,6 +12,7 @@
 #include "Notifies/NotifyUtils.h"
 #include "EquipFinishedAnimNotify.h"
 #include "AttachItemAnimNotify.h"
+#include "AttackEndAnimNotify.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
@@ -101,9 +102,12 @@ void UWeaponComponent::Attack()
 
 	//TODO may be this method will be the wrapper, create other method which will play different AMs dependent on combo
 
-	WeaponOverlapEventSwitcher();
+	//TODO REWORK!!!
+	EquippedWeapon->ChangeAttackState(Owner->GetMesh());
+	
+	WeaponOverlapEventEnabler();
 	const float AnimDuration = Owner->PlayAnimMontage(CombatAnimList.AttackAnim);
-	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, this, &UWeaponComponent::WeaponOverlapEventSwitcher, AnimDuration);
+	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, this, &UWeaponComponent::WeaponOverlapEventEnabler, AnimDuration);
 }
 
 void UWeaponComponent::ChangeStance()
@@ -158,6 +162,8 @@ void UWeaponComponent::InitAnimNotifies()
 	}
 }
 
+
+//TODO fully rework this method
 void UWeaponComponent::Eqiup(ABaseItem* NewWeapon)
 {
 	//TODO add conditions to add new weapon
@@ -176,20 +182,28 @@ void UWeaponComponent::Eqiup(ABaseItem* NewWeapon)
 	const auto OwnerMeshComponent = Owner->GetMesh();
 	if (!OwnerCollisionComponent || !OwnerMeshComponent) { return; }
 
-	EquippedWeapon->GetMesh()->OnComponentBeginOverlap.AddDynamic(EquippedWeapon, &ABaseItem::OnComponentBeginOverlapHandle);
+	//EquippedWeapon->GetMesh()->OnComponentBeginOverlap.AddDynamic(EquippedWeapon, &ABaseItem::OnComponentBeginOverlapHandle);
 
+	EquippedWeapon->OnActorHit.AddDynamic(EquippedWeapon, &ABaseItem::OnActorHitHandle);
+	
 	OwnerCollisionComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
 	OwnerMeshComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
+
+	const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>(CombatAnimList.AttackAnim);
+	AttackEndNotify->OnNotified.AddUObject(EquippedWeapon, &ABaseItem::ChangeAttackState);
 
 	AttachItemToSocket();
 }
 
+//TODO rework it. may be need to move to weapon
 void UWeaponComponent::DropEqippedWeapon()
 {
 	const auto Owner = Cast<ACharacter>(GetOwner());
 	if (!Owner || !EquippedWeapon) return;
 
-	EquippedWeapon->OnActorHit.RemoveAll(EquippedWeapon);
+	EquippedWeapon->GetMesh()->OnComponentBeginOverlap.RemoveAll(EquippedWeapon);
+	const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>(CombatAnimList.AttackAnim);
+	AttackEndNotify->OnNotified.RemoveAll(EquippedWeapon);
 	EquippedWeapon->SetOwner(nullptr);
 	EquippedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	EquippedWeapon = nullptr;
@@ -209,7 +223,7 @@ void UWeaponComponent::AttachItemToSocket()
 	                                  EquipData[CurrentEquipAnimation].EquipSocketName);
 }
 
-void UWeaponComponent::WeaponOverlapEventSwitcher()
+void UWeaponComponent::WeaponOverlapEventEnabler()
 {
 	const auto WeaponMeshComponent = EquippedWeapon->GetMesh();
 	if (!WeaponMeshComponent) { return; }
