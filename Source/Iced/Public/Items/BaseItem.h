@@ -21,11 +21,8 @@ public:
 	void OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	                                   const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnActorHitHandle(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
-
-	UCapsuleComponent* GetCapsuleComponent() const { return CapsuleComponent; }
+	
+	UCapsuleComponent* GetHitCapsuleComponent() const { return HitCapsuleComponent; }
 	UStaticMeshComponent* GetMesh() const { return ItemMesh; }
 	
 	void ChangeAttackState(USkeletalMeshComponent* MeshComp) { AttackInProgress = !AttackInProgress; }
@@ -36,10 +33,13 @@ protected:
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UCapsuleComponent* RootCapsuleComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* ItemMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UCapsuleComponent* CapsuleComponent;
+	UCapsuleComponent* HitCapsuleComponent;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")

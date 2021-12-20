@@ -182,9 +182,7 @@ void UWeaponComponent::Eqiup(ABaseItem* NewWeapon)
 	const auto OwnerMeshComponent = Owner->GetMesh();
 	if (!OwnerCollisionComponent || !OwnerMeshComponent) { return; }
 
-	//EquippedWeapon->GetMesh()->OnComponentBeginOverlap.AddDynamic(EquippedWeapon, &ABaseItem::OnComponentBeginOverlapHandle);
-
-	EquippedWeapon->OnActorHit.AddDynamic(EquippedWeapon, &ABaseItem::OnActorHitHandle);
+	EquippedWeapon->GetHitCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(EquippedWeapon, &ABaseItem::OnComponentBeginOverlapHandle);
 	
 	OwnerCollisionComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
 	OwnerMeshComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
@@ -199,10 +197,10 @@ void UWeaponComponent::Eqiup(ABaseItem* NewWeapon)
 void UWeaponComponent::DropEqippedWeapon()
 {
 	const auto Owner = Cast<ACharacter>(GetOwner());
-	if (!Owner || !EquippedWeapon) return;
-
-	EquippedWeapon->GetMesh()->OnComponentBeginOverlap.RemoveAll(EquippedWeapon);
 	const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>(CombatAnimList.AttackAnim);
+	if (!Owner || !EquippedWeapon || !AttackEndNotify) return;
+
+	EquippedWeapon->GetHitCapsuleComponent()->OnComponentBeginOverlap.RemoveAll(EquippedWeapon);
 	AttackEndNotify->OnNotified.RemoveAll(EquippedWeapon);
 	EquippedWeapon->SetOwner(nullptr);
 	EquippedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);

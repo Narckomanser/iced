@@ -11,11 +11,14 @@ ABaseItem::ABaseItem()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>("Capsule Component");
-	SetRootComponent(CapsuleComponent);
+	RootCapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>("Root Capsule Component");
+	SetRootComponent(RootCapsuleComponent);
 
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>("Item Mesh");
 	ItemMesh->SetupAttachment(GetRootComponent());
+
+	HitCapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>("Hit Capsule Component");
+	HitCapsuleComponent->SetupAttachment(GetRootComponent());
 }
 
 void ABaseItem::BeginPlay()
@@ -45,9 +48,4 @@ void ABaseItem::OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedCom
 		//TODO try replace timer with AnimNotify
 		//GetWorld()->GetTimerManager().SetTimer(OverlapTimer, OverlapTimerDelay, false);
 	}
-}
-
-void ABaseItem::OnActorHitHandle(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
-{
-	UE_LOG(LogBaseItem, Display, TEXT("Damaged actor: %s"), *OtherActor->GetName());
 }
