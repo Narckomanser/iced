@@ -26,7 +26,7 @@ public:
 	UStaticMeshComponent* GetMesh() const { return ItemMesh; }
 	
 	void ChangeAttackState(USkeletalMeshComponent* MeshComp) { AttackInProgress = !AttackInProgress; }
-	bool CanAttack() const { return AttackInProgress; }
+	bool CanAttack() const;
 
 protected:
 	virtual void BeginPlay() override;

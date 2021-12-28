@@ -180,12 +180,14 @@ void UWeaponComponent::Eqiup(ABaseItem* NewWeapon)
 
 	const auto OwnerCollisionComponent = Owner->GetCapsuleComponent();
 	const auto OwnerMeshComponent = Owner->GetMesh();
-	if (!OwnerCollisionComponent || !OwnerMeshComponent) { return; }
+	const auto WeaponHitCapsule = EquippedWeapon->GetHitCapsuleComponent();
+	if (!OwnerCollisionComponent || !OwnerMeshComponent || !WeaponHitCapsule) { return; }
 
-	EquippedWeapon->GetHitCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(EquippedWeapon, &ABaseItem::OnComponentBeginOverlapHandle);
+	WeaponHitCapsule->OnComponentBeginOverlap.AddDynamic(EquippedWeapon, &ABaseItem::OnComponentBeginOverlapHandle);
 	
 	OwnerCollisionComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
 	OwnerMeshComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
+	WeaponHitCapsule->IgnoreActorWhenMoving(Owner, true);
 
 	const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>(CombatAnimList.AttackAnim);
 	AttackEndNotify->OnNotified.AddUObject(EquippedWeapon, &ABaseItem::ChangeAttackState);
@@ -214,6 +216,7 @@ void UWeaponComponent::AttachItemToSocket()
 	if (!Owner || !EquippedWeapon) return;
 
 	//TODO if learn how to set collision with SM without offset and enable physics on SM - uncomment it
+	//Used to ignore actors after death
 	//EquippedWeapon->DisableComponentsSimulatePhysics();
 
 	const FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget, false};
