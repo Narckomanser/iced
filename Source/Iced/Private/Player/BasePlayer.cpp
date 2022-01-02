@@ -10,6 +10,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "WeaponComponent.h"
 #include "BaseItem.h"
+#include "InventoryComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBasePlayer, All, All);
 
@@ -31,6 +32,7 @@ ABasePlayer::ABasePlayer(const FObjectInitializer& ObjectInitializer) :
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
 	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
 	GrabComponent = CreateDefaultSubobject<UGrabComponent>("GrabComponent");
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>("InventoryComponent");
 
 	// TODO remove after UI implemented
 	HealthText = CreateDefaultSubobject<UTextRenderComponent>("Health Text");

@@ -37,14 +37,14 @@ void UWeaponComponent::BeginPlay()
 
 void UWeaponComponent::SetupPlayerInputComponent()
 {
-	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+	const auto InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 	if (!InputComponent) { return; }
 
 	InputComponent->BindAction("Attack", IE_Pressed, this, &UWeaponComponent::Attack);
 	InputComponent->BindAction("ChangeStance", IE_Pressed, this, &UWeaponComponent::ChangeStance);
 }
 
-bool UWeaponComponent::CanEquip() const
+bool UWeaponComponent::CanChangeStance() const
 {
 	const auto Owner = GetOwner<ACharacter>();
 	if (!Owner) return false;
@@ -113,7 +113,7 @@ void UWeaponComponent::Attack()
 void UWeaponComponent::ChangeStance()
 {
 	const auto Owner = GetOwner<ABasePlayer>();
-	if (!CanEquip() || !Owner) return;
+	if (!CanChangeStance() || !Owner) return;
 
 	EquipInProgress = true;
 	Owner->AllowMove(EMovementMode::MOVE_None);

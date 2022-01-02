@@ -36,9 +36,6 @@ private:
 	void Grab();
 
 private:
-	UPROPERTY()
-	UInputComponent* InputComponent;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Start Distance Bone")
 	FName BoneName = "head";
 

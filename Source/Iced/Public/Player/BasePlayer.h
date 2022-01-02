@@ -12,6 +12,7 @@ class UHealthComponent;
 class UTextRenderComponent;
 class UWeaponComponent;
 class UGrabComponent;
+class UInventoryComponent;
 class ABaseItem;
 
 UCLASS()
@@ -54,6 +55,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UGrabComponent* GrabComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UInventoryComponent* InventoryComponent;
 
 private:
 	void MoveForward(const float Amount);

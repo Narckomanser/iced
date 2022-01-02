@@ -25,7 +25,7 @@ void UGrabComponent::BeginPlay()
 
 void UGrabComponent::SetupPlayerInputComponent()
 {
-	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+	const auto InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 	if (!InputComponent) { return; }
 
 	InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabComponent::Grab);

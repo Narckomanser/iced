@@ -31,7 +31,7 @@ private:
 
 	void GrabSubscriber();
 	
-	bool CanEquip() const;
+	bool CanChangeStance() const;
 	void OnEquipFinished(USkeletalMeshComponent* MeshComp);
 	void OnAttachItem(USkeletalMeshComponent* MeshComp);
 
@@ -47,9 +47,6 @@ private:
 	void WeaponOverlapEventEnabler();
 
 private:
-	UPROPERTY()
-	UInputComponent* InputComponent;
-	
 	bool EquipInProgress = false;
 	bool BattleMode = false;
 
