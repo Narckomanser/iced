@@ -23,7 +23,7 @@ ABaseItem::ABaseItem()
 
 bool ABaseItem::CanAttack() const
 {
-	return DoesInAttack && (GetWorld()->GetTimerManager().GetTimerRemaining(OverlapTimer) <= 0.f);
+	return DoesInUse && (GetWorld()->GetTimerManager().GetTimerRemaining(OverlapTimer) <= 0.f);
 }
 
 void ABaseItem::BeginPlay()

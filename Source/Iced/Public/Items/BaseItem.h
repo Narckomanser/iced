@@ -26,7 +26,7 @@ public:
 	UStaticMeshComponent* GetMesh() const { return ItemMesh; }
 
 	//TODO add mesh condition
-	void ChangeAttackState(USkeletalMeshComponent* MeshComp) { DoesInAttack = !DoesInAttack; }
+	void ChangeAttackState(USkeletalMeshComponent* MeshComp) { DoesInUse = !DoesInUse; }
 	bool CanAttack() const;
 
 protected:
@@ -51,5 +51,5 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	float OverlapTimerDelay = 1.f;
 
-	bool DoesInAttack = false;
+	bool DoesInUse = false;
 };
