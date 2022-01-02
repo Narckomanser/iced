@@ -24,8 +24,9 @@ public:
 	
 	UCapsuleComponent* GetHitCapsuleComponent() const { return HitCapsuleComponent; }
 	UStaticMeshComponent* GetMesh() const { return ItemMesh; }
-	
-	void ChangeAttackState(USkeletalMeshComponent* MeshComp) { AttackInProgress = !AttackInProgress; }
+
+	//TODO add mesh condition
+	void ChangeAttackState(USkeletalMeshComponent* MeshComp) { DoesInAttack = !DoesInAttack; }
 	bool CanAttack() const;
 
 protected:
@@ -50,5 +51,5 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	float OverlapTimerDelay = 1.f;
 
-	bool AttackInProgress = false;
+	bool DoesInAttack = false;
 };

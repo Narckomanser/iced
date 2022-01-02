@@ -23,7 +23,7 @@ ABaseItem::ABaseItem()
 
 bool ABaseItem::CanAttack() const
 {
-	return !AttackInProgress && !(GetWorld()->GetTimerManager().GetTimerRemaining(OverlapTimer) > 0);
+	return DoesInAttack && (GetWorld()->GetTimerManager().GetTimerRemaining(OverlapTimer) <= 0.f);
 }
 
 void ABaseItem::BeginPlay()
@@ -51,7 +51,5 @@ void ABaseItem::OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedCom
 
 		//TODO try replace timer with AnimNotify
 		GetWorld()->GetTimerManager().SetTimer(OverlapTimer, OverlapTimerDelay, false);
-
-		UE_LOG(LogBaseItem, Display, TEXT("Overlap registered with: %s"), *OtherComp->GetName());
 	}
 }
