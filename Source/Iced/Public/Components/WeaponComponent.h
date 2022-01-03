@@ -20,50 +20,40 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
+	//TODO return anim by Enum(check CoreTypes)
+	UAnimMontage* GetAnim() const { return CombatAnimList.AttackAnim; }
+
+	int8 GetCurrentStanceState() const { return CurrentStanceState; }
+	FName GetStanceSocketName() const { return EquipData[CurrentStanceState].EquipSocketName; }
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
 	void SetupPlayerInputComponent();
-	
 	void Attack();
+	void InitAnimNotifies();
 	void ChangeStance();
-
-	void GrabSubscriber();
-	
 	bool CanChangeStance() const;
-	void OnEquipFinished(USkeletalMeshComponent* MeshComp);
-	void OnAttachItem(USkeletalMeshComponent* MeshComp);
-
+	void OnStanceChanged(USkeletalMeshComponent* MeshComp);
 	bool ChangeBattleMode();
 	void UseBattleMode(const bool Mode) const;
-
-	void InitAnimNotifies();
-
-	void Eqiup(ABaseItem* NewWeapon);
-	void DropEqippedWeapon();
-	void AttachItemToSocket();
-
-	void WeaponOverlapEventEnabler();
+	void WeaponOverlapEventEnabler() const;
 
 private:
 	bool EquipInProgress = false;
 	bool BattleMode = false;
-
-	int8 CurrentEquipAnimation = 0;
+	int8 CurrentStanceState = 0;
 	int8 CurrentEquipState = 0;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Equipped State Animations")
 	TArray<TSubclassOf<UAnimInstance>> EquippedStateAnimInstances;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Equip Data")
-	TArray<FEquipData> EquipData;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Anim Data")
 	FAnimList CombatAnimList;
 
-	UPROPERTY()
-	ABaseItem* EquippedWeapon = nullptr;
+	UPROPERTY(EditDefaultsOnly, Category = "Equip Data")
+	TArray<FEquipData> EquipData;
 
 	FTimerHandle OverlapEnableTimer;
 };

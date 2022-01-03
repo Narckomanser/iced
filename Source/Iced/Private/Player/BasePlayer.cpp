@@ -3,14 +3,16 @@
 #include "GrabComponent.h"
 #include "PlayerMovementComponent.h"
 #include "HealthComponent.h"
+#include "WeaponComponent.h"
+#include "BaseItem.h"
+#include "InventoryComponent.h"
+
 #include "Camera/CameraComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "WeaponComponent.h"
-#include "BaseItem.h"
-#include "InventoryComponent.h"
+
 
 DEFINE_LOG_CATEGORY_STATIC(LogBasePlayer, All, All);
 

@@ -34,6 +34,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	float GetMovementDirection() const;
 
+	UInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }
+	
+	UWeaponComponent* GetWeaponComponent() const { return WeaponComponent; }
+
 protected:
 	virtual void BeginPlay() override;
 

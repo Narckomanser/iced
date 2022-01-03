@@ -1,34 +1,117 @@
 // Narckomanser's game
 
 
-#include "Components/InventoryComponent.h"
+#include "InventoryComponent.h"
+#include "GrabComponent.h"
+#include "BaseItem.h"
 
-// Sets default values for this component's properties
+#include "NotifyUtils.h"
+#include "AttackEndAnimNotify.h"
+#include "BasePlayer.h"
+#include "WeaponComponent.h"
+
+#include "GameFramework/Character.h"
+#include "Components/CapsuleComponent.h"
+
 UInventoryComponent::UInventoryComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
+void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+                                        FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+}
 
-// Called when the game starts
 void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	GrabSubscriber();
 }
 
-
-// Called every frame
-void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UInventoryComponent::GrabSubscriber()
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	const auto GrabComponent = GetOwner()->FindComponentByClass<UGrabComponent>();
+	if (!GrabComponent) { return; }
 
-	// ...
+	GrabComponent->OnGrabItem.AddUObject(this, &UInventoryComponent::Eqiup);
 }
 
+void UInventoryComponent::OnAttachItem(USkeletalMeshComponent* MeshComp)
+{
+	const auto Owner = GetOwner<ABasePlayer>();
+
+	const auto CharacterMesh = Owner->GetMesh();
+	const auto WeaponComponent = Owner->GetWeaponComponent();
+	if (!CharacterMesh || CharacterMesh != MeshComp || !WeaponComponent) { return; }
+
+	AttachItemToSocket(WeaponComponent->GetStanceSocketName());
+}
+
+//TODO fully rework this method
+void UInventoryComponent::Eqiup(ABaseItem* NewWeapon)
+{
+	//TODO add conditions to add new weapon
+	if (!NewWeapon) { return; }
+
+	DropEqippedWeapon();
+
+	EquippedWeapon = NewWeapon;
+
+	const auto Owner = Cast<ABasePlayer>(GetOwner());
+	if (!Owner) { return; }
+
+	EquippedWeapon->SetOwner(Owner);
+
+	const auto OwnerCollisionComponent = Owner->GetCapsuleComponent();
+	const auto OwnerMeshComponent = Owner->GetMesh();
+	const auto WeaponHitCapsule = EquippedWeapon->GetHitCapsuleComponent();
+	if (!OwnerCollisionComponent || !OwnerMeshComponent || !WeaponHitCapsule) { return; }
+
+	WeaponHitCapsule->OnComponentBeginOverlap.AddDynamic(EquippedWeapon, &ABaseItem::OnComponentBeginOverlapHandle);
+
+	OwnerCollisionComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
+	OwnerMeshComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
+	WeaponHitCapsule->IgnoreActorWhenMoving(Owner, true);
+
+	const auto WeaponComponent = Owner->GetWeaponComponent();
+	if (!WeaponComponent) { return; }
+
+	const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>(WeaponComponent->GetAnim());
+	AttackEndNotify->OnNotified.AddUObject(EquippedWeapon, &ABaseItem::ChangeAttackState);
+
+	AttachItemToSocket(WeaponComponent->GetStanceSocketName());
+}
+
+//TODO rework it. may be need to move to weapon
+void UInventoryComponent::DropEqippedWeapon()
+{
+	const auto WeaponComponent = Cast<ABasePlayer>(GetOwner())->GetWeaponComponent();
+	if (!WeaponComponent) { return; }
+
+	const auto Owner = Cast<ACharacter>(GetOwner());
+	const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>(WeaponComponent->GetAnim());
+	if (!Owner || !EquippedWeapon || !AttackEndNotify) return;
+
+	EquippedWeapon->GetHitCapsuleComponent()->OnComponentBeginOverlap.RemoveAll(EquippedWeapon);
+	AttackEndNotify->OnNotified.RemoveAll(EquippedWeapon);
+	EquippedWeapon->SetOwner(nullptr);
+	EquippedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	EquippedWeapon = nullptr;
+}
+
+//TODO add item to arg
+void UInventoryComponent::AttachItemToSocket(const FName SocketName) const
+{
+	const auto Owner = Cast<ACharacter>(GetOwner());
+	if (!Owner || !EquippedWeapon) return;
+
+	//TODO if learn how to set collision with SM without offset and enable physics on SM - uncomment it
+	//Used to ignore actors after death
+	//EquippedWeapon->DisableComponentsSimulatePhysics();
+
+	const FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget, false};
+	EquippedWeapon->AttachToComponent(Owner->GetMesh(), AttachmentTransformRules, SocketName);
+}
