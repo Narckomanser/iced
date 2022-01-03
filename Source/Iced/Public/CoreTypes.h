@@ -25,6 +25,10 @@ struct FEquipData
 UENUM()
 enum class EAttackTypes
 {
-	DefaultAttack,
-	MightAttack
+	DefaultAttack UMETA(DisplayName = "DefaultAttack"),
+	MightAttack UMETA(DisplayName = "MightAttack"),
+
+	Count UMETA(Hidden)
 };
+
+ENUM_RANGE_BY_COUNT(EAttackTypes, EAttackTypes::Count)

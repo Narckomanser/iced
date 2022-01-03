@@ -32,7 +32,8 @@ private:
 	void Eqiup(ABaseItem* NewWeapon);
 	void DropEqippedWeapon();
 	void AttachItemToSocket(const FName SocketName) const;
-	void InitNotifiesAfterEquip(const TArray<UAnimMontage*>& AnimList);
+	void InitNotifies(const TArray<UAnimMontage*>& AnimList);
+	void RemoveNotifies(const TArray<UAnimMontage*>& AnimList) const;
 
 private:
 	UPROPERTY()

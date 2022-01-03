@@ -79,7 +79,7 @@ void UInventoryComponent::Eqiup(ABaseItem* NewWeapon)
 	const auto WeaponComponent = Owner->GetWeaponComponent();
 	if (!WeaponComponent) { return; }
 
-	InitNotifiesAfterEquip(WeaponComponent->GetAnimList());
+	InitNotifies(WeaponComponent->GetAnimList());
 
 	AttachItemToSocket(WeaponComponent->GetStanceSocketName());
 }
@@ -88,15 +88,11 @@ void UInventoryComponent::Eqiup(ABaseItem* NewWeapon)
 void UInventoryComponent::DropEqippedWeapon()
 {
 	const auto WeaponComponent = Cast<ABasePlayer>(GetOwner())->GetWeaponComponent();
-	if (!WeaponComponent) { return; }
+	if (!EquippedWeapon || !WeaponComponent) { return; }
 
-	const auto Owner = Cast<ACharacter>(GetOwner());
-	//TODO create method to unitiate notifies
-	const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>();
-	if (!Owner || !EquippedWeapon || !AttackEndNotify) return;
-
+	RemoveNotifies(WeaponComponent->GetAnimList());
+	
 	EquippedWeapon->GetHitCapsuleComponent()->OnComponentBeginOverlap.RemoveAll(EquippedWeapon);
-	AttackEndNotify->OnNotified.RemoveAll(EquippedWeapon);
 	EquippedWeapon->SetOwner(nullptr);
 	EquippedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	EquippedWeapon = nullptr;
@@ -116,14 +112,33 @@ void UInventoryComponent::AttachItemToSocket(const FName SocketName) const
 	EquippedWeapon->AttachToComponent(Owner->GetMesh(), AttachmentTransformRules, SocketName);
 }
 
-void UInventoryComponent::InitNotifiesAfterEquip(const TArray<UAnimMontage*>& AnimList)
+void UInventoryComponent::InitNotifies(const TArray<UAnimMontage*>& AnimList)
 {
 	const auto WeaponComponent = Cast<ABasePlayer>(GetOwner())->GetWeaponComponent();
 	if (!WeaponComponent) { return; }
 
 	for (const auto Anim : AnimList)
 	{
+		if(!Anim) continue;
+		
 		const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>(Anim);
 		AttackEndNotify->OnNotified.AddUObject(EquippedWeapon, &ABaseItem::ChangeAttackState);
 	}
 }
+
+void UInventoryComponent::RemoveNotifies(const TArray<UAnimMontage*>& AnimList) const
+{
+	const auto WeaponComponent = Cast<ABasePlayer>(GetOwner())->GetWeaponComponent();
+	if (!WeaponComponent) { return; }
+
+	for (const auto Anim : AnimList)
+	{
+		if(!Anim) continue;
+		
+		const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>(Anim);
+		AttackEndNotify->OnNotified.RemoveAll(EquippedWeapon);
+	}
+}
+
+
+
