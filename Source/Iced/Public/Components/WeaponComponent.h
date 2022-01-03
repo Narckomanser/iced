@@ -21,7 +21,7 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	//TODO return anim by Enum(check CoreTypes)
-	UAnimMontage* GetAnim() const { return CombatAnimList.AttackAnim; }
+	TArray<UAnimMontage*> GetAnimList() const;
 
 	int8 GetCurrentStanceState() const { return CurrentStanceState; }
 	FName GetStanceSocketName() const { return EquipData[CurrentStanceState].EquipSocketName; }
@@ -40,6 +40,8 @@ private:
 	void UseBattleMode(const bool Mode) const;
 	void WeaponOverlapEventEnabler() const;
 
+	void InitCombatAnimList();
+
 private:
 	bool EquipInProgress = false;
 	bool BattleMode = false;
@@ -50,7 +52,7 @@ private:
 	TArray<TSubclassOf<UAnimInstance>> EquippedStateAnimInstances;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Anim Data")
-	FAnimList CombatAnimList;
+	TMap<EAttackTypes, UAnimMontage*> CombatAnimList;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Equip Data")
 	TArray<FEquipData> EquipData;

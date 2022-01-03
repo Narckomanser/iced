@@ -22,13 +22,9 @@ struct FEquipData
 	//TODO may be need to move here AnimBPs???
 };
 
-//TODO create ENUM to it
-//TODO remade from struct to map where key is ENUM and VALUE in Anim
-USTRUCT(BlueprintType)
-struct FAnimList
+UENUM()
+enum class EAttackTypes
 {
-	GENERATED_USTRUCT_BODY()
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Anim")
-	UAnimMontage* AttackAnim;;
+	DefaultAttack,
+	MightAttack
 };

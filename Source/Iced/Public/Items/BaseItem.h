@@ -26,7 +26,7 @@ public:
 	UStaticMeshComponent* GetMesh() const { return ItemMesh; }
 
 	//TODO add mesh condition
-	void ChangeAttackState(USkeletalMeshComponent* MeshComp) { DoesInUse = !DoesInUse; }
+	void ChangeAttackState(USkeletalMeshComponent* MeshComp);
 	bool CanAttack() const;
 
 protected:

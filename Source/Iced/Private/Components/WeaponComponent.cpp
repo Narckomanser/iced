@@ -24,6 +24,7 @@ UWeaponComponent::UWeaponComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	UseBattleMode(BattleMode);
+	InitCombatAnimList();
 }
 
 void UWeaponComponent::BeginPlay()
@@ -83,6 +84,14 @@ void UWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
+TArray<UAnimMontage*> UWeaponComponent::GetAnimList() const
+{
+	TArray<UAnimMontage*> OutArray;
+	CombatAnimList.GenerateValueArray(OutArray);
+	
+	return OutArray;
+}
+
 void UWeaponComponent::Attack()
 {
 	//TODO forbid if not weapon, in attack, in air, in run(make separate method to check it)
@@ -97,7 +106,8 @@ void UWeaponComponent::Attack()
 
 	WeaponOverlapEventEnabler();
 
-	const float AnimDuration = Owner->PlayAnimMontage(CombatAnimList.AttackAnim);
+	//TODO give in PlayAnimMontage arg
+	const float AnimDuration = Owner->PlayAnimMontage(CombatAnimList[EAttackTypes::DefaultAttack]);
 	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, this, &UWeaponComponent::WeaponOverlapEventEnabler,
 	                                       AnimDuration);
 }
@@ -155,4 +165,12 @@ void UWeaponComponent::WeaponOverlapEventEnabler() const
 	if (!EquippedWeapon || !WeaponMeshComponent) { return; }
 
 	WeaponMeshComponent->SetGenerateOverlapEvents(!WeaponMeshComponent->GetGenerateOverlapEvents());
+}
+
+void UWeaponComponent::InitCombatAnimList()
+{
+	for (EAttackTypes AttackType : TEnumRange<EAttackTypes>())
+	{
+		CombatAnimList.Add(AttackType, nullptr);
+	}
 }

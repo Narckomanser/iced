@@ -79,20 +79,20 @@ void UInventoryComponent::Eqiup(ABaseItem* NewWeapon)
 	const auto WeaponComponent = Owner->GetWeaponComponent();
 	if (!WeaponComponent) { return; }
 
-	const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>(WeaponComponent->GetAnim());
-	AttackEndNotify->OnNotified.AddUObject(EquippedWeapon, &ABaseItem::ChangeAttackState);
+	InitNotifiesAfterEquip(WeaponComponent->GetAnimList());
 
 	AttachItemToSocket(WeaponComponent->GetStanceSocketName());
 }
 
-//TODO rework it. may be need to move to weapon
+
 void UInventoryComponent::DropEqippedWeapon()
 {
 	const auto WeaponComponent = Cast<ABasePlayer>(GetOwner())->GetWeaponComponent();
 	if (!WeaponComponent) { return; }
 
 	const auto Owner = Cast<ACharacter>(GetOwner());
-	const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>(WeaponComponent->GetAnim());
+	//TODO create method to unitiate notifies
+	const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>();
 	if (!Owner || !EquippedWeapon || !AttackEndNotify) return;
 
 	EquippedWeapon->GetHitCapsuleComponent()->OnComponentBeginOverlap.RemoveAll(EquippedWeapon);
@@ -114,4 +114,16 @@ void UInventoryComponent::AttachItemToSocket(const FName SocketName) const
 
 	const FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget, false};
 	EquippedWeapon->AttachToComponent(Owner->GetMesh(), AttachmentTransformRules, SocketName);
+}
+
+void UInventoryComponent::InitNotifiesAfterEquip(const TArray<UAnimMontage*>& AnimList)
+{
+	const auto WeaponComponent = Cast<ABasePlayer>(GetOwner())->GetWeaponComponent();
+	if (!WeaponComponent) { return; }
+
+	for (const auto Anim : AnimList)
+	{
+		const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>(Anim);
+		AttackEndNotify->OnNotified.AddUObject(EquippedWeapon, &ABaseItem::ChangeAttackState);
+	}
 }

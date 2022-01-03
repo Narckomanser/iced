@@ -3,6 +3,7 @@
 
 #include "BaseItem.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseItem, All, All);
@@ -19,6 +20,14 @@ ABaseItem::ABaseItem()
 
 	HitCapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>("Hit Capsule Component");
 	HitCapsuleComponent->SetupAttachment(GetRootComponent());
+}
+
+void ABaseItem::ChangeAttackState(USkeletalMeshComponent* MeshComp)
+{
+	const auto OwnerMesh = Cast<ACharacter>(GetOwner())->GetMesh();
+	if (MeshComp != OwnerMesh) { return; }
+	
+	DoesInUse = !DoesInUse;
 }
 
 bool ABaseItem::CanAttack() const
