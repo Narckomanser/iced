@@ -44,14 +44,14 @@ ABaseItem* UGrabComponent::DetectItem() const
 
 FVector UGrabComponent::GetStartPoint() const
 {
-	const auto Owner = Cast<ABasePlayer>(GetOwner());
+	const auto Owner = GetOwner<ABasePlayer>();
 
 	return Owner ? Owner->GetMesh()->GetBoneLocation(BoneName) : FVector{};
 }
 
 FVector UGrabComponent::GetEndPoint() const
 {
-	const auto Owner = Cast<ABasePlayer>(GetOwner());
+	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) return FVector{};
 
 	const auto SpringArmComponent = Owner->FindComponentByClass<USpringArmComponent>();

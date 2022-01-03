@@ -24,7 +24,10 @@ ABaseItem::ABaseItem()
 
 void ABaseItem::ChangeAttackState(USkeletalMeshComponent* MeshComp)
 {
-	const auto OwnerMesh = Cast<ACharacter>(GetOwner())->GetMesh();
+	const auto Owner = GetOwner<ACharacter>();
+	if (!Owner) { return; }
+	
+	const auto OwnerMesh = Owner->GetMesh();
 	if (MeshComp != OwnerMesh) { return; }
 	
 	DoesInUse = !DoesInUse;
@@ -53,7 +56,7 @@ void ABaseItem::OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedCom
 
 	//TODO Take damage only when actor in attack, in battle stance
 	//TODO set overlap enable only when attack in progress???
-	if (const auto ItemOwner = Cast<APawn>(GetOwner()))
+	if (const auto ItemOwner = GetOwner<APawn>())
 	{
 		//TODO calculate damage with some modifiers
 		OtherActor->TakeDamage(DamageAmount, FPointDamageEvent{}, ItemOwner->GetController(), this);

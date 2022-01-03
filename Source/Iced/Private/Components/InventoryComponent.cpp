@@ -60,7 +60,7 @@ void UInventoryComponent::Eqiup(ABaseItem* NewWeapon)
 
 	EquippedWeapon = NewWeapon;
 
-	const auto Owner = Cast<ABasePlayer>(GetOwner());
+	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) { return; }
 
 	EquippedWeapon->SetOwner(Owner);
@@ -87,11 +87,14 @@ void UInventoryComponent::Eqiup(ABaseItem* NewWeapon)
 
 void UInventoryComponent::DropEqippedWeapon()
 {
-	const auto WeaponComponent = Cast<ABasePlayer>(GetOwner())->GetWeaponComponent();
+	const auto Owner = GetOwner<ABasePlayer>();
+	if (!Owner) { return; }
+
+	const auto WeaponComponent = Owner->GetWeaponComponent();
 	if (!EquippedWeapon || !WeaponComponent) { return; }
 
 	RemoveNotifies(WeaponComponent->GetAnimList());
-	
+
 	EquippedWeapon->GetHitCapsuleComponent()->OnComponentBeginOverlap.RemoveAll(EquippedWeapon);
 	EquippedWeapon->SetOwner(nullptr);
 	EquippedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
@@ -101,8 +104,8 @@ void UInventoryComponent::DropEqippedWeapon()
 //TODO add item to arg
 void UInventoryComponent::AttachItemToSocket(const FName SocketName) const
 {
-	const auto Owner = Cast<ACharacter>(GetOwner());
-	if (!Owner || !EquippedWeapon) return;
+	const auto Owner = GetOwner<ABasePlayer>();
+	if (!EquippedWeapon || !Owner) return;
 
 	//TODO if learn how to set collision with SM without offset and enable physics on SM - uncomment it
 	//Used to ignore actors after death
@@ -114,13 +117,16 @@ void UInventoryComponent::AttachItemToSocket(const FName SocketName) const
 
 void UInventoryComponent::InitNotifies(const TArray<UAnimMontage*>& AnimList)
 {
-	const auto WeaponComponent = Cast<ABasePlayer>(GetOwner())->GetWeaponComponent();
+	const auto Owner = GetOwner<ABasePlayer>();
+	if (!Owner) { return; }
+
+	const auto WeaponComponent = Owner->GetWeaponComponent();
 	if (!WeaponComponent) { return; }
 
 	for (const auto Anim : AnimList)
 	{
-		if(!Anim) continue;
-		
+		if (!Anim) continue;
+
 		const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>(Anim);
 		AttackEndNotify->OnNotified.AddUObject(EquippedWeapon, &ABaseItem::ChangeAttackState);
 	}
@@ -128,17 +134,17 @@ void UInventoryComponent::InitNotifies(const TArray<UAnimMontage*>& AnimList)
 
 void UInventoryComponent::RemoveNotifies(const TArray<UAnimMontage*>& AnimList) const
 {
-	const auto WeaponComponent = Cast<ABasePlayer>(GetOwner())->GetWeaponComponent();
+	const auto Owner = GetOwner<ABasePlayer>();
+	if (!Owner) { return; }
+	
+	const auto WeaponComponent = Owner->GetWeaponComponent();
 	if (!WeaponComponent) { return; }
 
 	for (const auto Anim : AnimList)
 	{
-		if(!Anim) continue;
-		
+		if (!Anim) continue;
+
 		const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>(Anim);
 		AttackEndNotify->OnNotified.RemoveAll(EquippedWeapon);
 	}
 }
-
-
-

@@ -21,7 +21,7 @@ DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
 UWeaponComponent::UWeaponComponent()
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	UseBattleMode(BattleMode);
 	InitCombatAnimList();
@@ -47,7 +47,7 @@ void UWeaponComponent::SetupPlayerInputComponent()
 bool UWeaponComponent::CanChangeStance() const
 {
 	const auto Owner = GetOwner<ACharacter>();
-	if (!Owner) return false;
+	if (!Owner) { return false; }
 
 	return !EquipInProgress && !Owner->GetMovementComponent()->IsFalling();
 }
@@ -55,6 +55,7 @@ bool UWeaponComponent::CanChangeStance() const
 void UWeaponComponent::OnStanceChanged(USkeletalMeshComponent* MeshComp)
 {
 	const auto Owner = GetOwner<ABasePlayer>();
+	if (!Owner) { return; }
 
 	const auto CharacterMesh = Owner->GetMesh();
 	if (!CharacterMesh || CharacterMesh != MeshComp) { return; }
@@ -88,16 +89,18 @@ TArray<UAnimMontage*> UWeaponComponent::GetAnimList() const
 {
 	TArray<UAnimMontage*> OutArray;
 	CombatAnimList.GenerateValueArray(OutArray);
-	
+
 	return OutArray;
 }
 
 void UWeaponComponent::Attack()
 {
 	//TODO forbid if not weapon, in attack, in air, in run(make separate method to check it)
-	const auto Owner = Cast<ABasePlayer>(GetOwner());
+	const auto Owner = GetOwner<ABasePlayer>();
+	if (!Owner) { return; }
+
 	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedWeapon();
-	if (!EquippedWeapon || !Owner) return;
+	if (!EquippedWeapon) { return; }
 
 	//TODO may be this method will be the wrapper, create other method which will play different AMs dependent on combo
 
@@ -122,7 +125,10 @@ void UWeaponComponent::InitAnimNotifies()
 
 		EquipFinishedNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnStanceChanged);
 
-		const auto InventoryComponent = Cast<ABasePlayer>(GetOwner())->GetInventoryComponent();
+		const auto Owner = GetOwner<ABasePlayer>();
+		if (!Owner) { return; }
+
+		const auto InventoryComponent = Owner->GetInventoryComponent();
 
 		const auto AttachWeaponNotify = FNotifyUtils::FindNotifyByClass<UAttachItemAnimNotify>(
 			OneEquipData.TransitionAnimation);
@@ -160,9 +166,14 @@ void UWeaponComponent::ChangeStance()
 
 void UWeaponComponent::WeaponOverlapEventEnabler() const
 {
-	const auto EquippedWeapon = Cast<ABasePlayer>(GetOwner())->GetInventoryComponent()->GetEquippedWeapon();
+	const auto Owner = GetOwner<ABasePlayer>();
+	if (!Owner) { return; }
+
+	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedWeapon();
+	if (!EquippedWeapon) { return; }
+
 	const auto WeaponMeshComponent = EquippedWeapon->GetMesh();
-	if (!EquippedWeapon || !WeaponMeshComponent) { return; }
+	if (!WeaponMeshComponent) { return; }
 
 	WeaponMeshComponent->SetGenerateOverlapEvents(!WeaponMeshComponent->GetGenerateOverlapEvents());
 }
