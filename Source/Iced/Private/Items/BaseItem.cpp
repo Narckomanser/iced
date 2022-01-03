@@ -24,18 +24,18 @@ ABaseItem::ABaseItem()
 
 void ABaseItem::ChangeAttackState(USkeletalMeshComponent* MeshComp)
 {
-	const auto Owner = GetOwner<ACharacter>();
-	if (!Owner) { return; }
+	const auto ItemOwner = GetOwner<ACharacter>();
+	if (!ItemOwner) { return; }
 	
-	const auto OwnerMesh = Owner->GetMesh();
+	const auto OwnerMesh = ItemOwner->GetMesh();
 	if (MeshComp != OwnerMesh) { return; }
 	
-	DoesInUse = !DoesInUse;
+	DoesNotInAttack = !DoesNotInAttack;
 }
 
 bool ABaseItem::CanAttack() const
 {
-	return DoesInUse && (GetWorld()->GetTimerManager().GetTimerRemaining(OverlapTimer) <= 0.f);
+	return DoesNotInAttack && (GetWorld()->GetTimerManager().GetTimerRemaining(OverlapTimer) <= 0.f);
 }
 
 void ABaseItem::BeginPlay()

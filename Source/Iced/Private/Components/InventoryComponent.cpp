@@ -65,22 +65,13 @@ void UInventoryComponent::Eqiup(ABaseItem* NewWeapon)
 
 	EquippedWeapon->SetOwner(Owner);
 
-	const auto OwnerCollisionComponent = Owner->GetCapsuleComponent();
-	const auto OwnerMeshComponent = Owner->GetMesh();
-	const auto WeaponHitCapsule = EquippedWeapon->GetHitCapsuleComponent();
-	if (!OwnerCollisionComponent || !OwnerMeshComponent || !WeaponHitCapsule) { return; }
-
-	WeaponHitCapsule->OnComponentBeginOverlap.AddDynamic(EquippedWeapon, &ABaseItem::OnComponentBeginOverlapHandle);
-
-	OwnerCollisionComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
-	OwnerMeshComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
-	WeaponHitCapsule->IgnoreActorWhenMoving(Owner, true);
+	SetupEquippedItem(Owner);
 
 	const auto WeaponComponent = Owner->GetWeaponComponent();
 	if (!WeaponComponent) { return; }
 
 	InitNotifies(WeaponComponent->GetAnimList());
-
+	
 	AttachItemToSocket(WeaponComponent->GetStanceSocketName());
 }
 
@@ -99,6 +90,7 @@ void UInventoryComponent::DropEqippedWeapon()
 	EquippedWeapon->SetOwner(nullptr);
 	EquippedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	EquippedWeapon = nullptr;
+	//TODO retrieve item ignoring back which set in SetupEquippedItem()
 }
 
 //TODO add item to arg
@@ -147,4 +139,23 @@ void UInventoryComponent::RemoveNotifies(const TArray<UAnimMontage*>& AnimList) 
 		const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>(Anim);
 		AttackEndNotify->OnNotified.RemoveAll(EquippedWeapon);
 	}
+}
+
+void UInventoryComponent::SetupEquippedItem(ABasePlayer* ItemOwner)
+{
+	const auto OwnerCollisionComponent = ItemOwner->GetCapsuleComponent();
+	if (!OwnerCollisionComponent) { return; }
+	
+	OwnerCollisionComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
+	
+	const auto OwnerMeshComponent = ItemOwner->GetMesh();
+	if (!OwnerMeshComponent) { return; }
+	
+	OwnerMeshComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
+	
+	const auto WeaponHitCapsule = EquippedWeapon->GetHitCapsuleComponent();
+	if (!WeaponHitCapsule) { return; }
+	
+	WeaponHitCapsule->OnComponentBeginOverlap.AddDynamic(EquippedWeapon, &ABaseItem::OnComponentBeginOverlapHandle);
+	WeaponHitCapsule->IgnoreActorWhenMoving(ItemOwner, true);
 }

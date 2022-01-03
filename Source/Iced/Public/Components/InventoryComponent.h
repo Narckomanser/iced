@@ -8,6 +8,7 @@
 #include "InventoryComponent.generated.h"
 
 class ABaseItem;
+class ABasePlayer;
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -34,6 +35,7 @@ private:
 	void AttachItemToSocket(const FName SocketName) const;
 	void InitNotifies(const TArray<UAnimMontage*>& AnimList);
 	void RemoveNotifies(const TArray<UAnimMontage*>& AnimList) const;
+	void SetupEquippedItem(ABasePlayer* ItemOwner);
 
 private:
 	UPROPERTY()

@@ -102,14 +102,11 @@ void UWeaponComponent::Attack()
 	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedWeapon();
 	if (!EquippedWeapon) { return; }
 
-	//TODO may be this method will be the wrapper, create other method which will play different AMs dependent on combo
-
-	//TODO REWORK!!!
 	EquippedWeapon->ChangeAttackState(Owner->GetMesh());
 
 	WeaponOverlapEventEnabler();
 
-	//TODO give in PlayAnimMontage arg
+	//TODO define needed anim and send it to PlayAnimMontage
 	const float AnimDuration = Owner->PlayAnimMontage(CombatAnimList[EAttackTypes::DefaultAttack]);
 	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, this, &UWeaponComponent::WeaponOverlapEventEnabler,
 	                                       AnimDuration);

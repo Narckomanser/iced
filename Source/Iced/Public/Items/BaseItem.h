@@ -51,5 +51,5 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	float OverlapTimerDelay = 1.f;
 
-	bool DoesInUse = false;
+	bool DoesNotInAttack = false;
 };
