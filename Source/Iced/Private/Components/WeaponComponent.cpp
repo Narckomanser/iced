@@ -44,14 +44,8 @@ void UWeaponComponent::SetupPlayerInputComponent()
 	InputComponent->BindAction("ChangeStance", IE_Pressed, this, &UWeaponComponent::ChangeStance);
 }
 
-bool UWeaponComponent::CheckCalmState() const
+bool UWeaponComponent::CheckCalmState(const ABasePlayer* Owner, const ABaseItem* EquippedWeapon) const
 {
-	const auto Owner = GetOwner<ABasePlayer>();
-	if (!Owner) { return false; }
-
-	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedWeapon();
-	if (!EquippedWeapon) { return false; }
-
 	//TODO check IsRunning too???
 	return !bDoesEquipInProgress && !Owner->GetMovementComponent()->IsFalling() && !EquippedWeapon->IsInAttackState();
 }
@@ -105,7 +99,7 @@ void UWeaponComponent::Attack()
 	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedWeapon();
 	if (!EquippedWeapon) { return; }
 	
-	if (!CheckCalmState() || !bBattleMode) { return; }
+	if (!CheckCalmState(Owner,EquippedWeapon) || !bBattleMode) { return; }
 
 	EquippedWeapon->ChangeAttackState(Owner->GetMesh());
 
@@ -144,8 +138,11 @@ void UWeaponComponent::ChangeStance()
 {
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) { return; }
+
+	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedWeapon();
+	if (!EquippedWeapon) { return; }
 	
-	if (!CheckCalmState()) { return; }
+	if (!CheckCalmState(Owner, EquippedWeapon)) { return; }
 
 	bDoesEquipInProgress = true;
 	Owner->AllowMove(EMovementMode::MOVE_None);

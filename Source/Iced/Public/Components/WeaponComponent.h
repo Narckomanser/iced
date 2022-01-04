@@ -6,6 +6,7 @@
 #include "Iced/Public/CoreTypes.h"
 #include "WeaponComponent.generated.h"
 
+class ABasePlayer;
 class ABaseItem;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -32,7 +33,7 @@ private:
 	void Attack();
 	void InitAnimNotifies();
 	void ChangeStance();
-	bool CheckCalmState() const;
+	bool CheckCalmState(const ABasePlayer* Owner, const ABaseItem* EquippedWeapon) const;
 	void OnStanceChanged(USkeletalMeshComponent* MeshComp);
 	bool ChangeBattleMode();
 	void UseBattleMode(const bool bMode) const;

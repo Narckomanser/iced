@@ -9,6 +9,7 @@
 
 class ABaseItem;
 class ABasePlayer;
+class UWeaponComponent;
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -31,8 +32,8 @@ protected:
 private:
 	void GrabSubscriber();
 	void Eqiup(ABaseItem* NewWeapon);
-	void DropEqippedWeapon();
-	void AttachItemToSocket(const FName SocketName) const;
+	void DropEqippedWeapon(ABasePlayer* Owner, const UWeaponComponent* WeaponComponent);
+	void AttachItemToSocket(USkeletalMeshComponent* MeshComp, const FName SocketName) const;
 	void InitNotifies(const TArray<UAnimMontage*>& AnimList);
 	void RemoveNotifies(const TArray<UAnimMontage*>& AnimList) const;
 	void SetupEquippedItem(ABasePlayer* ItemOwner, bool ShouldIgnore);
