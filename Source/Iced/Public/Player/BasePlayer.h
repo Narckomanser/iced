@@ -10,7 +10,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UHealthComponent;
 class UTextRenderComponent;
-class UWeaponComponent;
+class UCombatComponent;
 class UGrabComponent;
 class UInventoryComponent;
 class ABaseItem;
@@ -36,7 +36,7 @@ public:
 
 	UInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }
 	
-	UWeaponComponent* GetWeaponComponent() const { return WeaponComponent; }
+	UCombatComponent* GetCombatComponent() const { return CombatComponent; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -55,7 +55,7 @@ protected:
 	UTextRenderComponent* HealthText;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UWeaponComponent* WeaponComponent;
+	UCombatComponent* CombatComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UGrabComponent* GrabComponent;

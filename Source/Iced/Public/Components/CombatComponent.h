@@ -4,18 +4,18 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Iced/Public/CoreTypes.h"
-#include "WeaponComponent.generated.h"
+#include "CombatComponent.generated.h"
 
 class ABasePlayer;
 class ABaseItem;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class ICED_API UWeaponComponent : public UActorComponent
+class ICED_API UCombatComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
-	UWeaponComponent();
+	UCombatComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 

@@ -1,7 +1,7 @@
 // Narckomanser's game
 
 
-#include "WeaponComponent.h"
+#include "CombatComponent.h"
 #include "BasePlayer.h"
 #include "BaseItem.h"
 #include "GrabComponent.h"
@@ -19,7 +19,7 @@
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
-UWeaponComponent::UWeaponComponent()
+UCombatComponent::UCombatComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 
@@ -27,7 +27,7 @@ UWeaponComponent::UWeaponComponent()
 	InitCombatAnimList();
 }
 
-void UWeaponComponent::BeginPlay()
+void UCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -35,22 +35,22 @@ void UWeaponComponent::BeginPlay()
 	InitAnimNotifies();
 }
 
-void UWeaponComponent::SetupPlayerInputComponent()
+void UCombatComponent::SetupPlayerInputComponent()
 {
 	const auto InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 	if (!InputComponent) { return; }
 
-	InputComponent->BindAction("Attack", IE_Pressed, this, &UWeaponComponent::Attack);
-	InputComponent->BindAction("ChangeStance", IE_Pressed, this, &UWeaponComponent::ChangeStance);
+	InputComponent->BindAction("Attack", IE_Pressed, this, &UCombatComponent::Attack);
+	InputComponent->BindAction("ChangeStance", IE_Pressed, this, &UCombatComponent::ChangeStance);
 }
 
-bool UWeaponComponent::CheckCalmState(const ABasePlayer* Owner, const ABaseItem* EquippedWeapon) const
+bool UCombatComponent::CheckCalmState(const ABasePlayer* Owner, const ABaseItem* EquippedWeapon) const
 {
 	//TODO check IsRunning too???
 	return !bDoesEquipInProgress && !Owner->GetMovementComponent()->IsFalling() && !EquippedWeapon->IsInAttackState();
 }
 
-void UWeaponComponent::OnStanceChanged(USkeletalMeshComponent* MeshComp)
+void UCombatComponent::OnStanceChanged(USkeletalMeshComponent* MeshComp)
 {
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) { return; }
@@ -62,13 +62,13 @@ void UWeaponComponent::OnStanceChanged(USkeletalMeshComponent* MeshComp)
 	Owner->AllowMove(EMovementMode::MOVE_Walking);
 }
 
-bool UWeaponComponent::ChangeBattleMode()
+bool UCombatComponent::ChangeBattleMode()
 {
 	bBattleMode = !bBattleMode;
 	return bBattleMode;
 }
 
-void UWeaponComponent::UseBattleMode(const bool bMode) const
+void UCombatComponent::UseBattleMode(const bool bMode) const
 {
 	const auto Owner = GetOwner<ACharacter>();
 	if (!Owner) return;
@@ -77,13 +77,13 @@ void UWeaponComponent::UseBattleMode(const bool bMode) const
 	Owner->GetCharacterMovement()->bOrientRotationToMovement = !bMode;
 }
 
-void UWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                      FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-TArray<UAnimMontage*> UWeaponComponent::GetAnimList() const
+TArray<UAnimMontage*> UCombatComponent::GetAnimList() const
 {
 	TArray<UAnimMontage*> OutArray;
 	CombatAnimList.GenerateValueArray(OutArray);
@@ -91,7 +91,7 @@ TArray<UAnimMontage*> UWeaponComponent::GetAnimList() const
 	return OutArray;
 }
 
-void UWeaponComponent::Attack()
+void UCombatComponent::Attack()
 {
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) { return; }
@@ -107,11 +107,11 @@ void UWeaponComponent::Attack()
 
 	//TODO define needed anim and send it to PlayAnimMontage
 	const float AnimDuration = Owner->PlayAnimMontage(CombatAnimList[EAttackTypes::DefaultAttack]);
-	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, this, &UWeaponComponent::WeaponOverlapEventEnabler,
+	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, this, &UCombatComponent::WeaponOverlapEventEnabler,
 	                                       AnimDuration);
 }
 
-void UWeaponComponent::InitAnimNotifies()
+void UCombatComponent::InitAnimNotifies()
 {
 	for (const auto OneStanceData : StanceData)
 	{
@@ -119,7 +119,7 @@ void UWeaponComponent::InitAnimNotifies()
 			OneStanceData.TransitionAnimation);
 		if (!EquipFinishedNotify) continue;
 
-		EquipFinishedNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnStanceChanged);
+		EquipFinishedNotify->OnNotified.AddUObject(this, &UCombatComponent::OnStanceChanged);
 
 		const auto Owner = GetOwner<ABasePlayer>();
 		if (!Owner) { return; }
@@ -134,7 +134,7 @@ void UWeaponComponent::InitAnimNotifies()
 	}
 }
 
-void UWeaponComponent::ChangeStance()
+void UCombatComponent::ChangeStance()
 {
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) { return; }
@@ -165,7 +165,7 @@ void UWeaponComponent::ChangeStance()
 	CurrentStanceState = (++CurrentStanceState) % StanceData.Num();
 }
 
-void UWeaponComponent::WeaponOverlapEventEnabler() const
+void UCombatComponent::WeaponOverlapEventEnabler() const
 {
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) { return; }
@@ -179,7 +179,7 @@ void UWeaponComponent::WeaponOverlapEventEnabler() const
 	WeaponMeshComponent->SetGenerateOverlapEvents(!WeaponMeshComponent->GetGenerateOverlapEvents());
 }
 
-void UWeaponComponent::InitCombatAnimList()
+void UCombatComponent::InitCombatAnimList()
 {
 	for (EAttackTypes AttackType : TEnumRange<EAttackTypes>())
 	{

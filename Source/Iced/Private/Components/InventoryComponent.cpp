@@ -8,7 +8,7 @@
 #include "NotifyUtils.h"
 #include "AttackEndAnimNotify.h"
 #include "BasePlayer.h"
-#include "WeaponComponent.h"
+#include "CombatComponent.h"
 
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
@@ -46,12 +46,12 @@ void UInventoryComponent::OnAttachItem(USkeletalMeshComponent* MeshComp)
 	const auto CharacterMesh = Owner->GetMesh();
 	if (!CharacterMesh) { return; }
 
-	const auto WeaponComponent = Owner->GetWeaponComponent();
-	if (!WeaponComponent) { return; }
+	const auto CombatComponent = Owner->GetCombatComponent();
+	if (!CombatComponent) { return; }
 
 	if (CharacterMesh != MeshComp) { return; }
 
-	AttachItemToSocket(MeshComp, WeaponComponent->GetStanceSocketName());
+	AttachItemToSocket(MeshComp, CombatComponent->GetStanceSocketName());
 }
 
 void UInventoryComponent::Eqiup(ABaseItem* NewWeapon)
@@ -62,20 +62,20 @@ void UInventoryComponent::Eqiup(ABaseItem* NewWeapon)
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) { return; }
 
-	const auto WeaponComponent = Owner->GetWeaponComponent();
-	if (!WeaponComponent) { return; }
+	const auto CombatComponent = Owner->GetCombatComponent();
+	if (!CombatComponent) { return; }
 
-	DropEqippedWeapon(Owner, WeaponComponent);
+	DropEqippedWeapon(Owner, CombatComponent);
 
 	EquippedWeapon = NewWeapon;
 	EquippedWeapon->SetOwner(Owner);
 	SetupEquippedItem(Owner, true);
-	InitNotifies(WeaponComponent->GetAnimList());
+	InitNotifies(CombatComponent->GetAnimList());
 
 	const auto ParentMesh = Owner->GetMesh();
 	if (!ParentMesh) { return; }
 
-	AttachItemToSocket(ParentMesh, WeaponComponent->GetStanceSocketName());
+	AttachItemToSocket(ParentMesh, CombatComponent->GetStanceSocketName());
 
 	const auto WeaponHitCapsule = EquippedWeapon->GetHitCapsuleComponent();
 	if (!WeaponHitCapsule) { return; }
@@ -84,11 +84,11 @@ void UInventoryComponent::Eqiup(ABaseItem* NewWeapon)
 }
 
 
-void UInventoryComponent::DropEqippedWeapon(ABasePlayer* Owner, const UWeaponComponent* WeaponComponent)
+void UInventoryComponent::DropEqippedWeapon(ABasePlayer* Owner, const UCombatComponent* CombatComponent)
 {
 	if (!EquippedWeapon) { return; }
 
-	RemoveNotifies(WeaponComponent->GetAnimList());
+	RemoveNotifies(CombatComponent->GetAnimList());
 	
 	SetupEquippedItem(Owner, false);
 	
@@ -99,7 +99,7 @@ void UInventoryComponent::DropEqippedWeapon(ABasePlayer* Owner, const UWeaponCom
 }
 
 //TODO add item to arg
-void UInventoryComponent::AttachItemToSocket(USkeletalMeshComponent* WeaponComponent, const FName SocketName) const
+void UInventoryComponent::AttachItemToSocket(USkeletalMeshComponent* CombatComponent, const FName SocketName) const
 {
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!EquippedWeapon || !Owner) return;
@@ -109,7 +109,7 @@ void UInventoryComponent::AttachItemToSocket(USkeletalMeshComponent* WeaponCompo
 	//EquippedWeapon->DisableComponentsSimulatePhysics();
 
 	const FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget, false};
-	EquippedWeapon->AttachToComponent(WeaponComponent, AttachmentTransformRules, SocketName);
+	EquippedWeapon->AttachToComponent(CombatComponent, AttachmentTransformRules, SocketName);
 }
 
 void UInventoryComponent::InitNotifies(const TArray<UAnimMontage*>& AnimList)
@@ -128,8 +128,8 @@ void UInventoryComponent::RemoveNotifies(const TArray<UAnimMontage*>& AnimList) 
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) { return; }
 
-	const auto WeaponComponent = Owner->GetWeaponComponent();
-	if (!WeaponComponent) { return; }
+	const auto CombatComponent = Owner->GetCombatComponent();
+	if (!CombatComponent) { return; }
 
 	for (const auto Anim : AnimList)
 	{
