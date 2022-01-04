@@ -50,7 +50,6 @@ void UInventoryComponent::OnAttachItem(USkeletalMeshComponent* MeshComp)
 	AttachItemToSocket(WeaponComponent->GetStanceSocketName());
 }
 
-//TODO fully rework this method
 void UInventoryComponent::Eqiup(ABaseItem* NewWeapon)
 {
 	//TODO add conditions to add new weapon
@@ -65,14 +64,19 @@ void UInventoryComponent::Eqiup(ABaseItem* NewWeapon)
 
 	EquippedWeapon->SetOwner(Owner);
 
-	SetupEquippedItem(Owner);
+	SetupEquippedItem(Owner, true);
 
 	const auto WeaponComponent = Owner->GetWeaponComponent();
 	if (!WeaponComponent) { return; }
 
 	InitNotifies(WeaponComponent->GetAnimList());
-	
+
 	AttachItemToSocket(WeaponComponent->GetStanceSocketName());
+
+	const auto WeaponHitCapsule = EquippedWeapon->GetHitCapsuleComponent();
+	if (!WeaponHitCapsule) { return; }
+	
+	WeaponHitCapsule->OnComponentBeginOverlap.AddDynamic(EquippedWeapon, &ABaseItem::OnComponentBeginOverlapHandle);
 }
 
 
@@ -86,11 +90,13 @@ void UInventoryComponent::DropEqippedWeapon()
 
 	RemoveNotifies(WeaponComponent->GetAnimList());
 
+	SetupEquippedItem(Owner, false);
+
 	EquippedWeapon->GetHitCapsuleComponent()->OnComponentBeginOverlap.RemoveAll(EquippedWeapon);
 	EquippedWeapon->SetOwner(nullptr);
 	EquippedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	EquippedWeapon = nullptr;
-	//TODO retrieve item ignoring back which set in SetupEquippedItem()
+	
 }
 
 //TODO add item to arg
@@ -99,7 +105,7 @@ void UInventoryComponent::AttachItemToSocket(const FName SocketName) const
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!EquippedWeapon || !Owner) return;
 
-	//TODO if learn how to set collision with SM without offset and enable physics on SM - uncomment it
+	//TODO setup collision and uncomment it
 	//Used to ignore actors after death
 	//EquippedWeapon->DisableComponentsSimulatePhysics();
 
@@ -128,7 +134,7 @@ void UInventoryComponent::RemoveNotifies(const TArray<UAnimMontage*>& AnimList) 
 {
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) { return; }
-	
+
 	const auto WeaponComponent = Owner->GetWeaponComponent();
 	if (!WeaponComponent) { return; }
 
@@ -141,21 +147,20 @@ void UInventoryComponent::RemoveNotifies(const TArray<UAnimMontage*>& AnimList) 
 	}
 }
 
-void UInventoryComponent::SetupEquippedItem(ABasePlayer* ItemOwner)
+void UInventoryComponent::SetupEquippedItem(ABasePlayer* ItemOwner, bool ShouldIgnore)
 {
 	const auto OwnerCollisionComponent = ItemOwner->GetCapsuleComponent();
 	if (!OwnerCollisionComponent) { return; }
-	
-	OwnerCollisionComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
-	
+
+	OwnerCollisionComponent->IgnoreActorWhenMoving(EquippedWeapon, ShouldIgnore);
+
 	const auto OwnerMeshComponent = ItemOwner->GetMesh();
 	if (!OwnerMeshComponent) { return; }
-	
-	OwnerMeshComponent->IgnoreActorWhenMoving(EquippedWeapon, true);
-	
+
+	OwnerMeshComponent->IgnoreActorWhenMoving(EquippedWeapon, ShouldIgnore);
+
 	const auto WeaponHitCapsule = EquippedWeapon->GetHitCapsuleComponent();
 	if (!WeaponHitCapsule) { return; }
-	
-	WeaponHitCapsule->OnComponentBeginOverlap.AddDynamic(EquippedWeapon, &ABaseItem::OnComponentBeginOverlapHandle);
-	WeaponHitCapsule->IgnoreActorWhenMoving(ItemOwner, true);
+
+	WeaponHitCapsule->IgnoreActorWhenMoving(ItemOwner, ShouldIgnore);
 }

@@ -35,7 +35,7 @@ private:
 	void AttachItemToSocket(const FName SocketName) const;
 	void InitNotifies(const TArray<UAnimMontage*>& AnimList);
 	void RemoveNotifies(const TArray<UAnimMontage*>& AnimList) const;
-	void SetupEquippedItem(ABasePlayer* ItemOwner);
+	void SetupEquippedItem(ABasePlayer* ItemOwner, bool ShouldIgnore);
 
 private:
 	UPROPERTY()
