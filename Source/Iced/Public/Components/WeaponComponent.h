@@ -6,8 +6,6 @@
 #include "Iced/Public/CoreTypes.h"
 #include "WeaponComponent.generated.h"
 
-//TODO unite Current* variables and setup EquipData
-
 class ABaseItem;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -24,7 +22,7 @@ public:
 	TArray<UAnimMontage*> GetAnimList() const;
 
 	int8 GetCurrentStanceState() const { return CurrentStanceState; }
-	FName GetStanceSocketName() const { return EquipData[CurrentStanceState].EquipSocketName; }
+	FName GetStanceSocketName() const { return StanceData[CurrentStanceState].StanceSocketName; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -46,16 +44,12 @@ private:
 	bool EquipInProgress = false;
 	bool BattleMode = false;
 	int8 CurrentStanceState = 0;
-	int8 CurrentEquipState = 0;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Equipped State Animations")
-	TArray<TSubclassOf<UAnimInstance>> EquippedStateAnimInstances;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Anim Data")
 	TMap<EAttackTypes, UAnimMontage*> CombatAnimList;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Equip Data")
-	TArray<FEquipData> EquipData;
+	UPROPERTY(EditDefaultsOnly, Category = "Stance Data")
+	TArray<FStanceData> StanceData;
 
 	FTimerHandle OverlapEnableTimer;
 };

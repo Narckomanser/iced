@@ -114,10 +114,10 @@ void UWeaponComponent::Attack()
 
 void UWeaponComponent::InitAnimNotifies()
 {
-	for (const auto OneEquipData : EquipData)
+	for (const auto OneStanceData : StanceData)
 	{
 		const auto EquipFinishedNotify = FNotifyUtils::FindNotifyByClass<UEquipFinishedAnimNotify>(
-			OneEquipData.TransitionAnimation);
+			OneStanceData.TransitionAnimation);
 		if (!EquipFinishedNotify) continue;
 
 		EquipFinishedNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnStanceChanged);
@@ -128,7 +128,7 @@ void UWeaponComponent::InitAnimNotifies()
 		const auto InventoryComponent = Owner->GetInventoryComponent();
 
 		const auto AttachWeaponNotify = FNotifyUtils::FindNotifyByClass<UAttachItemAnimNotify>(
-			OneEquipData.TransitionAnimation);
+			OneStanceData.TransitionAnimation);
 		if (!AttachWeaponNotify || !InventoryComponent) continue;
 
 		AttachWeaponNotify->OnNotified.AddUObject(InventoryComponent, &UInventoryComponent::OnAttachItem);
@@ -147,18 +147,18 @@ void UWeaponComponent::ChangeStance()
 
 	const auto CharacterMesh = Owner->GetMesh();
 	if (!CharacterMesh) { return; }
-
-	CurrentEquipState = (++CurrentEquipState) % EquippedStateAnimInstances.Num();
-	if (EquippedStateAnimInstances[CurrentEquipState])
+	
+	if (const auto AnimInstance = StanceData[CurrentStanceState].StanceAnimInstance)
 	{
-		CharacterMesh->SetAnimInstanceClass(EquippedStateAnimInstances[CurrentEquipState]);
+		CharacterMesh->SetAnimInstanceClass(AnimInstance);
 	}
 
-	if (EquipData[CurrentStanceState].TransitionAnimation)
+	if (const auto TransitionAnim = StanceData[CurrentStanceState].TransitionAnimation)
 	{
-		Owner->PlayAnimMontage(EquipData[CurrentStanceState].TransitionAnimation);
-		CurrentStanceState = (++CurrentStanceState) % EquipData.Num();
+		Owner->PlayAnimMontage(TransitionAnim);
 	}
+	
+	CurrentStanceState = (++CurrentStanceState) % StanceData.Num();
 }
 
 void UWeaponComponent::WeaponOverlapEventEnabler() const

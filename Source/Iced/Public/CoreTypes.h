@@ -9,17 +9,18 @@ class ABaseItem;
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnGrabItem, ABaseItem*);
 
 USTRUCT(BlueprintType)
-struct FEquipData
+struct FStanceData
 {
 	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY(EditDefaultsOnly, Category = "Equip")
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Stance", meta=(DisplayName = "Stance Anim Blueprint"))
+	TSubclassOf<UAnimInstance> StanceAnimInstance;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Stance", meta=(DisplayName = "Transition Animation"))
 	UAnimMontage* TransitionAnimation;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon Socket")
-	FName EquipSocketName;
-
-	//TODO may be need to move here AnimBPs???
+	UPROPERTY(EditDefaultsOnly, Category = "Stance", meta=(DisplayName = "Weapon Socket"))
+	FName StanceSocketName;
 };
 
 UENUM()
