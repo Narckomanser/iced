@@ -30,12 +30,12 @@ void ABaseItem::ChangeAttackState(USkeletalMeshComponent* MeshComp)
 	const auto OwnerMesh = ItemOwner->GetMesh();
 	if (MeshComp != OwnerMesh) { return; }
 	
-	DoesNotInAttack = !DoesNotInAttack;
+	bDoesInAttack = !bDoesInAttack;
 }
 
-bool ABaseItem::CanAttack() const
+bool ABaseItem::CanTakeDamage() const
 {
-	return DoesNotInAttack && (GetWorld()->GetTimerManager().GetTimerRemaining(OverlapTimer) <= 0.f);
+	return bDoesInAttack && (GetWorld()->GetTimerManager().GetTimerRemaining(OverlapTimer) <= 0.f);
 }
 
 void ABaseItem::BeginPlay()
@@ -52,7 +52,7 @@ void ABaseItem::OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedCom
                                               UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                               const FHitResult& SweepResult)
 {
-	if (!CanAttack()) { return; }
+	if (!CanTakeDamage()) { return; }
 
 	//TODO Take damage only when actor in attack, in battle stance
 	//TODO set overlap enable only when attack in progress???

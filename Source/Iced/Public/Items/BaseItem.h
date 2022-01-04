@@ -21,13 +21,15 @@ public:
 	void OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	                                   const FHitResult& SweepResult);
-	
+
 	UCapsuleComponent* GetHitCapsuleComponent() const { return HitCapsuleComponent; }
 	UStaticMeshComponent* GetMesh() const { return ItemMesh; }
 
 	//TODO add mesh condition
 	void ChangeAttackState(USkeletalMeshComponent* MeshComp);
-	bool CanAttack() const;
+	bool CanTakeDamage() const;
+	bool IsInAttackState() const { return bDoesInAttack; }
+
 
 protected:
 	virtual void BeginPlay() override;
@@ -35,7 +37,7 @@ protected:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCapsuleComponent* RootCapsuleComponent;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* ItemMesh;
 
@@ -51,5 +53,5 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	float OverlapTimerDelay = 1.f;
 
-	bool DoesNotInAttack = false;
+	bool bDoesInAttack = false;
 };

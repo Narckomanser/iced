@@ -21,7 +21,7 @@ public:
 	//TODO return anim by Enum(check CoreTypes)
 	TArray<UAnimMontage*> GetAnimList() const;
 
-	int8 GetCurrentStanceState() const { return CurrentStanceState; }
+	uint8 GetCurrentStanceState() const { return CurrentStanceState; }
 	FName GetStanceSocketName() const { return StanceData[CurrentStanceState].StanceSocketName; }
 
 protected:
@@ -32,17 +32,17 @@ private:
 	void Attack();
 	void InitAnimNotifies();
 	void ChangeStance();
-	bool CanChangeStance() const;
+	bool CheckCalmState() const;
 	void OnStanceChanged(USkeletalMeshComponent* MeshComp);
 	bool ChangeBattleMode();
-	void UseBattleMode(const bool Mode) const;
+	void UseBattleMode(const bool bMode) const;
 	void WeaponOverlapEventEnabler() const;
 
 	void InitCombatAnimList();
 
 private:
-	bool EquipInProgress = false;
-	bool BattleMode = false;
+	bool bDoesEquipInProgress = false;
+	bool bBattleMode = false;
 	int8 CurrentStanceState = 0;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Anim Data")

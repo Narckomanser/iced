@@ -23,7 +23,7 @@ UWeaponComponent::UWeaponComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 
-	UseBattleMode(BattleMode);
+	UseBattleMode(bBattleMode);
 	InitCombatAnimList();
 }
 
@@ -44,12 +44,16 @@ void UWeaponComponent::SetupPlayerInputComponent()
 	InputComponent->BindAction("ChangeStance", IE_Pressed, this, &UWeaponComponent::ChangeStance);
 }
 
-bool UWeaponComponent::CanChangeStance() const
+bool UWeaponComponent::CheckCalmState() const
 {
-	const auto Owner = GetOwner<ACharacter>();
+	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) { return false; }
 
-	return !EquipInProgress && !Owner->GetMovementComponent()->IsFalling();
+	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedWeapon();
+	if (!EquippedWeapon) { return false; }
+
+	//TODO check IsRunning too???
+	return !bDoesEquipInProgress && !Owner->GetMovementComponent()->IsFalling() && !EquippedWeapon->IsInAttackState();
 }
 
 void UWeaponComponent::OnStanceChanged(USkeletalMeshComponent* MeshComp)
@@ -60,23 +64,23 @@ void UWeaponComponent::OnStanceChanged(USkeletalMeshComponent* MeshComp)
 	const auto CharacterMesh = Owner->GetMesh();
 	if (!CharacterMesh || CharacterMesh != MeshComp) { return; }
 
-	EquipInProgress = false;
+	bDoesEquipInProgress = false;
 	Owner->AllowMove(EMovementMode::MOVE_Walking);
 }
 
 bool UWeaponComponent::ChangeBattleMode()
 {
-	BattleMode = !BattleMode;
-	return BattleMode;
+	bBattleMode = !bBattleMode;
+	return bBattleMode;
 }
 
-void UWeaponComponent::UseBattleMode(const bool Mode) const
+void UWeaponComponent::UseBattleMode(const bool bMode) const
 {
 	const auto Owner = GetOwner<ACharacter>();
 	if (!Owner) return;
 
-	Owner->bUseControllerRotationYaw = Mode;
-	Owner->GetCharacterMovement()->bOrientRotationToMovement = !Mode;
+	Owner->bUseControllerRotationYaw = bMode;
+	Owner->GetCharacterMovement()->bOrientRotationToMovement = !bMode;
 }
 
 void UWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -95,12 +99,13 @@ TArray<UAnimMontage*> UWeaponComponent::GetAnimList() const
 
 void UWeaponComponent::Attack()
 {
-	//TODO forbid if not weapon, in attack, in air, in run(make separate method to check it)
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) { return; }
 
 	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedWeapon();
 	if (!EquippedWeapon) { return; }
+	
+	if (!CheckCalmState() || !bBattleMode) { return; }
 
 	EquippedWeapon->ChangeAttackState(Owner->GetMesh());
 
@@ -138,16 +143,18 @@ void UWeaponComponent::InitAnimNotifies()
 void UWeaponComponent::ChangeStance()
 {
 	const auto Owner = GetOwner<ABasePlayer>();
-	if (!CanChangeStance() || !Owner) return;
+	if (!Owner) { return; }
+	
+	if (!CheckCalmState()) { return; }
 
-	EquipInProgress = true;
+	bDoesEquipInProgress = true;
 	Owner->AllowMove(EMovementMode::MOVE_None);
 
 	UseBattleMode(ChangeBattleMode());
 
 	const auto CharacterMesh = Owner->GetMesh();
 	if (!CharacterMesh) { return; }
-	
+
 	if (const auto AnimInstance = StanceData[CurrentStanceState].StanceAnimInstance)
 	{
 		CharacterMesh->SetAnimInstanceClass(AnimInstance);
@@ -157,7 +164,7 @@ void UWeaponComponent::ChangeStance()
 	{
 		Owner->PlayAnimMontage(TransitionAnim);
 	}
-	
+
 	CurrentStanceState = (++CurrentStanceState) % StanceData.Num();
 }
 

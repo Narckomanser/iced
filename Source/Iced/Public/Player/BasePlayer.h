@@ -27,7 +27,7 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	bool IsRunning() const { return IsRun; }
+	bool IsRunning() const { return bIsRun; }
 
 	void AllowMove(EMovementMode NewMovementMode) const;
 
@@ -68,11 +68,11 @@ private:
 	void MoveRight(const float Amount);
 	FRotator GetYawBasedRotator() const;
 
-	void ChangeRunState() { IsRun = !IsRun; }
+	void ChangeRunState() { bIsRun = !bIsRun; }
 
 	UFUNCTION()
 	void OnDeath();
 
 private:
-	bool IsRun = false;
+	bool bIsRun = false;
 };
