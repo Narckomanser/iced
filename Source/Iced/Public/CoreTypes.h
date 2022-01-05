@@ -33,3 +33,10 @@ enum class EAttackTypes
 };
 
 ENUM_RANGE_BY_COUNT(EAttackTypes, EAttackTypes::Count)
+
+UENUM()
+enum class EItemTypes
+{
+	Weapon,
+	Shield
+};

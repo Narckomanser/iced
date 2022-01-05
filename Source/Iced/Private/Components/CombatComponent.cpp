@@ -47,7 +47,7 @@ void UCombatComponent::SetupPlayerInputComponent()
 bool UCombatComponent::CheckCalmState(const ABasePlayer* Owner, const ABaseItem* EquippedWeapon) const
 {
 	//TODO check IsRunning too???
-	return !bDoesEquipInProgress && !Owner->GetMovementComponent()->IsFalling() && !EquippedWeapon->IsInAttackState();
+	return !bDoesEquipInProgress && !Owner->GetMovementComponent()->IsFalling() && !EquippedWeapon->IsInCombatState();
 }
 
 void UCombatComponent::OnStanceChanged(USkeletalMeshComponent* MeshComp)
@@ -101,7 +101,7 @@ void UCombatComponent::Attack()
 	
 	if (!CheckCalmState(Owner,EquippedWeapon) || !bBattleMode) { return; }
 
-	EquippedWeapon->ChangeAttackState(Owner->GetMesh());
+	EquippedWeapon->ChangeCombatState(Owner->GetMesh());
 
 	WeaponOverlapEventEnabler();
 

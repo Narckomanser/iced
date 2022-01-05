@@ -119,7 +119,7 @@ void UInventoryComponent::InitNotifies(const TArray<UAnimMontage*>& AnimList)
 		if (!Anim) continue;
 
 		const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>(Anim);
-		AttackEndNotify->OnNotified.AddUObject(EquippedWeapon, &ABaseItem::ChangeAttackState);
+		AttackEndNotify->OnNotified.AddUObject(EquippedWeapon, &ABaseItem::ChangeCombatState);
 	}
 }
 
