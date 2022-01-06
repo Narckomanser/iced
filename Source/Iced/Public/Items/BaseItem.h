@@ -29,6 +29,8 @@ public:
 	void ChangeCombatState(USkeletalMeshComponent* MeshComp);
 	bool IsInCombatState() const { return bDoesInCombat; }
 
+	EItemTypes GetItemType() const { return ItemType; }
+
 
 protected:
 	virtual void BeginPlay() override;

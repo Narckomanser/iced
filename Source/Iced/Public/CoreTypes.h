@@ -8,6 +8,7 @@ class ABaseItem;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnGrabItem, ABaseItem*);
 
+
 USTRUCT(BlueprintType)
 struct FStanceData
 {
@@ -23,20 +24,26 @@ struct FStanceData
 	FName StanceSocketName;
 };
 
+
 UENUM()
 enum class EAttackTypes
 {
-	DefaultAttack UMETA(DisplayName = "DefaultAttack"),
-	MightAttack UMETA(DisplayName = "MightAttack"),
+	DefaultAttack UMETA(DisplayName = "Default Attack"),
+	MightAttack UMETA(DisplayName = "Might Attack"),
 
 	Count UMETA(Hidden)
 };
 
 ENUM_RANGE_BY_COUNT(EAttackTypes, EAttackTypes::Count)
 
+
 UENUM()
 enum class EItemTypes
 {
 	Weapon,
-	Shield
+	Shield,
+	
+	Count UMETA(Hidden)
 };
+
+ENUM_RANGE_BY_COUNT(EItemTypes, EItemTypes::Count)

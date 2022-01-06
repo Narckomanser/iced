@@ -22,7 +22,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	ABaseItem* GetEquippedWeapon() const { return EquippedWeapon; }
+	ABaseItem* GetEquippedItem(EItemTypes ItemType) const { return Equipment[ItemType]; }
 
 	void OnAttachItem(USkeletalMeshComponent* MeshComp);
 
@@ -32,13 +32,15 @@ protected:
 private:
 	void GrabSubscriber();
 	void Eqiup(ABaseItem* NewWeapon);
-	void DropEqippedWeapon(ABasePlayer* Owner, const UCombatComponent* CombatComponent);
+	void DropEqippedWeapon(EItemTypes ItemType, ABasePlayer* Owner, const UCombatComponent* CombatComponent);
 	void AttachItemToSocket(USkeletalMeshComponent* MeshComp, const FName SocketName) const;
 	void InitNotifies(const TArray<UAnimMontage*>& AnimList);
 	void RemoveNotifies(const TArray<UAnimMontage*>& AnimList) const;
 	void SetupEquippedItem(ABasePlayer* ItemOwner, bool ShouldIgnore);
 
+	void InitEquipmentList();
+
 private:
 	UPROPERTY()
-	ABaseItem* EquippedWeapon = nullptr;
+	TMap<EItemTypes, ABaseItem*> Equipment;
 };

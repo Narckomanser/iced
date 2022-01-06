@@ -65,10 +65,10 @@ void UInventoryComponent::Eqiup(ABaseItem* NewWeapon)
 	const auto CombatComponent = Owner->GetCombatComponent();
 	if (!CombatComponent) { return; }
 
-	DropEqippedWeapon(Owner, CombatComponent);
+	DropEqippedWeapon(, Owner, CombatComponent);
 
-	EquippedWeapon = NewWeapon;
-	EquippedWeapon->SetOwner(Owner);
+	Equipment[NewWeapon->GetItemType()] = NewWeapon;
+	Equipment[NewWeapon->GetItemType()]->SetOwner(Owner);
 	SetupEquippedItem(Owner, true);
 	InitNotifies(CombatComponent->GetAnimList());
 
@@ -77,14 +77,14 @@ void UInventoryComponent::Eqiup(ABaseItem* NewWeapon)
 
 	AttachItemToSocket(ParentMesh, CombatComponent->GetStanceSocketName());
 
-	const auto WeaponHitCapsule = EquippedWeapon->GetHitCapsuleComponent();
+	const auto WeaponHitCapsule = Equipment[NewWeapon->GetItemType()]->GetHitCapsuleComponent();
 	if (!WeaponHitCapsule) { return; }
 
-	WeaponHitCapsule->OnComponentBeginOverlap.AddDynamic(EquippedWeapon, &ABaseItem::OnComponentBeginOverlapHandle);
+	WeaponHitCapsule->OnComponentBeginOverlap.AddDynamic(Equipment[NewWeapon->GetItemType()], &ABaseItem::OnComponentBeginOverlapHandle);
 }
 
 
-void UInventoryComponent::DropEqippedWeapon(ABasePlayer* Owner, const UCombatComponent* CombatComponent)
+void UInventoryComponent::DropEqippedWeapon(EItemType, ABasePlayer* Owner, const UCombatComponent* CombatComponent)
 {
 	if (!EquippedWeapon) { return; }
 
@@ -156,4 +156,12 @@ void UInventoryComponent::SetupEquippedItem(ABasePlayer* ItemOwner, bool ShouldI
 	if (!WeaponHitCapsule) { return; }
 
 	WeaponHitCapsule->IgnoreActorWhenMoving(ItemOwner, ShouldIgnore);
+}
+
+void UInventoryComponent::InitEquipmentList()
+{
+	for (EItemTypes ItemType : TEnumRange<EItemTypes>())
+	{
+		Equipment.Add(ItemType, nullptr);
+	}
 }

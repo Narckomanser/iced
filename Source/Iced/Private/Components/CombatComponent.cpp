@@ -96,7 +96,7 @@ void UCombatComponent::Attack()
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) { return; }
 
-	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedWeapon();
+	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedItem();
 	if (!EquippedWeapon) { return; }
 	
 	if (!CheckCalmState(Owner,EquippedWeapon) || !bBattleMode) { return; }
@@ -139,7 +139,7 @@ void UCombatComponent::ChangeStance()
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) { return; }
 
-	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedWeapon();
+	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedItem();
 	if (!EquippedWeapon) { return; }
 	
 	if (!CheckCalmState(Owner, EquippedWeapon)) { return; }
@@ -170,7 +170,7 @@ void UCombatComponent::WeaponOverlapEventEnabler() const
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) { return; }
 
-	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedWeapon();
+	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedItem();
 	if (!EquippedWeapon) { return; }
 
 	const auto WeaponMeshComponent = EquippedWeapon->GetMesh();
