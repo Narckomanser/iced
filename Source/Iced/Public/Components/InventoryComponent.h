@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Iced/Public/CoreTypes.h"
 #include "Components/ActorComponent.h"
+#include "Iced/Public/CoreTypes.h"
 #include "InventoryComponent.generated.h"
 
 class ABaseItem;
@@ -33,10 +33,10 @@ private:
 	void GrabSubscriber();
 	void Eqiup(ABaseItem* NewWeapon);
 	void DropEqippedWeapon(EItemTypes ItemType, ABasePlayer* Owner, const UCombatComponent* CombatComponent);
-	void AttachItemToSocket(USkeletalMeshComponent* MeshComp, const FName SocketName) const;
+	void AttachItemToSocket(ABaseItem* Item, const FName SocketName, USkeletalMeshComponent* MeshComp) const;
 	void InitNotifies(const TArray<UAnimMontage*>& AnimList);
 	void RemoveNotifies(const TArray<UAnimMontage*>& AnimList) const;
-	void SetupEquippedItem(ABasePlayer* ItemOwner, bool ShouldIgnore);
+	void SetupEquippedItem(ABaseItem* Item, ABasePlayer* ItemOwner, bool ShouldIgnore);
 
 	void InitEquipmentList();
 

@@ -11,7 +11,7 @@ void ABaseWeapon::OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedC
 	if (const auto ItemOwner = GetOwner<APawn>())
 	{
 		//TODO calculate damage with some modifiers
-		OtherActor->TakeDamage(DamageAmount, FPointDamageEvent{}, ItemOwner->GetController(), thi
+		OtherActor->TakeDamage(DamageAmount, FPointDamageEvent{}, ItemOwner->GetController(), this);
 		GetWorld()->GetTimerManager().SetTimer(OverlapTimer, OverlapTimerDelay, false);
 	}
 }

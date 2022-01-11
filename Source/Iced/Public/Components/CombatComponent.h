@@ -9,6 +9,7 @@
 class ABasePlayer;
 class ABaseItem;
 
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ICED_API UCombatComponent : public UActorComponent
 {
