@@ -20,8 +20,8 @@ struct FStanceData
 	UPROPERTY(EditDefaultsOnly, Category = "Stance", meta=(DisplayName = "Transition Animation"))
 	UAnimMontage* TransitionAnimation;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Stance", meta=(DisplayName = "Weapon Socket"))
-	FName StanceSocketName;
+	UPROPERTY(EditDefaultsOnly, Category = "Stance", meta=(DisplayName = "Stance Socket Name"))
+	FName WeaponSocket;
 };
 
 

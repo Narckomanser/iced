@@ -24,7 +24,9 @@ public:
 	TArray<UAnimMontage*> GetAnimList() const;
 
 	uint8 GetCurrentStanceState() const { return CurrentStanceState; }
-	FName GetStanceSocketName() const { return StanceData[CurrentStanceState].StanceSocketName; }
+	FName GetStanceSocketName() const { return StanceData[CurrentStanceState].WeaponSocket; }
+
+	bool DoesInBattle() const { return bBattleMode; }
 
 protected:
 	virtual void BeginPlay() override;
