@@ -17,6 +17,8 @@
 UInventoryComponent::UInventoryComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+	
+	InitEquipmentList();
 }
 
 void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType,
