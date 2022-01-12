@@ -30,6 +30,7 @@ enum class EAttackTypes
 {
 	DefaultAttack UMETA(DisplayName = "Default Attack"),
 	MightAttack UMETA(DisplayName = "Might Attack"),
+	Block UMETA(DisplayName = "Block"),
 
 	Count UMETA(Hidden)
 };

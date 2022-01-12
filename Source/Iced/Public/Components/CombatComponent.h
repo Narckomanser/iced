@@ -34,13 +34,14 @@ protected:
 private:
 	void SetupPlayerInputComponent();
 	void Attack();
+	void Block();
 	void InitAnimNotifies();
 	void ChangeStance();
 	bool CheckCalmState(const ABasePlayer* Owner, const ABaseItem* EquippedWeapon) const;
 	void OnStanceChanged(USkeletalMeshComponent* MeshComp);
 	bool ChangeBattleMode();
 	void UseBattleMode(const bool bMode) const;
-	void WeaponOverlapEventEnabler() const;
+	void ItemOverlapEventEnabler(ABaseItem* Item) const;
 
 	void InitCombatAnimList();
 

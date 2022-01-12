@@ -92,22 +92,37 @@ TArray<UAnimMontage*> UCombatComponent::GetAnimList() const
 
 void UCombatComponent::Attack()
 {
+	//TODO forbid jump when attack in progress
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) { return; }
 
 	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedItem(EItemTypes::Weapon);
 	if (!EquippedWeapon) { return; }
 	
-	if (!CheckCalmState(Owner,EquippedWeapon) || !bBattleMode) { return; }
+	if (!CheckCalmState(Owner, EquippedWeapon) || !bBattleMode) { return; }
 
 	EquippedWeapon->ChangeCombatState(Owner->GetMesh());
 
-	WeaponOverlapEventEnabler();
+	ItemOverlapEventEnabler(EquippedWeapon);
+
+	FTimerDelegate EventEnabler;
+	EventEnabler.BindUFunction(this, FName("WeaponOverlapEventEnabler"), EquippedWeapon);
 
 	//TODO define needed anim and send it to PlayAnimMontage
 	const float AnimDuration = Owner->PlayAnimMontage(CombatAnimList[EAttackTypes::DefaultAttack]);
-	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, this, &UCombatComponent::WeaponOverlapEventEnabler,
-	                                       AnimDuration);
+	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, th ,AnimDuration);
+}
+
+void UCombatComponent::Block()
+{
+	const auto Owner = GetOwner<ABasePlayer>();
+	if (!Owner) { return; }
+
+	const auto EquippedShield = Owner->GetInventoryComponent()->GetEquippedItem(EItemTypes::Shield);
+	if (!EquippedShield) { return; }
+	
+	if (!CheckCalmState(Owner, EquippedShield) || !bBattleMode) { return; }
+	Owner->PlayAnimMontage(CombatAnimList[EAttackTypes::DefaultAttack]);
 }
 
 void UCombatComponent::InitAnimNotifies()
@@ -164,15 +179,11 @@ void UCombatComponent::ChangeStance()
 	CurrentStanceState = (++CurrentStanceState) % StanceData.Num();
 }
 
-void UCombatComponent::WeaponOverlapEventEnabler() const
+void UCombatComponent::ItemOverlapEventEnabler(ABaseItem* Item) const
 {
-	const auto Owner = GetOwner<ABasePlayer>();
-	if (!Owner) { return; }
+	if (!Item) { return; }
 
-	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedItem(EItemTypes::Weapon);
-	if (!EquippedWeapon) { return; }
-
-	const auto WeaponMeshComponent = EquippedWeapon->GetMesh();
+	const auto WeaponMeshComponent = Item->GetMesh();
 	if (!WeaponMeshComponent) { return; }
 
 	WeaponMeshComponent->SetGenerateOverlapEvents(!WeaponMeshComponent->GetGenerateOverlapEvents());
