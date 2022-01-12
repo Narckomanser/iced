@@ -105,12 +105,12 @@ void UCombatComponent::Attack()
 
 	ItemOverlapEventEnabler(EquippedWeapon);
 
-	FTimerDelegate EventEnabler;
-	EventEnabler.BindUFunction(this, FName("WeaponOverlapEventEnabler"), EquippedWeapon);
+	FTimerDelegate EventEnablerDelegate;
+	EventEnablerDelegate.BindUFunction(this, FName("WeaponOverlapEventEnabler"), EquippedWeapon);
 
 	//TODO define needed anim and send it to PlayAnimMontage
 	const float AnimDuration = Owner->PlayAnimMontage(CombatAnimList[EAttackTypes::DefaultAttack]);
-	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, th ,AnimDuration);
+	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, EventEnablerDelegate, AnimDuration, false);
 }
 
 void UCombatComponent::Block()
