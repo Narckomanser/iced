@@ -24,7 +24,9 @@ public:
 	TArray<UAnimMontage*> GetAnimList() const;
 
 	uint8 GetCurrentStanceState() const { return CurrentStanceState; }
-	FName GetStanceSocketName() const { return StanceData[CurrentStanceState].StanceSocketName; }
+	FName GetStanceSocketName() const { return StanceData[CurrentStanceState].WeaponSocket; }
+
+	bool DoesInBattle() const { return bBattleMode; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -32,13 +34,16 @@ protected:
 private:
 	void SetupPlayerInputComponent();
 	void Attack();
+	void Block();
 	void InitAnimNotifies();
 	void ChangeStance();
 	bool CheckCalmState(const ABasePlayer* Owner, const ABaseItem* EquippedWeapon) const;
 	void OnStanceChanged(USkeletalMeshComponent* MeshComp);
 	bool ChangeBattleMode();
 	void UseBattleMode(const bool bMode) const;
-	void WeaponOverlapEventEnabler() const;
+
+	UFUNCTION()
+	void ItemOverlapEventEnabler(ABaseItem* Item) const;
 
 	void InitCombatAnimList();
 

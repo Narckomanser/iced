@@ -20,8 +20,8 @@ struct FStanceData
 	UPROPERTY(EditDefaultsOnly, Category = "Stance", meta=(DisplayName = "Transition Animation"))
 	UAnimMontage* TransitionAnimation;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Stance", meta=(DisplayName = "Weapon Socket"))
-	FName StanceSocketName;
+	UPROPERTY(EditDefaultsOnly, Category = "Stance", meta=(DisplayName = "Stance Socket Name"))
+	FName WeaponSocket;
 };
 
 
@@ -30,6 +30,7 @@ enum class EAttackTypes
 {
 	DefaultAttack UMETA(DisplayName = "Default Attack"),
 	MightAttack UMETA(DisplayName = "Might Attack"),
+	Block UMETA(DisplayName = "Block"),
 
 	Count UMETA(Hidden)
 };

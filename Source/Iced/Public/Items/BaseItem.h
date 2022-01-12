@@ -30,6 +30,7 @@ public:
 	bool IsInCombatState() const { return bDoesInCombat; }
 
 	EItemTypes GetItemType() const { return ItemType; }
+	FName GetItemSocket() const { return Socket; }
 
 
 protected:
@@ -48,6 +49,9 @@ protected:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Type")
 	EItemTypes ItemType;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Item Socket")
+	FName Socket;
 
 	UPROPERTY(EditDefaultsOnly)
 	float OverlapTimerDelay = 1.f;
