@@ -71,7 +71,7 @@ void UInventoryComponent::Eqiup(ABaseItem* NewItem)
 
 	const auto ChangingItemType = NewItem->GetItemType();
 
-	DropItem(ChangingItemType, Owner, CombatComponent);
+	DropItem(ChangingItemType, Owner, CombatComponent->GetAnimList());
 
 	Equipment[ChangingItemType] = NewItem;
 	Equipment[ChangingItemType]->SetOwner(Owner);
@@ -91,14 +91,14 @@ void UInventoryComponent::Eqiup(ABaseItem* NewItem)
 }
 
 
-void UInventoryComponent::DropItem(EItemTypes ItemType, ABasePlayer* Owner, const UCombatComponent* CombatComponent)
+void UInventoryComponent::DropItem(EItemTypes ItemType, ABasePlayer* Owner, const TArray<UAnimMontage*>& AnimList)
 {
 	ABaseItem* Item = Equipment[ItemType];
 	if (!Item) { return; }
 
 
 	//TODO move this method to other place
-	RemoveNotifies(CombatComponent->GetAnimList());
+	RemoveNotifies(AnimList);
 
 	SetupEquippedItem(Equipment[ItemType], Owner, false);
 

@@ -34,7 +34,7 @@ protected:
 private:
 	void SetupPlayerInputComponent();
 	void Attack();
-	void Block();
+	void SpecialAttack();
 	void InitAnimNotifies();
 	void ChangeStance();
 	bool CheckCalmState(const ABasePlayer* Owner, const ABaseItem* EquippedWeapon) const;
