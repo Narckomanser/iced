@@ -7,6 +7,7 @@
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All)
 
+//TODO add sweep results to set. replace OverlapTimerDelay to AnimEnd. After timer end - clear the set
 void ABaseWeapon::OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
