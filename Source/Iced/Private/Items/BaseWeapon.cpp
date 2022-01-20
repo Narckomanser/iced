@@ -3,8 +3,6 @@
 
 #include "Items/BaseWeapon.h"
 
-#include "PhysicalMaterials/PhysicalMaterial.h"
-
 DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All)
 
 //TODO add sweep results to set. replace OverlapTimerDelay to AnimEnd. After timer end - clear the set
