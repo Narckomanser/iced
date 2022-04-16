@@ -11,11 +11,16 @@ UCLASS()
 class ICED_API ABaseWeapon : public ABaseItem
 {
 	GENERATED_BODY()
-public:
 
+protected:
 	virtual void OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	                                           UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	                                           const FHitResult& SweepResult) override;
+	
+	virtual void OnTakePointDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation,
+	                               UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection,
+	                               const UDamageType* DamageType, AActor* DamageCauser) override;
+
 
 private:
 	bool CanTakeDamage() const;

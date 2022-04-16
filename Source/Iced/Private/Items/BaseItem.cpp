@@ -38,6 +38,12 @@ void ABaseItem::BeginPlay()
 	Super::BeginPlay();
 }
 
+void ABaseItem::OnTakePointDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation,
+	UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, const UDamageType* DamageType,
+	AActor* DamageCauser)
+{
+}
+
 void ABaseItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

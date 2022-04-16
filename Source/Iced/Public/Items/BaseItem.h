@@ -47,6 +47,14 @@ protected:
 	UCapsuleComponent* HitCapsuleComponent;
 
 protected:
+	UFUNCTION()
+	virtual void OnTakePointDamage(AActor* DamagedActor, float Damage, class AController* InstigatedBy, FVector HitLocation,
+	                       class UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection,
+	                       const class UDamageType* DamageType, AActor* DamageCauser);
+
+	UPROPERTY(EditDefaultsOnly, Category = "Item Durability")
+	float Durability = 100;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Type")
 	EItemTypes ItemType;
 

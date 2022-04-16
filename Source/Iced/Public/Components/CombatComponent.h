@@ -28,13 +28,15 @@ public:
 
 	bool DoesInBattle() const { return bBattleMode; }
 
+	//TODO IN DEV ONLY!
+	void DevChangeStance();
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
 	void SetupPlayerInputComponent();
 	void Attack();
-	void SpecialAttack();
 	void InitAnimNotifies();
 	void ChangeStance();
 	bool CheckCalmState(const ABasePlayer* Owner, const ABaseItem* EquippedWeapon) const;

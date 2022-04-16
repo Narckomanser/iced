@@ -14,11 +14,17 @@ void ABaseWeapon::OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedC
 	if (const auto ItemOwner = GetOwner<APawn>())
 	{
 		//TODO calculate damage with some modifiers
-		OtherActor->TakeDamage(DamageAmount, FPointDamageEvent{}, ItemOwner->GetController(), this);
+		OtherActor->TakeDamage(DamageAmount, FPointDamageEvent{}, ItemOwner->GetController(), GetOwner());
 		GetWorld()->GetTimerManager().SetTimer(OverlapTimer, OverlapTimerDelay, false);
 
-		UE_LOG(LogBaseWeapon, Display, TEXT("%s"), *SweepResult.ToString());
+		UE_LOG(LogBaseWeapon, Display, TEXT("Hitted Actor: %s"), *OtherActor->GetName());
 	}
+}
+
+void ABaseWeapon::OnTakePointDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation,
+	UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, const UDamageType* DamageType,
+	AActor* DamageCauser)
+{
 }
 
 bool ABaseWeapon::CanTakeDamage() const

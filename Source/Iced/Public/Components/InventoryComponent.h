@@ -40,7 +40,12 @@ private:
 
 	void InitEquipmentList();
 
+	void DevSpawnItems();
+
 private:
 	UPROPERTY()
 	TMap<EItemTypes, ABaseItem*> Equipment;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Start Items")
+	TArray<TSubclassOf<ABaseItem>> DevBaseInventory;
 };

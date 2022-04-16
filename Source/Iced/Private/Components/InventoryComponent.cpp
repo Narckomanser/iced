@@ -32,6 +32,9 @@ void UInventoryComponent::BeginPlay()
 	Super::BeginPlay();
 
 	GrabSubscriber();
+
+	//TODO remove on release
+	DevSpawnItems();
 }
 
 void UInventoryComponent::GrabSubscriber()
@@ -176,4 +179,15 @@ void UInventoryComponent::InitEquipmentList()
 	{
 		Equipment.Add(ItemType, nullptr);
 	}
+}
+
+void UInventoryComponent::DevSpawnItems()
+{
+	for (const auto Item : DevBaseInventory)
+	{
+		const auto SpawnedItem = GetWorld()->SpawnActor<ABaseItem>(Item);
+		Eqiup(SpawnedItem);
+	}
+
+	GetOwner<ABasePlayer>()->GetCombatComponent()->DevChangeStance();
 }

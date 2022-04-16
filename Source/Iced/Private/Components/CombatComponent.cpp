@@ -16,7 +16,7 @@
 #include "Components/CapsuleComponent.h"
 
 
-DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
+DEFINE_LOG_CATEGORY_STATIC(LogCombatComponent, All, All);
 
 UCombatComponent::UCombatComponent()
 {
@@ -24,6 +24,11 @@ UCombatComponent::UCombatComponent()
 
 	UseBattleMode(bBattleMode);
 	InitCombatAnimList();
+}
+
+void UCombatComponent::DevChangeStance()
+{
+	ChangeStance();
 }
 
 void UCombatComponent::BeginPlay()
@@ -41,7 +46,6 @@ void UCombatComponent::SetupPlayerInputComponent()
 
 	InputComponent->BindAction("Attack", IE_Pressed, this, &UCombatComponent::Attack);
 	InputComponent->BindAction("ChangeStance", IE_Pressed, this, &UCombatComponent::ChangeStance);
-	InputComponent->BindAction("SpecialAttack", IE_Pressed, this, &UCombatComponent::SpecialAttack);
 }
 
 bool UCombatComponent::CheckCalmState(const ABasePlayer* Owner, const ABaseItem* EquippedWeapon) const
@@ -91,6 +95,7 @@ TArray<UAnimMontage*> UCombatComponent::GetAnimList() const
 	return OutArray;
 }
 
+//TODO create wrapper above the attack | attack will be the inner method | call wrappers in input events and set needed info to attack
 void UCombatComponent::Attack()
 {
 	//TODO forbid jump when attack in progress
@@ -99,6 +104,8 @@ void UCombatComponent::Attack()
 
 	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedItem(EItemTypes::Weapon);
 	if (!EquippedWeapon) { return; }
+
+	UE_LOG(LogCombatComponent, Display, TEXT("BattleMod: %s"), bBattleMode ? TEXT("True") : TEXT("False"));
 	
 	if (!CheckCalmState(Owner, EquippedWeapon) || !bBattleMode) { return; }
 
@@ -108,32 +115,8 @@ void UCombatComponent::Attack()
 
 	FTimerDelegate EventEnablerDelegate;
 	EventEnablerDelegate.BindUFunction(this, FName("ItemOverlapEventEnabler"), EquippedWeapon);
-
-	//TODO define needed anim and send it to PlayAnimMontage
+	
 	const float AnimDuration = Owner->PlayAnimMontage(CombatAnimList[EAttackTypes::DefaultAttack]);
-	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, EventEnablerDelegate, AnimDuration, false);
-}
-
-void UCombatComponent::SpecialAttack()
-{
-	//TODO forbid jump when attack in progress
-	const auto Owner = GetOwner<ABasePlayer>();
-	if (!Owner) { return; }
-
-	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedItem(EItemTypes::Weapon);
-	if (!EquippedWeapon) { return; }
-	
-	if (!CheckCalmState(Owner, EquippedWeapon) || !bBattleMode) { return; }
-
-	EquippedWeapon->ChangeCombatState(Owner->GetMesh());
-
-	ItemOverlapEventEnabler(EquippedWeapon);
-
-	FTimerDelegate EventEnablerDelegate;
-	EventEnablerDelegate.BindUFunction(this, FName("ItemOverlapEventEnabler"), EquippedWeapon);
-
-	//TODO define needed anim and send it to PlayAnimMontage
-	const float AnimDuration = Owner->PlayAnimMontage(CombatAnimList[EAttackTypes::MightAttack]);
 	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, EventEnablerDelegate, AnimDuration, false);
 }
 
