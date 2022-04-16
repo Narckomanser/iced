@@ -45,9 +45,7 @@ private:
 	void UseBattleMode(const bool bMode) const;
 
 	UFUNCTION()
-	void ItemOverlapEventEnabler(ABaseItem* Item) const;
-
-	void InitCombatAnimList();
+	void CombatStateSwitcher(ABaseItem* Item) const;
 
 private:
 	bool bDoesEquipInProgress = false;

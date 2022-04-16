@@ -13,6 +13,8 @@
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogInventoryComponent, All, All);
+
 
 UInventoryComponent::UInventoryComponent()
 {
@@ -63,7 +65,7 @@ void UInventoryComponent::OnAttachItem(USkeletalMeshComponent* MeshComp)
 void UInventoryComponent::Eqiup(ABaseItem* NewItem)
 {
 	if (!NewItem) { return; }
-	
+
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) { return; }
 
@@ -74,19 +76,18 @@ void UInventoryComponent::Eqiup(ABaseItem* NewItem)
 
 	const auto ChangingItemType = NewItem->GetItemType();
 
-	DropItem(ChangingItemType, Owner, CombatComponent->GetAnimList());
+	DropItem(ChangingItemType, Owner);
 
 	Equipment[ChangingItemType] = NewItem;
 	Equipment[ChangingItemType]->SetOwner(Owner);
 	SetupEquippedItem(Equipment[ChangingItemType], Owner, true);
-	InitNotifies(CombatComponent->GetAnimList());
 
 	const auto ParentMesh = Owner->GetMesh();
 	if (!ParentMesh) { return; }
 
 	AttachItemToSocket(Equipment[ChangingItemType], NewItem->GetItemSocket(), ParentMesh);
 
-	const auto HitCapsule = Equipment[NewItem->GetItemType()]->GetHitCapsuleComponent();
+	const auto HitCapsule = Equipment[NewItem->GetItemType()]->GetHitComponent();
 	if (!HitCapsule) { return; }
 
 	HitCapsule->OnComponentBeginOverlap.AddDynamic(Equipment[ChangingItemType],
@@ -94,18 +95,16 @@ void UInventoryComponent::Eqiup(ABaseItem* NewItem)
 }
 
 
-void UInventoryComponent::DropItem(EItemTypes ItemType, ABasePlayer* Owner, const TArray<UAnimMontage*>& AnimList)
+void UInventoryComponent::DropItem(EItemTypes ItemType, ABasePlayer* Owner)
 {
 	ABaseItem* Item = Equipment[ItemType];
 	if (!Item) { return; }
 
 
 	//TODO move this method to other place
-	RemoveNotifies(AnimList);
-
 	SetupEquippedItem(Equipment[ItemType], Owner, false);
 
-	Item->GetHitCapsuleComponent()->OnComponentBeginOverlap.RemoveAll(Item);
+	Item->GetHitComponent()->OnComponentBeginOverlap.RemoveAll(Item);
 	Item->SetOwner(nullptr);
 	Item->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	Item = nullptr;
@@ -123,18 +122,6 @@ void UInventoryComponent::AttachItemToSocket(ABaseItem* Item, const FName Socket
 
 	const FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget, false};
 	Item->AttachToComponent(CombatComponent, AttachmentTransformRules, SocketName);
-}
-
-void UInventoryComponent::InitNotifies(const TArray<UAnimMontage*>& AnimList)
-{
-	for (const auto Anim : AnimList)
-	{
-		if (!Anim) continue;
-
-		const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>(Anim);
-		//TODO remove hardcoded item ptr
-		AttackEndNotify->OnNotified.AddUObject(Equipment[EItemTypes::Weapon], &ABaseItem::ChangeCombatState);
-	}
 }
 
 void UInventoryComponent::RemoveNotifies(const TArray<UAnimMontage*>& AnimList) const
@@ -155,22 +142,31 @@ void UInventoryComponent::RemoveNotifies(const TArray<UAnimMontage*>& AnimList) 
 	}
 }
 
+// TODO FULLY REWORK THIS SHIT!!!!
 void UInventoryComponent::SetupEquippedItem(ABaseItem* Item, ABasePlayer* ItemOwner, bool ShouldIgnore)
 {
-	const auto OwnerCollisionComponent = ItemOwner->GetCapsuleComponent();
-	if (!OwnerCollisionComponent) { return; }
+	// const auto OwnerCollisionComponent = ItemOwner->GetCapsuleComponent();
+	// if (!OwnerCollisionComponent) { return; }
+	//
+	// OwnerCollisionComponent->IgnoreActorWhenMoving(Item, ShouldIgnore);
+	//
+	// const auto OwnerMeshComponent = ItemOwner->GetMesh();
+	// if (!OwnerMeshComponent) { return; }
+	//
+	// OwnerMeshComponent->IgnoreActorWhenMoving(Item, ShouldIgnore);
 
-	OwnerCollisionComponent->IgnoreActorWhenMoving(Item, ShouldIgnore);
-
-	const auto OwnerMeshComponent = ItemOwner->GetMesh();
-	if (!OwnerMeshComponent) { return; }
-
-	OwnerMeshComponent->IgnoreActorWhenMoving(Item, ShouldIgnore);
-
-	const auto HitCapsule = Item->GetHitCapsuleComponent();
+	const auto HitCapsule = Item->GetHitComponent();
 	if (!HitCapsule) { return; }
-
+	
 	HitCapsule->IgnoreActorWhenMoving(ItemOwner, ShouldIgnore);
+
+	for (const auto Equip : Equipment)
+	{
+		if (const auto IgnoredItem = Equip.Value)
+		{
+			IgnoredItem->GetHitComponent()->IgnoreActorWhenMoving(Cast<AActor>(Item), ShouldIgnore);
+		}
+	}
 }
 
 void UInventoryComponent::InitEquipmentList()

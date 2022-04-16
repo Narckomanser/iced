@@ -23,10 +23,10 @@ public:
 	                                           UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	                                           const FHitResult& SweepResult);
 
-	UCapsuleComponent* GetHitCapsuleComponent() const { return HitCapsuleComponent; }
+	UPrimitiveComponent* GetHitComponent() const { return HitComponent; }
 	UStaticMeshComponent* GetMesh() const { return ItemMesh; }
 
-	void ChangeCombatState(USkeletalMeshComponent* MeshComp);
+	void ChangeCombatState();
 	bool IsInCombatState() const { return bDoesInCombat; }
 
 	EItemTypes GetItemType() const { return ItemType; }
@@ -44,7 +44,7 @@ protected:
 	UStaticMeshComponent* ItemMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UCapsuleComponent* HitCapsuleComponent;
+	UPrimitiveComponent* HitComponent = nullptr;
 
 protected:
 	UFUNCTION()

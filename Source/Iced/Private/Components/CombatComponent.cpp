@@ -23,7 +23,6 @@ UCombatComponent::UCombatComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	UseBattleMode(bBattleMode);
-	InitCombatAnimList();
 }
 
 void UCombatComponent::DevChangeStance()
@@ -87,14 +86,6 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-TArray<UAnimMontage*> UCombatComponent::GetAnimList() const
-{
-	TArray<UAnimMontage*> OutArray;
-	CombatAnimList.GenerateValueArray(OutArray);
-
-	return OutArray;
-}
-
 //TODO create wrapper above the attack | attack will be the inner method | call wrappers in input events and set needed info to attack
 void UCombatComponent::Attack()
 {
@@ -104,20 +95,16 @@ void UCombatComponent::Attack()
 
 	const auto EquippedWeapon = Owner->GetInventoryComponent()->GetEquippedItem(EItemTypes::Weapon);
 	if (!EquippedWeapon) { return; }
-
-	UE_LOG(LogCombatComponent, Display, TEXT("BattleMod: %s"), bBattleMode ? TEXT("True") : TEXT("False"));
 	
 	if (!CheckCalmState(Owner, EquippedWeapon) || !bBattleMode) { return; }
+	
+	CombatStateSwitcher(EquippedWeapon);
 
-	EquippedWeapon->ChangeCombatState(Owner->GetMesh());
-
-	ItemOverlapEventEnabler(EquippedWeapon);
-
-	FTimerDelegate EventEnablerDelegate;
-	EventEnablerDelegate.BindUFunction(this, FName("ItemOverlapEventEnabler"), EquippedWeapon);
+	FTimerDelegate CombatEnablerDelegate;
+	CombatEnablerDelegate.BindUFunction(this, FName("CombatStateSwitcher"), EquippedWeapon);
 	
 	const float AnimDuration = Owner->PlayAnimMontage(CombatAnimList[EAttackTypes::DefaultAttack]);
-	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, EventEnablerDelegate, AnimDuration, false);
+	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, CombatEnablerDelegate, AnimDuration, false);
 }
 
 void UCombatComponent::InitAnimNotifies()
@@ -174,7 +161,7 @@ void UCombatComponent::ChangeStance()
 	CurrentStanceState = (++CurrentStanceState) % StanceData.Num();
 }
 
-void UCombatComponent::ItemOverlapEventEnabler(ABaseItem* Item) const
+void UCombatComponent::CombatStateSwitcher(ABaseItem* Item) const
 {
 	if (!Item) { return; }
 
@@ -182,12 +169,6 @@ void UCombatComponent::ItemOverlapEventEnabler(ABaseItem* Item) const
 	if (!WeaponMeshComponent) { return; }
 
 	WeaponMeshComponent->SetGenerateOverlapEvents(!WeaponMeshComponent->GetGenerateOverlapEvents());
-}
 
-void UCombatComponent::InitCombatAnimList()
-{
-	for (EAttackTypes AttackType : TEnumRange<EAttackTypes>())
-	{
-		CombatAnimList.Add(AttackType, nullptr);
-	}
+	Item->ChangeCombatState();
 }

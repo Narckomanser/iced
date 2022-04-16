@@ -3,9 +3,10 @@
 
 #include "Notifies/BaseAnimNotify.h"
 
-void UBaseAnimNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
+void UBaseAnimNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
+                             const FAnimNotifyEventReference& EventReference)
 {
 	OnNotified.Broadcast(MeshComp);
-	
-	Super::Notify(MeshComp, Animation);
+
+	Super::Notify(MeshComp, Animation, EventReference);
 }

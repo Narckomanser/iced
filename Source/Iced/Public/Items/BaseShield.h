@@ -11,6 +11,9 @@ class ICED_API ABaseShield : public ABaseItem
 {
 	GENERATED_BODY()
 
+public:
+	ABaseShield();
+
 protected:
 	virtual void OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	                                           UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
