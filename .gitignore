@@ -81,3 +81,6 @@ DerivedDataCache/*
 .idea/.idea.ShootThemUp.dir/.idea/vcs.xml
 .idea/.idea.ShootThemUp.dir/.idea/workspace.xml
 ShootThemUp.uproject.DotSettings.user
+
+# Rider link
+Plugins/Developer/RiderLink/*
