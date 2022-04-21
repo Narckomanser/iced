@@ -38,6 +38,10 @@ ABaseItem* UGrabComponent::DetectItem() const
 	                                     GetStartPoint(),
 	                                     GetEndPoint(),
 	                                     ECC_Visibility);
+	if (const auto FoundedActor = HitResult.GetActor())
+	{
+		UE_LOG(LogGrabComponent, Display, TEXT("Founded object: %s"), *FoundedActor->GetName());
+	}
 
 	return Cast<ABaseItem>(HitResult.GetActor());
 }

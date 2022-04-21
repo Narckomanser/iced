@@ -25,7 +25,7 @@ void ABaseWeapon::OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedC
 		OtherActor->TakeDamage(DamageAmount, FPointDamageEvent{}, ItemOwner->GetController(), GetOwner());
 		GetWorld()->GetTimerManager().SetTimer(OverlapTimer, OverlapTimerDelay, false);
 
-		UE_LOG(LogBaseWeapon, Display, TEXT("%s hitted to: %s | %s"), *OverlappedComponent->GetName(), *OtherActor->GetName(), *OtherComp->GetName());
+		UE_LOG(LogBaseWeapon, Display, TEXT("%s's %s hitted to: %s | %s"), *this->GetName(), *OverlappedComponent->GetName(), *OtherActor->GetName(), *OtherComp->GetName());
 	}
 }
 
