@@ -20,7 +20,7 @@ void ABaseShield::OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedC
 {
 }
 
-void ABaseShield::OnTakePointDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation,
+void ABaseShield::OnTakePointDamageHandle(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation,
                                     UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection,
                                     const UDamageType* DamageType,
                                     AActor* DamageCauser)

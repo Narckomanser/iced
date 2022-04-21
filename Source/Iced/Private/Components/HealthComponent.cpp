@@ -13,9 +13,8 @@ void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	SetHealth(MaxHealth);
-
-	AActor* Owner = GetOwner();
-	if (Owner)
+	
+	if (const auto Owner = GetOwner())
 	{
 		Owner->OnTakeRadialDamage.AddDynamic(this, &UHealthComponent::OnTakeRadialDamage);
 		Owner->OnTakePointDamage.AddDynamic(this, &UHealthComponent::OnTakePointDamage);

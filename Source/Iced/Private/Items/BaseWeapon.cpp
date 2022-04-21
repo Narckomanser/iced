@@ -29,7 +29,7 @@ void ABaseWeapon::OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedC
 	}
 }
 
-void ABaseWeapon::OnTakePointDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation,
+void ABaseWeapon::OnTakePointDamageHandle(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation,
 	UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, const UDamageType* DamageType,
 	AActor* DamageCauser)
 {

@@ -62,6 +62,7 @@ void UInventoryComponent::OnAttachItem(USkeletalMeshComponent* MeshComp)
 	AttachItemToSocket(Equipment[EItemTypes::Weapon], CombatComponent->GetStanceSocketName(), MeshComp);
 }
 
+//TODO refactor this method
 void UInventoryComponent::Eqiup(ABaseItem* NewItem)
 {
 	if (!NewItem) { return; }
@@ -92,6 +93,8 @@ void UInventoryComponent::Eqiup(ABaseItem* NewItem)
 
 	HitCapsule->OnComponentBeginOverlap.AddDynamic(Equipment[ChangingItemType],
 	                                               &ABaseItem::OnComponentBeginOverlapHandle);
+
+	Equipment[ChangingItemType]->OnTakePointDamage.AddDynamic(Equipment[ChangingItemType], &ABaseItem::OnTakePointDamageHandle);
 }
 
 
@@ -104,6 +107,7 @@ void UInventoryComponent::DropItem(EItemTypes ItemType, ABasePlayer* Owner)
 	//TODO move this method to other place
 	SetupEquippedItem(Equipment[ItemType], Owner, false);
 
+	Item->OnTakePointDamage.RemoveAll(Item);
 	Item->GetHitComponent()->OnComponentBeginOverlap.RemoveAll(Item);
 	Item->SetOwner(nullptr);
 	Item->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
@@ -142,7 +146,7 @@ void UInventoryComponent::RemoveNotifies(const TArray<UAnimMontage*>& AnimList) 
 	}
 }
 
-// TODO FULLY REWORK THIS SHIT!!!!
+// TODO FULLY REWORK THIS SHIT!!!! also need ignore owner's shield
 void UInventoryComponent::SetupEquippedItem(ABaseItem* Item, ABasePlayer* ItemOwner, bool ShouldIgnore)
 {
 	// const auto OwnerCollisionComponent = ItemOwner->GetCapsuleComponent();
