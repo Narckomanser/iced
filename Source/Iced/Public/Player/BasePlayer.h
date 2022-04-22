@@ -35,8 +35,10 @@ public:
 	float GetMovementDirection() const;
 
 	UInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }
-	
+
 	UCombatComponent* GetCombatComponent() const { return CombatComponent; }
+
+	UGrabComponent* GetGrabComponent() const { return GrabComponent; }
 
 protected:
 	virtual void BeginPlay() override;

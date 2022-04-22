@@ -41,7 +41,7 @@ void UInventoryComponent::BeginPlay()
 
 void UInventoryComponent::GrabSubscriber()
 {
-	const auto GrabComponent = GetOwner()->FindComponentByClass<UGrabComponent>();
+	const auto GrabComponent = Cast<ABasePlayer>(GetOwner())->GetGrabComponent();
 	if (!GrabComponent) { return; }
 
 	GrabComponent->OnGrabItem.AddUObject(this, &UInventoryComponent::Eqiup);
@@ -65,6 +65,15 @@ void UInventoryComponent::OnAttachItem(USkeletalMeshComponent* MeshComp)
 //TODO refactor this method
 void UInventoryComponent::Eqiup(ABaseItem* NewItem)
 {
+	// drop previous item
+	// setup new item for use:
+	//		1. set owner
+	//		2. subscribe on events
+	//	ignore collision with owner
+	//	ignore collision with owner's items
+	// attach to socket
+	// add to equip map
+	
 	if (!NewItem) { return; }
 
 	const auto Owner = GetOwner<ABasePlayer>();
@@ -78,34 +87,45 @@ void UInventoryComponent::Eqiup(ABaseItem* NewItem)
 	const auto ChangingItemType = NewItem->GetItemType();
 
 	DropItem(ChangingItemType, Owner);
+	// TODO this method->
+	SetupItem(NewItem, Owner);
 
-	Equipment[ChangingItemType] = NewItem;
-	Equipment[ChangingItemType]->SetOwner(Owner);
-	SetupEquippedItem(Equipment[ChangingItemType], Owner, true);
+	
+	SetupItemCollision(NewItem, Owner, true);
 
 	const auto ParentMesh = Owner->GetMesh();
 	if (!ParentMesh) { return; }
 
-	AttachItemToSocket(Equipment[ChangingItemType], NewItem->GetItemSocket(), ParentMesh);
+	AttachItemToSocket(NewItem, NewItem->GetItemSocket(), ParentMesh);
 
-	const auto HitCapsule = Equipment[NewItem->GetItemType()]->GetHitComponent();
+	const auto HitCapsule = NewItem->GetHitComponent();
 	if (!HitCapsule) { return; }
 
-	HitCapsule->OnComponentBeginOverlap.AddDynamic(Equipment[ChangingItemType],
+	HitCapsule->OnComponentBeginOverlap.AddDynamic(NewItem,
 	                                               &ABaseItem::OnComponentBeginOverlapHandle);
 
-	Equipment[ChangingItemType]->OnTakePointDamage.AddDynamic(Equipment[ChangingItemType], &ABaseItem::OnTakePointDamageHandle);
+	NewItem->OnTakePointDamage.AddDynamic(NewItem, &ABaseItem::OnTakePointDamageHandle);
+
+	Equipment[ChangingItemType] = NewItem;
 }
 
 
 void UInventoryComponent::DropItem(EItemTypes ItemType, ABasePlayer* Owner)
 {
-	ABaseItem* Item = Equipment[ItemType];
+	// remove owner 
+	// stop ignore owner
+	// stop ignore owner's items
+	// unsubscribe from event's
+	// detach from owner's socket
+	// in map set nullptr to item
+
+	
+	auto Item = Equipment[ItemType];
 	if (!Item) { return; }
 
 
 	//TODO move this method to other place
-	SetupEquippedItem(Equipment[ItemType], Owner, false);
+	SetupItemCollision(Equipment[ItemType], Owner, false);
 
 	Item->OnTakePointDamage.RemoveAll(Item);
 	Item->GetHitComponent()->OnComponentBeginOverlap.RemoveAll(Item);
@@ -146,8 +166,14 @@ void UInventoryComponent::RemoveNotifies(const TArray<UAnimMontage*>& AnimList) 
 	}
 }
 
+void UInventoryComponent::SetupItem(ABaseItem* Item, AActor* NewOwner)
+{
+	Item->SetOwner(NewOwner);
+	
+}
+
 // TODO FULLY REWORK THIS SHIT!!!! also need ignore owner's shield
-void UInventoryComponent::SetupEquippedItem(ABaseItem* Item, ABasePlayer* ItemOwner, bool ShouldIgnore)
+void UInventoryComponent::SetupItemCollision(ABaseItem* Item, ABasePlayer* ItemOwner, bool ShouldIgnore)
 {
 	// const auto OwnerCollisionComponent = ItemOwner->GetCapsuleComponent();
 	// if (!OwnerCollisionComponent) { return; }
@@ -158,6 +184,9 @@ void UInventoryComponent::SetupEquippedItem(ABaseItem* Item, ABasePlayer* ItemOw
 	// if (!OwnerMeshComponent) { return; }
 	//
 	// OwnerMeshComponent->IgnoreActorWhenMoving(Item, ShouldIgnore);
+
+
+	
 
 	const auto HitCapsule = Item->GetHitComponent();
 	if (!HitCapsule) { return; }

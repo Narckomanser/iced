@@ -35,7 +35,8 @@ private:
 	void DropItem(EItemTypes ItemType, ABasePlayer* Owner);
 	void AttachItemToSocket(ABaseItem* Item, const FName SocketName, USkeletalMeshComponent* MeshComp) const;
 	void RemoveNotifies(const TArray<UAnimMontage*>& AnimList) const;
-	void SetupEquippedItem(ABaseItem* Item, ABasePlayer* ItemOwner, bool ShouldIgnore);
+	void SetupItem(ABaseItem* Item, AActor* NewOwner);
+	void SetupItemCollision(ABaseItem* Item, ABasePlayer* ItemOwner, bool ShouldIgnore);
 
 	void InitEquipmentList();
 
