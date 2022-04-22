@@ -32,7 +32,7 @@ protected:
 private:
 	void GrabSubscriber();
 	void Eqiup(ABaseItem* NewItem);
-	void DropItem(EItemTypes ItemType, ABasePlayer* Owner);
+	void DropItem(EItemTypes ItemType);
 	void AttachItemToSocket(ABaseItem* Item, const FName SocketName, USkeletalMeshComponent* MeshComp) const;
 	void RemoveNotifies(const TArray<UAnimMontage*>& AnimList) const;
 	void SetupItem(ABaseItem* Item, AActor* NewOwner);

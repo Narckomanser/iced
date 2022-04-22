@@ -62,18 +62,8 @@ void UInventoryComponent::OnAttachItem(USkeletalMeshComponent* MeshComp)
 	AttachItemToSocket(Equipment[EItemTypes::Weapon], CombatComponent->GetStanceSocketName(), MeshComp);
 }
 
-//TODO refactor this method
 void UInventoryComponent::Eqiup(ABaseItem* NewItem)
 {
-	// drop previous item
-	// setup new item for use:
-	//		1. set owner
-	//		2. subscribe on events
-	//	ignore collision with owner
-	//	ignore collision with owner's items
-	// attach to socket
-	// add to equip map
-	
 	if (!NewItem) { return; }
 
 	const auto Owner = GetOwner<ABasePlayer>();
@@ -86,11 +76,9 @@ void UInventoryComponent::Eqiup(ABaseItem* NewItem)
 
 	const auto ChangingItemType = NewItem->GetItemType();
 
-	DropItem(ChangingItemType, Owner);
-	// TODO this method->
-	SetupItem(NewItem, Owner);
+	DropItem(ChangingItemType);
 
-	
+	SetupItem(NewItem, Owner);
 	SetupItemCollision(NewItem, Owner, true);
 
 	const auto ParentMesh = Owner->GetMesh();
@@ -98,39 +86,26 @@ void UInventoryComponent::Eqiup(ABaseItem* NewItem)
 
 	AttachItemToSocket(NewItem, NewItem->GetItemSocket(), ParentMesh);
 
-	const auto HitCapsule = NewItem->GetHitComponent();
-	if (!HitCapsule) { return; }
-
-	HitCapsule->OnComponentBeginOverlap.AddDynamic(NewItem,
-	                                               &ABaseItem::OnComponentBeginOverlapHandle);
-
-	NewItem->OnTakePointDamage.AddDynamic(NewItem, &ABaseItem::OnTakePointDamageHandle);
-
 	Equipment[ChangingItemType] = NewItem;
 }
 
 
-void UInventoryComponent::DropItem(EItemTypes ItemType, ABasePlayer* Owner)
+void UInventoryComponent::DropItem(EItemTypes ItemType)
 {
-	// remove owner 
-	// stop ignore owner
-	// stop ignore owner's items
-	// unsubscribe from event's
-	// detach from owner's socket
-	// in map set nullptr to item
-
-	
 	auto Item = Equipment[ItemType];
 	if (!Item) { return; }
 
+	const auto ItemOwner = Cast<ABasePlayer>(Item->GetOwner());
+	if (!ItemOwner) { return; }
 
-	//TODO move this method to other place
-	SetupItemCollision(Equipment[ItemType], Owner, false);
+	SetupItemCollision(Equipment[ItemType], ItemOwner, false);
 
-	Item->OnTakePointDamage.RemoveAll(Item);
-	Item->GetHitComponent()->OnComponentBeginOverlap.RemoveAll(Item);
-	Item->SetOwner(nullptr);
+	Item->OnTakePointDamage.Remove(Item, "OnTakePointDamageHandle");
+	Item->GetHitComponent()->OnComponentBeginOverlap.Remove(Item, "OnComponentBeginOverlapHandle");
+
 	Item->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+
+	Item->SetOwner(nullptr);
 	Item = nullptr;
 }
 
@@ -169,35 +144,28 @@ void UInventoryComponent::RemoveNotifies(const TArray<UAnimMontage*>& AnimList) 
 void UInventoryComponent::SetupItem(ABaseItem* Item, AActor* NewOwner)
 {
 	Item->SetOwner(NewOwner);
-	
-}
-
-// TODO FULLY REWORK THIS SHIT!!!! also need ignore owner's shield
-void UInventoryComponent::SetupItemCollision(ABaseItem* Item, ABasePlayer* ItemOwner, bool ShouldIgnore)
-{
-	// const auto OwnerCollisionComponent = ItemOwner->GetCapsuleComponent();
-	// if (!OwnerCollisionComponent) { return; }
-	//
-	// OwnerCollisionComponent->IgnoreActorWhenMoving(Item, ShouldIgnore);
-	//
-	// const auto OwnerMeshComponent = ItemOwner->GetMesh();
-	// if (!OwnerMeshComponent) { return; }
-	//
-	// OwnerMeshComponent->IgnoreActorWhenMoving(Item, ShouldIgnore);
-
-
-	
 
 	const auto HitCapsule = Item->GetHitComponent();
 	if (!HitCapsule) { return; }
-	
+
+	HitCapsule->OnComponentBeginOverlap.AddDynamic(Item,
+	                                               &ABaseItem::OnComponentBeginOverlapHandle);
+
+	Item->OnTakePointDamage.AddDynamic(Item, &ABaseItem::OnTakePointDamageHandle);
+}
+
+void UInventoryComponent::SetupItemCollision(ABaseItem* Item, ABasePlayer* ItemOwner, bool ShouldIgnore)
+{
+	const auto HitCapsule = Item->GetHitComponent();
+	if (!HitCapsule) { return; }
+
 	HitCapsule->IgnoreActorWhenMoving(ItemOwner, ShouldIgnore);
 
 	for (const auto Equip : Equipment)
 	{
 		if (const auto IgnoredItem = Equip.Value)
 		{
-			IgnoredItem->GetHitComponent()->IgnoreActorWhenMoving(Cast<AActor>(Item), ShouldIgnore);
+			Item->GetHitComponent()->IgnoreActorWhenMoving(Cast<AActor>(IgnoredItem), ShouldIgnore);
 		}
 	}
 }
