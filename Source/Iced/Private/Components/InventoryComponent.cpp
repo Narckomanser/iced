@@ -5,8 +5,6 @@
 #include "GrabComponent.h"
 #include "BaseItem.h"
 
-#include "NotifyUtils.h"
-#include "AttackEndAnimNotify.h"
 #include "BasePlayer.h"
 #include "CombatComponent.h"
 
@@ -69,10 +67,10 @@ void UInventoryComponent::Eqiup(ABaseItem* NewItem)
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) { return; }
 
-	const auto CombatComponent = Owner->GetCombatComponent();
-	if (!CombatComponent) { return; }
-
-	if (CombatComponent->DoesInBattle()) { return; }
+	if (const auto CombatComponent = Owner->GetCombatComponent(); !CombatComponent && CombatComponent->DoesInBattle())
+	{
+		return;
+	}
 
 	const auto ChangingItemType = NewItem->GetItemType();
 
@@ -86,11 +84,11 @@ void UInventoryComponent::Eqiup(ABaseItem* NewItem)
 
 	AttachItemToSocket(NewItem, NewItem->GetItemSocket(), ParentMesh);
 
-	Equipment[ChangingItemType] = NewItem;
+	AddToEquipment(ChangingItemType, NewItem);
 }
 
 
-void UInventoryComponent::DropItem(EItemTypes ItemType)
+void UInventoryComponent::DropItem(const EItemTypes ItemType)
 {
 	auto Item = Equipment[ItemType];
 	if (!Item) { return; }
@@ -110,35 +108,16 @@ void UInventoryComponent::DropItem(EItemTypes ItemType)
 }
 
 void UInventoryComponent::AttachItemToSocket(ABaseItem* Item, const FName SocketName,
-                                             USkeletalMeshComponent* CombatComponent) const
+                                             USkeletalMeshComponent* MeshComp) const
 {
-	const auto Owner = GetOwner<ABasePlayer>();
-	if (!Item || !Owner) return;
+	if (!Item) return;
 
 	//TODO setup collision and uncomment it
-	//Used to ignore actors after death
+	//To ignore actors after death
 	//Item->DisableComponentsSimulatePhysics();
 
 	const FAttachmentTransformRules AttachmentTransformRules{EAttachmentRule::SnapToTarget, false};
-	Item->AttachToComponent(CombatComponent, AttachmentTransformRules, SocketName);
-}
-
-void UInventoryComponent::RemoveNotifies(const TArray<UAnimMontage*>& AnimList) const
-{
-	const auto Owner = GetOwner<ABasePlayer>();
-	if (!Owner) { return; }
-
-	const auto CombatComponent = Owner->GetCombatComponent();
-	if (!CombatComponent) { return; }
-
-	for (const auto Anim : AnimList)
-	{
-		if (!Anim) continue;
-
-		const auto AttackEndNotify = FNotifyUtils::FindNotifyByClass<UAttackEndAnimNotify>(Anim);
-		//TODO remove hardcoded item ptr
-		AttackEndNotify->OnNotified.RemoveAll(Equipment[EItemTypes::Weapon]);
-	}
+	Item->AttachToComponent(MeshComp, AttachmentTransformRules, SocketName);
 }
 
 void UInventoryComponent::SetupItem(ABaseItem* Item, AActor* NewOwner)
@@ -154,7 +133,7 @@ void UInventoryComponent::SetupItem(ABaseItem* Item, AActor* NewOwner)
 	Item->OnTakePointDamage.AddDynamic(Item, &ABaseItem::OnTakePointDamageHandle);
 }
 
-void UInventoryComponent::SetupItemCollision(ABaseItem* Item, ABasePlayer* ItemOwner, bool ShouldIgnore)
+void UInventoryComponent::SetupItemCollision(const ABaseItem* Item, ABasePlayer* ItemOwner, const bool ShouldIgnore)
 {
 	const auto HitCapsule = Item->GetHitComponent();
 	if (!HitCapsule) { return; }
@@ -165,9 +144,14 @@ void UInventoryComponent::SetupItemCollision(ABaseItem* Item, ABasePlayer* ItemO
 	{
 		if (const auto IgnoredItem = Equip.Value)
 		{
-			Item->GetHitComponent()->IgnoreActorWhenMoving(Cast<AActor>(IgnoredItem), ShouldIgnore);
+			IgnoredItem->GetHitComponent()->IgnoreComponentWhenMoving(Item->GetHitComponent(), ShouldIgnore);
 		}
 	}
+}
+
+void UInventoryComponent::AddToEquipment(const EItemTypes ItemType, ABaseItem* NewItem)
+{
+	Equipment[ItemType] = NewItem;
 }
 
 void UInventoryComponent::InitEquipmentList()

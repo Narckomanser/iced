@@ -25,7 +25,8 @@ public:
 
 
 private:
-	bool CanTakeDamage() const;
+	bool CanAttack() const;
+	bool CanDealDamage(const AActor* DamageDealer, const AActor* DamageTaker) const;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")

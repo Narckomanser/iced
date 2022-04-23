@@ -32,11 +32,11 @@ protected:
 private:
 	void GrabSubscriber();
 	void Eqiup(ABaseItem* NewItem);
-	void DropItem(EItemTypes ItemType);
+	void DropItem(const EItemTypes ItemType);
 	void AttachItemToSocket(ABaseItem* Item, const FName SocketName, USkeletalMeshComponent* MeshComp) const;
-	void RemoveNotifies(const TArray<UAnimMontage*>& AnimList) const;
 	void SetupItem(ABaseItem* Item, AActor* NewOwner);
-	void SetupItemCollision(ABaseItem* Item, ABasePlayer* ItemOwner, bool ShouldIgnore);
+	void SetupItemCollision(const ABaseItem* Item, ABasePlayer* ItemOwner, const bool ShouldIgnore);
+	void AddToEquipment(const EItemTypes ItemType, ABaseItem* NewItem);
 
 	void InitEquipmentList();
 
