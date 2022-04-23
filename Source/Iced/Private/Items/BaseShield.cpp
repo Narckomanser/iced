@@ -25,13 +25,9 @@ void ABaseShield::OnTakePointDamageHandle(AActor* DamagedActor, float Damage, AC
                                     const UDamageType* DamageType,
                                     AActor* DamageCauser)
 {
-	UE_LOG(LogBaseShield, Display, TEXT("OnTakePointDamage in shield"));
-	
 	if (const auto ItemOwner = DamagedActor->GetOwner<ABasePlayer>())
 	{
-		UE_LOG(LogBaseShield, Display, TEXT("Shield Owner: %s"), *ItemOwner->GetName());
 		const float NewDamage = Damage - ProtectionAmount;
-		
-		ItemOwner->TakeDamage(NewDamage, FPointDamageEvent{}, InstigatedBy, DamageCauser);
+		ItemOwner->TakeDamage(NewDamage, FPointDamageEvent{}, InstigatedBy, this);
 	}
 }

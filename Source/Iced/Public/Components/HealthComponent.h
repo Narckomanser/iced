@@ -54,4 +54,7 @@ private:
 	float MaxHealth = 100.f;
 
 	float CurrentHealth;
+
+	UPROPERTY(EditDefaultsOnly, Category="Hit Reaction")
+	UAnimMontage* DefaultSwordHit;
 };

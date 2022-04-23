@@ -2,6 +2,8 @@
 
 #include "Components/HealthComponent.h"
 
+#include "GameFramework/Character.h"
+
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All);
 
 UHealthComponent::UHealthComponent()
@@ -39,6 +41,8 @@ void UHealthComponent::OnTakePointDamage(AActor* DamagedActor, float Damage, ACo
                                          const UDamageType* DamageType, AActor* DamageCauser)
 {
 	ApplyDamage(Damage);
+	UE_LOG(LogHealthComponent, Display, TEXT("Damage Dealer: %s"), *DamageCauser->GetName());
+	GetOwner<ACharacter>()->PlayAnimMontage(DefaultSwordHit);
 }
 
 void UHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
