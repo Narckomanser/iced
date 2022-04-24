@@ -105,6 +105,8 @@ void UCombatComponent::Attack()
 	
 	const float AnimDuration = Owner->PlayAnimMontage(CombatAnimList[EAttackTypes::DefaultAttack]);
 	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, CombatEnablerDelegate, AnimDuration, false);
+	
+	//TODO send delegate event to weapon with DamageType in FPointDamageEvent
 }
 
 void UCombatComponent::InitAnimNotifies()
