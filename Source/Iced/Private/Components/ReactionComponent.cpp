@@ -22,5 +22,5 @@ void UReactionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 UAnimMontage* UReactionComponent::GetResponseAnimation(const UDamageType* DamageType)
 {
-	return ResponseList[DamageType];
+	return ResponseList[DamageType->GetClass()];
 }

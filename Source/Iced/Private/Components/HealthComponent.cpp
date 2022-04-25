@@ -1,16 +1,15 @@
 // Narckomanser's game
 
 #include "Components/HealthComponent.h"
-#include "Components/ReactionComponent.h"
 
+#include "BasePlayer.h"
+#include "ReactionComponent.h"
 #include "GameFramework/Character.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All);
 
 UHealthComponent::UHealthComponent()
 {
-	ReactionComponent = CreateDefaultSubobject<UReactionComponent>("Reaction Component");
-	
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
@@ -18,7 +17,7 @@ void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	SetHealth(MaxHealth);
-	
+
 	if (const auto Owner = GetOwner())
 	{
 		Owner->OnTakeRadialDamage.AddDynamic(this, &UHealthComponent::OnTakeRadialDamage);
@@ -44,8 +43,13 @@ void UHealthComponent::OnTakePointDamage(AActor* DamagedActor, float Damage, ACo
                                          const UDamageType* DamageType, AActor* DamageCauser)
 {
 	ApplyDamage(Damage);
-	UE_LOG(LogHealthComponent, Display, TEXT("Damage Dealer: %s, Damage Type %s"), *DamageCauser->GetName(), *DamageType->GetClass()->GetName());
-	GetOwner<ACharacter>()->PlayAnimMontage(ReactionComponent->GetResponseAnimation(DamageType));
+	UE_LOG(LogHealthComponent, Display, TEXT("Damage Dealer: %s, Damage Type %s"), *DamageCauser->GetName(),
+	       *DamageType->GetClass()->GetName());
+	
+	if (const auto ReactionComponent = GetOwner<ABasePlayer>()->GetReactionComponent(); ReactionComponent)
+	{
+		GetOwner<ACharacter>()->PlayAnimMontage(ReactionComponent->GetResponseAnimation(DamageType));
+	}
 }
 
 void UHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,

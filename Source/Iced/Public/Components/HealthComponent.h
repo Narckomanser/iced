@@ -7,8 +7,6 @@
 #include "Iced/Public/CoreTypes.h"
 #include "HealthComponent.generated.h"
 
-class UReactionComponent;
-
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ICED_API UHealthComponent : public UActorComponent
 {
@@ -32,10 +30,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UReactionComponent* ReactionComponent;
-
 private:
 	void SetHealth(const float NewHealth);
 
@@ -49,7 +43,8 @@ private:
 	                       const class UDamageType* DamageType, AActor* DamageCauser);
 
 	UFUNCTION()
-	void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser );
+	void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType,
+	                     class AController* InstigatedBy, AActor* DamageCauser);
 
 
 	void ApplyDamage(float Damage);
@@ -59,7 +54,4 @@ private:
 	float MaxHealth = 100.f;
 
 	float CurrentHealth;
-
-	UPROPERTY(EditDefaultsOnly, Category="Hit Reaction")
-	UAnimMontage* DefaultSwordHit;
 };

@@ -13,6 +13,7 @@ class UTextRenderComponent;
 class UCombatComponent;
 class UGrabComponent;
 class UInventoryComponent;
+class UReactionComponent;
 class ABaseItem;
 
 UCLASS()
@@ -39,6 +40,8 @@ public:
 	UCombatComponent* GetCombatComponent() const { return CombatComponent; }
 
 	UGrabComponent* GetGrabComponent() const { return GrabComponent; }
+	
+	UReactionComponent* GetReactionComponent() const { return ReactionComponent; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -64,6 +67,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UInventoryComponent* InventoryComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UReactionComponent* ReactionComponent;
 
 private:
 	void MoveForward(const float Amount);

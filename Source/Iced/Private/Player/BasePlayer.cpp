@@ -3,6 +3,7 @@
 #include "GrabComponent.h"
 #include "PlayerMovementComponent.h"
 #include "HealthComponent.h"
+#include "ReactionComponent.h"
 #include "CombatComponent.h"
 #include "BaseItem.h"
 #include "InventoryComponent.h"
@@ -30,6 +31,7 @@ ABasePlayer::ABasePlayer(const FObjectInitializer& ObjectInitializer) :
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
+	ReactionComponent = CreateDefaultSubobject<UReactionComponent>("Reaction Component");
 	CombatComponent = CreateDefaultSubobject<UCombatComponent>("CombatComponent");
 	GrabComponent = CreateDefaultSubobject<UGrabComponent>("GrabComponent");
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>("InventoryComponent");
