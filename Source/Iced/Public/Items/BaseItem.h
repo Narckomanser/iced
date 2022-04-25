@@ -29,6 +29,8 @@ public:
 	                               class UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection,
 	                               const class UDamageType* DamageType, AActor* DamageCauser);
 
+	virtual void OnAttackHandle(const EAttackTypes AttackType);
+
 	UPrimitiveComponent* GetHitComponent() const { return HitComponent; }
 	UStaticMeshComponent* GetMesh() const { return ItemMesh; }
 

@@ -18,7 +18,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	//TODO (Damage, DamageType){ return Animation; }
+	//TODO (DamageType){ return Animation; }
 
 protected:
 	virtual void BeginPlay() override;

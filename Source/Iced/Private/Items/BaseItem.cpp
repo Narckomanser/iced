@@ -33,9 +33,13 @@ void ABaseItem::BeginPlay()
 }
 
 void ABaseItem::OnTakePointDamageHandle(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation,
-                                  UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection,
-                                  const UDamageType* DamageType,
-                                  AActor* DamageCauser)
+                                        UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection,
+                                        const UDamageType* DamageType,
+                                        AActor* DamageCauser)
+{
+}
+
+void ABaseItem::OnAttackHandle(const EAttackTypes AttackType)
 {
 }
 

@@ -3,14 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DamageTypes/BaseDamageType.h"
 #include "SwordHeavyDamageType.generated.h"
 
-/**
- * 
- */
 UCLASS()
-class ICED_API USwordHeavyDamageType : public UBaseDamageType
+class ICED_API USwordHeavyDamageType : public UDamageType
 {
 	GENERATED_BODY()
 	

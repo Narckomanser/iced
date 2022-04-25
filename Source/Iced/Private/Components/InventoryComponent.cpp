@@ -6,6 +6,7 @@
 #include "BaseItem.h"
 
 #include "BasePlayer.h"
+#include "BaseWeapon.h"
 #include "CombatComponent.h"
 
 #include "GameFramework/Character.h"
@@ -131,6 +132,11 @@ void UInventoryComponent::SetupItem(ABaseItem* Item, AActor* NewOwner)
 	                                               &ABaseItem::OnComponentBeginOverlapHandle);
 
 	Item->OnTakePointDamage.AddDynamic(Item, &ABaseItem::OnTakePointDamageHandle);
+
+	if (const auto CombatComponent = GetOwner<ABasePlayer>()->GetCombatComponent(); CombatComponent)
+	{
+		CombatComponent->OnAttack.AddUObject(Item, &ABaseItem::OnAttackHandle);
+	}
 }
 
 void UInventoryComponent::SetupItemCollision(const ABaseItem* Item, ABasePlayer* ItemOwner, const bool ShouldIgnore)

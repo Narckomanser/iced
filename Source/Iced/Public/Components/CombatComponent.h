@@ -16,12 +16,12 @@ class ICED_API UCombatComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+	FOnAttack OnAttack;
+
+public:
 	UCombatComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
-
-	//TODO return anim by Enum(check CoreTypes)
-	TArray<UAnimMontage*> GetAnimList() const;
 
 	uint8 GetCurrentStanceState() const { return CurrentStanceState; }
 	FName GetStanceSocketName() const { return StanceData[CurrentStanceState].WeaponSocket; }

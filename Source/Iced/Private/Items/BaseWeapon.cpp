@@ -3,6 +3,8 @@
 
 #include "Items/BaseWeapon.h"
 
+#include "BasePlayer.h"
+#include "CombatComponent.h"
 #include "Components/CapsuleComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All)
@@ -11,6 +13,8 @@ ABaseWeapon::ABaseWeapon()
 {
 	HitComponent = CreateDefaultSubobject<UCapsuleComponent>("Hit Component");
 	HitComponent->SetupAttachment(GetRootComponent());
+	
+	DamageTypesInit();
 }
 
 //TODO add sweep results to set. After timer end - clear the set??
@@ -23,8 +27,10 @@ void ABaseWeapon::OnComponentBeginOverlapHandle(UPrimitiveComponent* OverlappedC
 	{
 		//TODO calculate damage with some modifiers
 
-		//TODO get FPointDamageEvent from CombatComponent event/ need to hold it somewhere
-		OtherActor->TakeDamage(DamageAmount, FPointDamageEvent{}, ItemOwner->GetController(), GetOwner());
+		FPointDamageEvent DamageEvent;
+		DamageEvent.DamageTypeClass = DamageTypes[LastAttackType];
+		
+		OtherActor->TakeDamage(DamageAmount, DamageEvent, ItemOwner->GetController(), GetOwner());
 		GetWorld()->GetTimerManager().SetTimer(OverlapTimer, OverlapTimerDelay, false);
 
 		UE_LOG(LogBaseWeapon, Display, TEXT("%s's %s hitted to: %s | %s | %s"), *this->GetName(), *OverlappedComponent->GetName(), *OtherActor->GetOwner()->GetName(), *OtherActor->GetName(), *OtherComp->GetName());
@@ -46,4 +52,17 @@ bool ABaseWeapon::CanAttack() const
 bool ABaseWeapon::CanDealDamage(const AActor* DamageDealer, const AActor* DamageTaker) const
 {
 	return DamageDealer != DamageTaker && DamageDealer != DamageTaker->GetOwner();
+}
+
+void ABaseWeapon::DamageTypesInit()
+{
+	for (EAttackTypes AttackType : TEnumRange<EAttackTypes>())
+	{
+		DamageTypes.Add(AttackType, nullptr);
+	}
+}
+
+void ABaseWeapon::OnAttackHandle(const EAttackTypes AttackType)
+{
+	LastAttackType = AttackType;
 }

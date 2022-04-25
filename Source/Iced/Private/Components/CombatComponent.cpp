@@ -105,8 +105,9 @@ void UCombatComponent::Attack()
 	
 	const float AnimDuration = Owner->PlayAnimMontage(CombatAnimList[EAttackTypes::DefaultAttack]);
 	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, CombatEnablerDelegate, AnimDuration, false);
-	
-	//TODO send delegate event to weapon with DamageType in FPointDamageEvent
+
+	//don't forget change this place with anim
+	OnAttack.Broadcast(EAttackTypes::DefaultAttack);
 }
 
 void UCombatComponent::InitAnimNotifies()
@@ -150,12 +151,12 @@ void UCombatComponent::ChangeStance()
 	const auto CharacterMesh = Owner->GetMesh();
 	if (!CharacterMesh) { return; }
 
-	if (const auto AnimInstance = StanceData[CurrentStanceState].StanceAnimInstance)
+	if (const auto AnimInstance = StanceData[CurrentStanceState].StanceAnimInstance; AnimInstance)
 	{
 		CharacterMesh->SetAnimInstanceClass(AnimInstance);
 	}
 
-	if (const auto TransitionAnim = StanceData[CurrentStanceState].TransitionAnimation)
+	if (const auto TransitionAnim = StanceData[CurrentStanceState].TransitionAnimation; TransitionAnim)
 	{
 		Owner->PlayAnimMontage(TransitionAnim);
 	}

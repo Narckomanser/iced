@@ -41,7 +41,7 @@ void UHealthComponent::OnTakePointDamage(AActor* DamagedActor, float Damage, ACo
                                          const UDamageType* DamageType, AActor* DamageCauser)
 {
 	ApplyDamage(Damage);
-	UE_LOG(LogHealthComponent, Display, TEXT("Damage Dealer: %s"), *DamageCauser->GetName());
+	UE_LOG(LogHealthComponent, Display, TEXT("Damage Dealer: %s, With %s"), *DamageCauser->GetName(), *DamageType->GetName());
 	GetOwner<ACharacter>()->PlayAnimMontage(DefaultSwordHit);
 }
 

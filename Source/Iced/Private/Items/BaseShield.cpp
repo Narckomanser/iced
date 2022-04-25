@@ -28,6 +28,14 @@ void ABaseShield::OnTakePointDamageHandle(AActor* DamagedActor, float Damage, AC
 	if (const auto ItemOwner = DamagedActor->GetOwner<ABasePlayer>())
 	{
 		const float NewDamage = Damage - ProtectionAmount;
-		ItemOwner->TakeDamage(NewDamage, FPointDamageEvent{}, InstigatedBy, this);
+		
+		FPointDamageEvent DamageEvent;
+		DamageEvent.DamageTypeClass = DamageType->GetClass();
+		
+		ItemOwner->TakeDamage(NewDamage, DamageEvent, InstigatedBy, this);
 	}
+}
+
+void ABaseShield::OnAttackHandle(const EAttackTypes AttackType)
+{
 }
