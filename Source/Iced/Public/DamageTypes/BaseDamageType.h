@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/DamageType.h"
-#include "SwordHeavy.generated.h"
+#include "BaseDamageType.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ICED_API USwordHeavy : public UDamageType
+class ICED_API UBaseDamageType : public UDamageType
 {
 	GENERATED_BODY()
 	
