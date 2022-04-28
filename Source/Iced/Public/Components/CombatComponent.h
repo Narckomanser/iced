@@ -36,7 +36,9 @@ protected:
 
 private:
 	void SetupPlayerInputComponent();
-	void Attack();
+	void DefaultAttack();
+	void MightAttack();
+	void MakeStrike(const EAttackTypes AttackType);
 	void InitAnimNotifies();
 	void ChangeStance();
 	bool CheckCalmState(const ABasePlayer* Owner, const ABaseItem* EquippedWeapon) const;
@@ -47,13 +49,15 @@ private:
 	UFUNCTION()
 	void CombatStateSwitcher(ABaseItem* Item) const;
 
+	void InitCombatAnimMap();
+
 private:
 	bool bDoesEquipInProgress = false;
 	bool bBattleMode = false;
 	int8 CurrentStanceState = 0;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Anim Data")
-	TMap<EAttackTypes, UAnimMontage*> CombatAnimList;
+	TMap<EAttackTypes, UAnimMontage*> CombatAnimMap;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Stance Data")
 	TArray<FStanceData> StanceData;

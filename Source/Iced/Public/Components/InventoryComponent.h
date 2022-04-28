@@ -38,7 +38,7 @@ private:
 	void SetupItemCollision(const ABaseItem* Item, ABasePlayer* ItemOwner, const bool ShouldIgnore);
 	void AddToEquipment(const EItemTypes ItemType, ABaseItem* NewItem);
 
-	void InitEquipmentList();
+	void InitEquipmentMap();
 
 	void DevSpawnItems();
 

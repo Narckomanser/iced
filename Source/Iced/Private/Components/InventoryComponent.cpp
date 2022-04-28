@@ -19,7 +19,7 @@ UInventoryComponent::UInventoryComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 
-	InitEquipmentList();
+	InitEquipmentMap();
 }
 
 void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -160,7 +160,7 @@ void UInventoryComponent::AddToEquipment(const EItemTypes ItemType, ABaseItem* N
 	Equipment[ItemType] = NewItem;
 }
 
-void UInventoryComponent::InitEquipmentList()
+void UInventoryComponent::InitEquipmentMap()
 {
 	for (EItemTypes ItemType : TEnumRange<EItemTypes>())
 	{

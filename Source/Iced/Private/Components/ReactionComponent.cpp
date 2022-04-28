@@ -22,5 +22,6 @@ void UReactionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 UAnimMontage* UReactionComponent::GetResponseAnimation(const UDamageType* DamageType)
 {
+	//TODO different reaction by hitted actor(shield and body)
 	return ResponseList[DamageType->GetClass()];
 }

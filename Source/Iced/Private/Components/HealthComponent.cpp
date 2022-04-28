@@ -61,6 +61,7 @@ void UHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const
 
 void UHealthComponent::ApplyDamage(float Damage)
 {
+	//TODO think about damage calculation
 	if (Damage <= 0.f || IsDead()) return;
 
 	SetHealth(CurrentHealth - Damage);

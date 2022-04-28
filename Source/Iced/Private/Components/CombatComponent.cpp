@@ -22,7 +22,7 @@ UCombatComponent::UCombatComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 
-	UseBattleMode(bBattleMode);
+	InitCombatAnimMap();
 }
 
 void UCombatComponent::DevChangeStance()
@@ -35,6 +35,7 @@ void UCombatComponent::BeginPlay()
 	Super::BeginPlay();
 
 	SetupPlayerInputComponent();
+	UseBattleMode(bBattleMode);
 	InitAnimNotifies();
 }
 
@@ -43,7 +44,9 @@ void UCombatComponent::SetupPlayerInputComponent()
 	const auto InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 	if (!InputComponent) { return; }
 
-	InputComponent->BindAction("Attack", IE_Pressed, this, &UCombatComponent::Attack);
+	InputComponent->BindAction("DefaultAttack", IE_Pressed, this, &UCombatComponent::DefaultAttack);
+	InputComponent->BindAction("MightAttack", IE_Pressed, this, &UCombatComponent::MightAttack);
+	
 	InputComponent->BindAction("ChangeStance", IE_Pressed, this, &UCombatComponent::ChangeStance);
 }
 
@@ -86,8 +89,17 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-//TODO create wrapper above the attack | attack will be the inner method | call wrappers in input events and set needed info to attack
-void UCombatComponent::Attack()
+void UCombatComponent::DefaultAttack()
+{
+	MakeStrike(EAttackTypes::DefaultAttack);
+}
+
+void UCombatComponent::MightAttack()
+{
+	MakeStrike(EAttackTypes::MightAttack);
+}
+
+void UCombatComponent::MakeStrike(const EAttackTypes AttackType)
 {
 	//TODO forbid jump when attack in progress
 	const auto Owner = GetOwner<ABasePlayer>();
@@ -103,11 +115,10 @@ void UCombatComponent::Attack()
 	FTimerDelegate CombatEnablerDelegate;
 	CombatEnablerDelegate.BindUFunction(this, FName("CombatStateSwitcher"), EquippedWeapon);
 	
-	const float AnimDuration = Owner->PlayAnimMontage(CombatAnimList[EAttackTypes::DefaultAttack]);
+	const float AnimDuration = Owner->PlayAnimMontage(CombatAnimMap[AttackType]);
 	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, CombatEnablerDelegate, AnimDuration, false);
 
-	//don't forget change this place with anim
-	OnAttack.Broadcast(EAttackTypes::DefaultAttack);
+	OnAttack.Broadcast(AttackType);
 }
 
 void UCombatComponent::InitAnimNotifies()
@@ -174,4 +185,12 @@ void UCombatComponent::CombatStateSwitcher(ABaseItem* Item) const
 	WeaponMeshComponent->SetGenerateOverlapEvents(!WeaponMeshComponent->GetGenerateOverlapEvents());
 
 	Item->ChangeCombatState();
+}
+
+void UCombatComponent::InitCombatAnimMap()
+{
+	for (EAttackTypes AttackType : TEnumRange<EAttackTypes>())
+	{
+		CombatAnimMap.Add(AttackType, nullptr);
+	}
 }
