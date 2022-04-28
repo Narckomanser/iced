@@ -52,8 +52,7 @@ void UCombatComponent::SetupPlayerInputComponent()
 
 bool UCombatComponent::CheckCalmState(const ABasePlayer* Owner, const ABaseItem* EquippedWeapon) const
 {
-	//TODO check IsRunning too???
-	return !bDoesEquipInProgress && !Owner->GetMovementComponent()->IsFalling() && !EquippedWeapon->IsInCombatState();
+	return !bDoesEquipInProgress && !Owner->GetMovementComponent()->IsFalling() && !Owner->IsRunning() && !EquippedWeapon->IsInCombatState();
 }
 
 void UCombatComponent::OnStanceChanged(USkeletalMeshComponent* MeshComp)
@@ -101,7 +100,6 @@ void UCombatComponent::MightAttack()
 
 void UCombatComponent::MakeStrike(const EAttackTypes AttackType)
 {
-	//TODO forbid jump when attack in progress
 	const auto Owner = GetOwner<ABasePlayer>();
 	if (!Owner) { return; }
 
