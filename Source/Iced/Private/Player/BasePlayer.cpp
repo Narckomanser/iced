@@ -7,7 +7,7 @@
 #include "CombatComponent.h"
 #include "BaseItem.h"
 #include "InventoryComponent.h"
-#include "SkillComponent.h"
+#include "AttributeComponent.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/TextRenderComponent.h"
@@ -36,7 +36,7 @@ ABasePlayer::ABasePlayer(const FObjectInitializer& ObjectInitializer) :
 	CombatComponent = CreateDefaultSubobject<UCombatComponent>("Combat Component");
 	GrabComponent = CreateDefaultSubobject<UGrabComponent>("Grab Component");
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>("Inventory Component");
-	SkillComponent = CreateDefaultSubobject<USkillComponent>("Skill Component");
+	AttributeComponent = CreateDefaultSubobject<UAttributeComponent>("Attribute Component");
 
 	// TODO remove after UI implemented
 	HealthText = CreateDefaultSubobject<UTextRenderComponent>("Health Text");

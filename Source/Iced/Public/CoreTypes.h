@@ -46,9 +46,14 @@ enum class EItemTypes
 ENUM_RANGE_BY_COUNT(EItemTypes, EItemTypes::Count)
 
 UENUM()
-enum EAttributes
+enum class EAttributes
 {
-	
+	Strength,
+	Agility,
+	Constitution,
+	Wisdom,
+
+	Count UMETA(Hidden)
 };
 
 

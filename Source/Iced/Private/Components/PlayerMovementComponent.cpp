@@ -5,6 +5,8 @@
 
 #include "BasePlayer.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogPlayerMovementComponent, All, All);
+
 float UPlayerMovementComponent::GetMaxSpeed() const
 {
 	const float MaxSpeed = Super::GetMaxSpeed();
@@ -13,4 +15,19 @@ float UPlayerMovementComponent::GetMaxSpeed() const
 	if (!Player) { return 0; }
 
 	return Player->IsRunning() ? MaxSpeed * RunSpeedModifier : MaxSpeed;
+}
+
+void UPlayerMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+	FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	CalculateTravelledDistance(DeltaTime);
+}
+
+void UPlayerMovementComponent::CalculateTravelledDistance(const float DeltaTime)
+{
+	TotalDistanceTravelled += Velocity.Length() * DeltaTime;
+
+	UE_LOG(LogPlayerMovementComponent, Display, TEXT("TotalDistanceTravelled: %f"), TotalDistanceTravelled);
 }

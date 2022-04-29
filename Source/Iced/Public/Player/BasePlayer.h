@@ -14,7 +14,7 @@ class UCombatComponent;
 class UGrabComponent;
 class UInventoryComponent;
 class UReactionComponent;
-class USkillComponent;
+class UAttributeComponent;
 class ABaseItem;
 
 UCLASS()
@@ -73,7 +73,7 @@ protected:
 	UReactionComponent* ReactionComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	USkillComponent* SkillComponent;
+	UAttributeComponent* AttributeComponent;
 
 private:
 	void MoveForward(const float Amount);
