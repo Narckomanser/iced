@@ -18,12 +18,12 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	UAnimMontage* GetResponseAnimation(const UDamageType* DamageType);
+	void GetResponseForDamage(const UDamageType* DamageType);
 
 protected:
 	virtual void BeginPlay() override;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Response")
-	TMap<TSubclassOf<UDamageType>, UAnimMontage*> ResponseList;
+	TMap<TSubclassOf<UDamageType>, UAnimMontage*> ResponseMap;
 };

@@ -45,6 +45,12 @@ enum class EItemTypes
 
 ENUM_RANGE_BY_COUNT(EItemTypes, EItemTypes::Count)
 
+UENUM()
+enum EAttributes
+{
+	
+};
+
 
 DECLARE_MULTICAST_DELEGATE(FOnDeathSignature);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnGrabItem, ABaseItem*);

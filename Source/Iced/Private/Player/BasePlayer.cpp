@@ -7,6 +7,7 @@
 #include "CombatComponent.h"
 #include "BaseItem.h"
 #include "InventoryComponent.h"
+#include "SkillComponent.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/TextRenderComponent.h"
@@ -23,18 +24,19 @@ ABasePlayer::ABasePlayer(const FObjectInitializer& ObjectInitializer) :
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArm Component");
 	SpringArmComponent->SetupAttachment(GetRootComponent());
 	SpringArmComponent->bUsePawnControlRotation = true;
 
-	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera Component");
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
-	HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>("Health Component");
 	ReactionComponent = CreateDefaultSubobject<UReactionComponent>("Reaction Component");
-	CombatComponent = CreateDefaultSubobject<UCombatComponent>("CombatComponent");
-	GrabComponent = CreateDefaultSubobject<UGrabComponent>("GrabComponent");
-	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>("InventoryComponent");
+	CombatComponent = CreateDefaultSubobject<UCombatComponent>("Combat Component");
+	GrabComponent = CreateDefaultSubobject<UGrabComponent>("Grab Component");
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>("Inventory Component");
+	SkillComponent = CreateDefaultSubobject<USkillComponent>("Skill Component");
 
 	// TODO remove after UI implemented
 	HealthText = CreateDefaultSubobject<UTextRenderComponent>("Health Text");

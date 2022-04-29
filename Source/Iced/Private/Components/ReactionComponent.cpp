@@ -3,6 +3,8 @@
 
 #include "Components/ReactionComponent.h"
 
+#include "GameFramework/Character.h"
+
 UReactionComponent::UReactionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
@@ -20,8 +22,10 @@ void UReactionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-UAnimMontage* UReactionComponent::GetResponseAnimation(const UDamageType* DamageType)
+void UReactionComponent::GetResponseForDamage(const UDamageType* DamageType)
 {
-	//TODO different reaction by hitted actor(shield and body)
-	return ResponseList[DamageType->GetClass()];
+	if (const auto Owner = GetOwner<ACharacter>(); DamageType && Owner)
+	{
+		Owner->PlayAnimMontage(ResponseMap[DamageType->GetClass()]);
+	}
 }

@@ -48,7 +48,7 @@ void UHealthComponent::OnTakePointDamage(AActor* DamagedActor, float Damage, ACo
 	
 	if (const auto ReactionComponent = GetOwner<ABasePlayer>()->GetReactionComponent(); ReactionComponent)
 	{
-		GetOwner<ACharacter>()->PlayAnimMontage(ReactionComponent->GetResponseAnimation(DamageType));
+		ReactionComponent->GetResponseForDamage(DamageType);
 	}
 }
 
