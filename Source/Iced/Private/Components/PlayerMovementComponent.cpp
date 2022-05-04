@@ -29,5 +29,5 @@ void UPlayerMovementComponent::CalculateTravelledDistance(const float DeltaTime)
 {
 	TotalDistanceTravelled += Velocity.Length() * DeltaTime;
 
-	UE_LOG(LogPlayerMovementComponent, Display, TEXT("TotalDistanceTravelled: %f"), TotalDistanceTravelled);
+	UE_LOG(LogPlayerMovementComponent, Display, TEXT("TotalDistanceTravelled: %f by : %s"), TotalDistanceTravelled, *GetOwner()->GetName());
 }

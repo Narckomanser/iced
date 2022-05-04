@@ -21,7 +21,6 @@ struct FStanceData
 	FName WeaponSocket;
 };
 
-
 UENUM()
 enum class EAttackTypes
 {
@@ -56,7 +55,21 @@ enum class EAttributes
 	Count UMETA(Hidden)
 };
 
+//TODO for AttributeComponent / check comments in .h file
+USTRUCT(BlueprintType)
+struct FAttributeLevel
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Attribute Level", meta=(DisplayName = "Attribute"))
+	uint8 CurrentLevel;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attribute Level", meta=(DisplayName = "Experience To Up"))
+	TArray<float> ExperienceToNextLevel;
+};
+
 
 DECLARE_MULTICAST_DELEGATE(FOnDeathSignature);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnGrabItem, ABaseItem*);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAttack, EAttackTypes);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnLevelUp, EAttributes, AActor*);

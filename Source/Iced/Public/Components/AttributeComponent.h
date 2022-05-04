@@ -19,12 +19,19 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	uint8 GetAttribute(const EAttributes Attribute) const { return Attributes[Attribute]; }
+	uint8 GetAttribute(const EAttributes Attribute) const { return AttributesLevel[Attribute]; }
 
 protected:
 	virtual void BeginPlay() override;
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = "Attributes")
-	TMap<EAttributes, uint8> Attributes;
+	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
+	TMap<EAttributes, uint8> AttributesLevel;
+
+	// hold current attr level
+	// hold current exp / or just send delegates from components and increments lvl after achievements certain value 
+	// hold needed exp to up level / how to hold it??? or calculate it dynamically
+	// add exp by delegate from components
+	// compare current and needed when add exp
+	
 };

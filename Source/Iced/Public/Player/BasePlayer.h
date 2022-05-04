@@ -43,6 +43,8 @@ public:
 	UGrabComponent* GetGrabComponent() const { return GrabComponent; }
 	
 	UReactionComponent* GetReactionComponent() const { return ReactionComponent; }
+	
+	UAttributeComponent* GetAttributeComponent() const { return AttributeComponent; }
 
 protected:
 	virtual void BeginPlay() override;
