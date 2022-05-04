@@ -36,9 +36,9 @@ private:
 	void Grab();
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category = "Start Distance Bone")
+	UPROPERTY(EditDefaultsOnly, Category = "Grabber setup")
 	FName BoneName = "head";
 
-	UPROPERTY(EditDefaultsOnly, Category = "Grab Distance")
+	UPROPERTY(EditDefaultsOnly, Category = "Grabber setup")
 	float GrabDistance = 200.f;
 };
