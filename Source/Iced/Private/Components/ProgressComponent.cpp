@@ -1,20 +1,20 @@
 // Narckomanser's game
 
 
-#include "AttributeComponent.h"
+#include "ProgressComponent.h"
 
 
-UAttributeComponent::UAttributeComponent()
+UProgressComponent::UProgressComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void UAttributeComponent::BeginPlay()
+void UProgressComponent::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void UAttributeComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+void UProgressComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                         FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);

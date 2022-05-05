@@ -55,17 +55,20 @@ enum class EAttributes
 	Count UMETA(Hidden)
 };
 
-//TODO for AttributeComponent / check comments in .h file
 USTRUCT(BlueprintType)
-struct FAttributeLevel
+struct FLevelData
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Attribute Level", meta=(DisplayName = "Attribute"))
-	uint8 CurrentLevel;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Attribute Level", meta=(DisplayName = "Experience To Up"))
-	TArray<float> ExperienceToNextLevel;
+	UPROPERTY(EditDefaultsOnly, Category = "Attribute Level", meta=(DisplayName = "Level"))
+	uint8 AttributeLevel;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Attribute Level", meta=(DisplayName = "Experience"))
+	uint8 AttributeExperience;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Attribute Level", meta=(DisplayName = "Exp List To Next Lvl"))
+	TArray<uint8> ExpToUpLvl;
+	
 };
 
 

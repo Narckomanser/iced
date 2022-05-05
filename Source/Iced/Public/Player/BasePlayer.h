@@ -14,7 +14,7 @@ class UCombatComponent;
 class UGrabComponent;
 class UInventoryComponent;
 class UReactionComponent;
-class UAttributeComponent;
+class UProgressComponent;
 class ABaseItem;
 
 UCLASS()
@@ -44,7 +44,7 @@ public:
 	
 	UReactionComponent* GetReactionComponent() const { return ReactionComponent; }
 	
-	UAttributeComponent* GetAttributeComponent() const { return AttributeComponent; }
+	UProgressComponent* GetProgressComponent() const { return ProgressComponent; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -75,7 +75,7 @@ protected:
 	UReactionComponent* ReactionComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UAttributeComponent* AttributeComponent;
+	UProgressComponent* ProgressComponent;
 
 private:
 	void MoveForward(const float Amount);
