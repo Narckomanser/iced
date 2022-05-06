@@ -28,7 +28,7 @@ void UProgressComponent::FOnExperienceUpHandler(EAttributes Attribute, AActor* A
 {
 	if (AttributeOwner == GetOwner())
 	{
-		auto [AttributeLevel, AttributeExperience, ExpToLvlUp] = AttributesLevel[Attribute];
+		auto& [AttributeLevel, AttributeExperience, ExpToLvlUp] = AttributesData[Attribute];
 		AttributeExperience++;
 
 		if (AttributeExperience == ExpToLvlUp[AttributeLevel])
@@ -36,7 +36,6 @@ void UProgressComponent::FOnExperienceUpHandler(EAttributes Attribute, AActor* A
 			AttributeLevel++;
 		}
 	}
-	
 }
 
 void UProgressComponent::TickComponent(float DeltaTime, ELevelTick TickType,

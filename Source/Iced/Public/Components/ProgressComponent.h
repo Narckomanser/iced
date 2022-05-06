@@ -27,5 +27,5 @@ private:
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
-	TMap<EAttributes, FLevelData> AttributesLevel;
+	TMap<EAttributes, FLevelData> AttributesData;
 };
