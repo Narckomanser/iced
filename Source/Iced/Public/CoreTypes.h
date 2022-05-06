@@ -65,9 +65,10 @@ struct FLevelData
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Attribute Level", meta=(DisplayName = "Experience"))
 	uint8 AttributeExperience;
-	
+
+	// index equals level
 	UPROPERTY(EditDefaultsOnly, Category = "Attribute Level", meta=(DisplayName = "Exp List To Next Lvl"))
-	TArray<uint8> ExpToUpLvl;
+	TArray<uint8> ExpToLvlUp;
 	
 };
 
@@ -75,4 +76,4 @@ struct FLevelData
 DECLARE_MULTICAST_DELEGATE(FOnDeathSignature);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnGrabItem, ABaseItem*);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAttack, EAttackTypes);
-DECLARE_MULTICAST_DELEGATE_TwoParams(FOnLevelUp, EAttributes, AActor*);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnExperienceUp, EAttributes, AActor*);

@@ -19,24 +19,13 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-
 protected:
 	virtual void BeginPlay() override;
 
 private:
+	void FOnExperienceUpHandler(EAttributes Attribute, AActor* AttributeOwner);
+
+private:
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
 	TMap<EAttributes, FLevelData> AttributesLevel;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
-	TMap<EAttributes, float> StepToBroadcastExp;
-	
-	// add exp by delegate from components
-	// compare current and needed when add exp
-
-
-
-	//array where indexes == lvl
-	//vals == uint8
-	//every n meters component send event and totalexp++
-	//after totalexp update check array[currLVL] == totalexp and up lvl
 };
