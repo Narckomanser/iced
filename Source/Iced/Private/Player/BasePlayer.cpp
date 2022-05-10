@@ -66,7 +66,7 @@ float ABasePlayer::GetMovementDirection() const
 void ABasePlayer::BeginPlay()
 {
 	Super::BeginPlay();
-	HealthComponent->OnDeath.AddUObject(this, &ABasePlayer::OnDeath);
+	OnDeath.AddUObject(this, &ABasePlayer::OnDeathHandler);
 }
 
 void ABasePlayer::MoveForward(const float Amount)
@@ -87,7 +87,7 @@ FRotator ABasePlayer::GetYawBasedRotator() const
 }
 
 
-void ABasePlayer::OnDeath()
+void ABasePlayer::OnDeathHandler()
 {
 	AllowMove(MOVE_None);
 	SetLifeSpan(5.f);

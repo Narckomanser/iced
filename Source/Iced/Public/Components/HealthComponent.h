@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Iced/Public/CoreTypes.h"
 #include "HealthComponent.generated.h"
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -23,9 +22,6 @@ public:
 
 	UFUNCTION()
 	bool IsDead() const { return FMath::IsNearlyZero(CurrentHealth); }
-
-public:
-	FOnDeathSignature OnDeath;
 
 protected:
 	virtual void BeginPlay() override;

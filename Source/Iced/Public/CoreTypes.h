@@ -74,6 +74,6 @@ struct FLevelData
 
 
 DECLARE_MULTICAST_DELEGATE(FOnDeathSignature);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnGrabItem, ABaseItem*);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnAttack, EAttackTypes);
-DECLARE_MULTICAST_DELEGATE_TwoParams(FOnExperienceUp, EAttributes, AActor*);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnGrabItemSignature, ABaseItem*);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAttackSignature, EAttackTypes);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnExperienceUpSignature, EAttributes, AActor*);

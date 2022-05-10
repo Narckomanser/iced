@@ -6,7 +6,6 @@
 #include "BaseItem.h"
 
 #include "BasePlayer.h"
-#include "BaseWeapon.h"
 #include "CombatComponent.h"
 
 #include "GameFramework/Character.h"
@@ -40,10 +39,10 @@ void UInventoryComponent::BeginPlay()
 
 void UInventoryComponent::GrabSubscriber()
 {
-	const auto GrabComponent = Cast<ABasePlayer>(GetOwner())->GetGrabComponent();
-	if (!GrabComponent) { return; }
-
-	GrabComponent->OnGrabItem.AddUObject(this, &UInventoryComponent::Eqiup);
+	if (const auto Owner = GetOwner<ABasePlayer>(); Owner)
+	{
+		Owner->OnGrabItem.AddUObject(this, &UInventoryComponent::Eqiup);
+	}
 }
 
 void UInventoryComponent::OnAttachItem(USkeletalMeshComponent* MeshComp)
@@ -133,9 +132,9 @@ void UInventoryComponent::SetupItem(ABaseItem* Item, AActor* NewOwner)
 
 	Item->OnTakePointDamage.AddDynamic(Item, &ABaseItem::OnTakePointDamageHandle);
 
-	if (const auto CombatComponent = GetOwner<ABasePlayer>()->GetCombatComponent(); CombatComponent)
+	if (const auto Owner = GetOwner<ABasePlayer>(); Owner)
 	{
-		CombatComponent->OnAttack.AddUObject(Item, &ABaseItem::OnAttackHandle);
+		Owner->OnAttack.AddUObject(Item, &ABaseItem::OnAttackHandle);
 	}
 }
 

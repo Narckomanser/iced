@@ -66,9 +66,9 @@ void UHealthComponent::ApplyDamage(float Damage)
 
 	SetHealth(CurrentHealth - Damage);
 
-	if (IsDead())
+	if (const auto Owner = GetOwner<ABasePlayer>(); Owner && IsDead())
 	{
-		OnDeath.Broadcast();
+		Owner->OnDeath.Broadcast();
 	}
 }
 

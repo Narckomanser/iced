@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PlayerMovementComponent.h"
 #include "GameFramework/Character.h"
+#include "Iced/Public/CoreTypes.h"
 #include "BasePlayer.generated.h"
 
 class USpringArmComponent;
@@ -42,11 +42,17 @@ public:
 	UCombatComponent* GetCombatComponent() const { return CombatComponent; }
 
 	UGrabComponent* GetGrabComponent() const { return GrabComponent; }
-	
+
 	UReactionComponent* GetReactionComponent() const { return ReactionComponent; }
-	
+
 	UProgressComponent* GetProgressComponent() const { return ProgressComponent; }
 
+public:
+	FOnExperienceUpSignature OnExperienceUp;
+	FOnGrabItemSignature OnGrabItem;
+	FOnAttackSignature OnAttack;
+	FOnDeathSignature OnDeath;
+	
 protected:
 	virtual void BeginPlay() override;
 
@@ -86,7 +92,7 @@ private:
 	void ChangeRunState() { bIsRun = !bIsRun; }
 
 	UFUNCTION()
-	void OnDeath();
+	void OnDeathHandler();
 
 private:
 	bool bIsRun = false;

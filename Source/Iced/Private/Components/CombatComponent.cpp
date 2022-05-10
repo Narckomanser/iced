@@ -10,9 +10,7 @@
 #include "AttachItemAnimNotify.h"
 #include "NotifyUtils.h"
 
-#include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/PawnMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 
 
@@ -116,7 +114,7 @@ void UCombatComponent::MakeStrike(const EAttackTypes AttackType)
 	const float AnimDuration = Owner->PlayAnimMontage(CombatAnimMap[AttackType]);
 	GetWorld()->GetTimerManager().SetTimer(OverlapEnableTimer, CombatEnablerDelegate, AnimDuration, false);
 
-	OnAttack.Broadcast(AttackType);
+	Owner->OnAttack.Broadcast(AttackType);
 }
 
 void UCombatComponent::InitAnimNotifies()

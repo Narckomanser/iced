@@ -21,15 +21,12 @@ public:
 
 	ABaseItem* DetectItem() const;
 
-public:
-	FOnGrabItem OnGrabItem;
-
 protected:
 	virtual void BeginPlay() override;
 
 private:
 	void SetupPlayerInputComponent();
-	
+
 	FVector GetStartPoint() const;
 	FVector GetEndPoint() const;
 

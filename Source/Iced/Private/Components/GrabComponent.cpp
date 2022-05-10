@@ -5,7 +5,6 @@
 
 #include "BaseItem.h"
 #include "BasePlayer.h"
-#include "DrawDebugHelpers.h"
 #include "GameFramework/SpringArmComponent.h"
 
 
@@ -71,7 +70,10 @@ FVector UGrabComponent::GetEndPoint() const
 
 void UGrabComponent::Grab()
 {
-	OnGrabItem.Broadcast(DetectItem());
+	if (const auto Owner = GetOwner<ABasePlayer>(); Owner)
+	{
+		Owner->OnGrabItem.Broadcast(DetectItem());
+	}
 }
 
 void UGrabComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

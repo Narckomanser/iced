@@ -16,9 +16,6 @@ class ICED_API UCombatComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	FOnAttack OnAttack;
-
-public:
 	UCombatComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;

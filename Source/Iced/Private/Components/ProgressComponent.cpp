@@ -15,12 +15,9 @@ void UProgressComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(const auto Owner = GetOwner<ABasePlayer>(); Owner)
+	if (const auto Owner = GetOwner<ABasePlayer>(); Owner)
 	{
-		if (const auto MovementComponent = Cast<UPlayerMovementComponent>(Owner->GetMovementComponent()); MovementComponent)
-		{
-			MovementComponent->OnExperienceUp.AddUObject(this, &UProgressComponent::FOnExperienceUpHandler);
-		}
+		Owner->OnExperienceUp.AddUObject(this, &UProgressComponent::FOnExperienceUpHandler);
 	}
 }
 

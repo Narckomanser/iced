@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Iced/Public/CoreTypes.h"
 #include "PlayerMovementComponent.generated.h"
 
 UCLASS()
@@ -16,9 +15,6 @@ public:
 	virtual float GetMaxSpeed() const override;
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-public:
-	FOnExperienceUp OnExperienceUp;
 
 protected:
 	virtual void BeginPlay() override;
