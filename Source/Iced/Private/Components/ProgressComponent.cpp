@@ -1,10 +1,10 @@
 // Narckomanser's game
 
 
+#include "BasePlayer.h"
 #include "ProgressComponent.h"
 
-#include "BasePlayer.h"
-
+DEFINE_LOG_CATEGORY_STATIC(LogProgressComponent, All, All);
 
 UProgressComponent::UProgressComponent()
 {
@@ -32,6 +32,8 @@ void UProgressComponent::FOnExperienceUpHandler(EAttributes Attribute, AActor* A
 		{
 			AttributeLevel++;
 		}
+
+		UE_LOG(LogProgressComponent, Display, TEXT("Attribute: %s | LevelInfo: %s"),  *AttributesData[Attribute].ToString());
 	}
 }
 

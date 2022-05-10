@@ -10,10 +10,10 @@ USTRUCT(BlueprintType)
 struct FStanceData
 {
 	GENERATED_USTRUCT_BODY()
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Stance", meta=(DisplayName = "Stance Anim Blueprint"))
 	TSubclassOf<UAnimInstance> StanceAnimInstance;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Stance", meta=(DisplayName = "Transition Animation"))
 	UAnimMontage* TransitionAnimation;
 
@@ -38,7 +38,7 @@ enum class EItemTypes
 {
 	Weapon,
 	Shield,
-	
+
 	Count UMETA(Hidden)
 };
 
@@ -59,17 +59,18 @@ USTRUCT(BlueprintType)
 struct FLevelData
 {
 	GENERATED_BODY()
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Attribute Level", meta=(DisplayName = "Level"))
 	uint8 AttributeLevel;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Attribute Level", meta=(DisplayName = "Experience"))
 	uint8 AttributeExperience;
 
 	// index equals level
 	UPROPERTY(EditDefaultsOnly, Category = "Attribute Level", meta=(DisplayName = "Exp List To Next Lvl"))
 	TArray<uint8> ExpToLvlUp;
-	
+
+	FString ToString() const { return FString::Printf(TEXT("Level: %i, Exp: %i"), AttributeLevel, AttributeExperience); }
 };
 
 

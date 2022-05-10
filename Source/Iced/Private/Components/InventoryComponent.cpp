@@ -1,15 +1,12 @@
 // Narckomanser's game
 
 
-#include "InventoryComponent.h"
-#include "GrabComponent.h"
+#include "BasePlayer.h"
 #include "BaseItem.h"
 
-#include "BasePlayer.h"
-#include "CombatComponent.h"
-
-#include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
+#include "CombatComponent.h"
+#include "InventoryComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogInventoryComponent, All, All);
 
@@ -56,7 +53,7 @@ void UInventoryComponent::OnAttachItem(USkeletalMeshComponent* MeshComp)
 	if (!CombatComponent) { return; }
 
 	if (CharacterMesh != MeshComp) { return; }
-
+	
 	AttachItemToSocket(Equipment[EItemTypes::Weapon], CombatComponent->GetStanceSocketName(), MeshComp);
 }
 
