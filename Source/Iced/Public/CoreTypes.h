@@ -66,7 +66,8 @@ struct FLevelData
 	UPROPERTY(EditDefaultsOnly, Category = "Attribute Level", meta=(DisplayName = "Experience"))
 	uint8 AttributeExperience;
 
-	// index equals level
+	//index equals curr lvl
+	//value equals needed exp to next lvl
 	UPROPERTY(EditDefaultsOnly, Category = "Attribute Level", meta=(DisplayName = "Exp List To Next Lvl"))
 	TArray<uint8> ExpToLvlUp;
 

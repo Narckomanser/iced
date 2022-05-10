@@ -35,11 +35,11 @@ void UPlayerMovementComponent::CalculateTravelledDistance(const float DeltaTime)
 {
 	TotalDistanceTravelled += Velocity.Length() * DeltaTime;
 
-	UE_LOG(LogPlayerMovementComponent, Display, TEXT("TotalDistanceTravelled: %f by : %s"), TotalDistanceTravelled,
-	       *GetOwner()->GetName());
-
 	if (const auto Owner = GetOwner<ABasePlayer>(); Owner && TotalDistanceTravelled >= DistanceUpdateValue)
 	{
+		UE_LOG(LogPlayerMovementComponent, Display, TEXT("TotalDistanceTravelled: %f by : %s"), TotalDistanceTravelled,
+		       *GetOwner()->GetName());
+
 		Owner->OnExperienceUp.Broadcast(EAttributes::Constitution, GetOwner());
 		TotalDistanceTravelled = 0.f;
 	}

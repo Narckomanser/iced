@@ -1,12 +1,13 @@
 // Narckomanser's game
 
 
+#include "InventoryComponent.h"
+#include "CombatComponent.h"
+#include "Components/CapsuleComponent.h"
+
 #include "BasePlayer.h"
 #include "BaseItem.h"
 
-#include "Components/CapsuleComponent.h"
-#include "CombatComponent.h"
-#include "InventoryComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogInventoryComponent, All, All);
 

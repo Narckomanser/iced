@@ -1,8 +1,9 @@
 // Narckomanser's game
 
 
-#include "BasePlayer.h"
 #include "ProgressComponent.h"
+
+#include "BasePlayer.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogProgressComponent, All, All);
 
@@ -26,16 +27,21 @@ void UProgressComponent::FOnExperienceUpHandler(EAttributes Attribute, AActor* A
 	if (AttributeOwner == GetOwner())
 	{
 		auto& [AttributeLevel, AttributeExperience, ExpToLvlUp] = AttributesData[Attribute];
-		AttributeExperience++;
 
-		if (AttributeExperience == ExpToLvlUp[AttributeLevel])
+		if (AttributeLevel != ExpToLvlUp.Num())
 		{
-			AttributeLevel++;
+			++AttributeExperience;
+			
+			if (AttributeExperience == ExpToLvlUp[AttributeLevel])
+			{
+				AttributeLevel++;
+			}
 		}
-
-		UE_LOG(LogProgressComponent, Display, TEXT("Attribute: %s | LevelInfo: %s"),  *AttributesData[Attribute].ToString());
 	}
+
+	UE_LOG(LogProgressComponent, Display, TEXT("LevelInfo: %s"), *AttributesData[Attribute].ToString());
 }
+
 
 void UProgressComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                        FActorComponentTickFunction* ThisTickFunction)
