@@ -30,6 +30,7 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	void SetupPlayerInputComponent();
 	void GrabSubscriber();
 	void Eqiup(ABaseItem* NewItem);
 	void DropItem(const EItemTypes ItemType);
@@ -41,6 +42,7 @@ private:
 	void InitEquipmentMap();
 
 	void DevSpawnItems();
+	void DevDropInventory();
 
 private:
 	UPROPERTY()

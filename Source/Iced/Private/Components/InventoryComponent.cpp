@@ -29,10 +29,19 @@ void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	SetupPlayerInputComponent();
 	GrabSubscriber();
 
 	//TODO remove on release
 	DevSpawnItems();
+}
+
+void UInventoryComponent::SetupPlayerInputComponent()
+{
+	const auto InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+	if (!InputComponent) { return; }
+	
+	InputComponent->BindAction("DropInventory", IE_Pressed, this, &UInventoryComponent::DevDropInventory);
 }
 
 void UInventoryComponent::GrabSubscriber()
@@ -88,7 +97,7 @@ void UInventoryComponent::Eqiup(ABaseItem* NewItem)
 
 void UInventoryComponent::DropItem(const EItemTypes ItemType)
 {
-	auto Item = Equipment[ItemType];
+	auto& Item = Equipment[ItemType];
 	if (!Item) { return; }
 
 	const auto ItemOwner = Cast<ABasePlayer>(Item->GetOwner());
@@ -172,6 +181,17 @@ void UInventoryComponent::DevSpawnItems()
 		const auto SpawnedItem = GetWorld()->SpawnActor<ABaseItem>(Item);
 		Eqiup(SpawnedItem);
 	}
-
+	
 	GetOwner<ABasePlayer>()->GetCombatComponent()->DevChangeStance();
+}
+
+void UInventoryComponent::DevDropInventory()
+{
+	for (const auto Equip : Equipment)
+	{
+		if (const auto Item = Equip.Value; Item)
+		{
+			DropItem(Item->GetItemType());
+		}
+	}
 }
