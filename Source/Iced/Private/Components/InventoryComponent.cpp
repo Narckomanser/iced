@@ -40,7 +40,7 @@ void UInventoryComponent::SetupPlayerInputComponent()
 {
 	const auto InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 	if (!InputComponent) { return; }
-	
+
 	InputComponent->BindAction("DropInventory", IE_Pressed, this, &UInventoryComponent::DevDropInventory);
 }
 
@@ -63,7 +63,7 @@ void UInventoryComponent::OnAttachItem(USkeletalMeshComponent* MeshComp)
 	if (!CombatComponent) { return; }
 
 	if (CharacterMesh != MeshComp) { return; }
-	
+
 	AttachItemToSocket(Equipment[EItemTypes::Weapon], CombatComponent->GetStanceSocketName(), MeshComp);
 }
 
@@ -92,6 +92,8 @@ void UInventoryComponent::Eqiup(ABaseItem* NewItem)
 	AttachItemToSocket(NewItem, NewItem->GetItemSocket(), ParentMesh);
 
 	AddToEquipment(ChangingItemType, NewItem);
+
+	CalculateInventoryMass();
 }
 
 
@@ -112,6 +114,8 @@ void UInventoryComponent::DropItem(const EItemTypes ItemType)
 
 	Item->SetOwner(nullptr);
 	Item = nullptr;
+
+	CalculateInventoryMass();
 }
 
 void UInventoryComponent::AttachItemToSocket(ABaseItem* Item, const FName SocketName,
@@ -166,6 +170,22 @@ void UInventoryComponent::AddToEquipment(const EItemTypes ItemType, ABaseItem* N
 	Equipment[ItemType] = NewItem;
 }
 
+void UInventoryComponent::CalculateInventoryMass()
+{
+	float TempMass = 0.f;
+	for (const auto Equip : Equipment)
+	{
+		if (Equip.Value)
+		{
+			TempMass += Equip.Value->GetItemMass();
+		}
+	}
+
+	InventoryMass = TempMass;
+
+	UE_LOG(LogInventoryComponent, Display, TEXT("Inventory Mass: %f"), InventoryMass);
+}
+
 void UInventoryComponent::InitEquipmentMap()
 {
 	for (EItemTypes ItemType : TEnumRange<EItemTypes>())
@@ -181,7 +201,7 @@ void UInventoryComponent::DevSpawnItems()
 		const auto SpawnedItem = GetWorld()->SpawnActor<ABaseItem>(Item);
 		Eqiup(SpawnedItem);
 	}
-	
+
 	GetOwner<ABasePlayer>()->GetCombatComponent()->DevChangeStance();
 }
 

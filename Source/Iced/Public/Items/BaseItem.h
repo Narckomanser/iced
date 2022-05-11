@@ -25,12 +25,14 @@ public:
 
 	UFUNCTION()
 	virtual void OnTakePointDamageHandle(AActor* DamagedActor, float Damage, class AController* InstigatedBy,
-	                               FVector HitLocation,
-	                               class UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection,
-	                               const class UDamageType* DamageType, AActor* DamageCauser);
+	                                     FVector HitLocation,
+	                                     class UPrimitiveComponent* FHitComponent, FName BoneName,
+	                                     FVector ShotFromDirection,
+	                                     const class UDamageType* DamageType, AActor* DamageCauser);
 
 	virtual void OnAttackHandle(const EAttackTypes AttackType);
 
+	UCapsuleComponent* GetRootCapsuleComponent() const { return RootCapsuleComponent; }
 	UPrimitiveComponent* GetHitComponent() const { return HitComponent; }
 	UStaticMeshComponent* GetMesh() const { return ItemMesh; }
 
@@ -39,6 +41,7 @@ public:
 
 	EItemTypes GetItemType() const { return ItemType; }
 	FName GetItemSocket() const { return Socket; }
+	float GetItemMass() const { return ItemMass; }
 
 
 protected:
@@ -55,13 +58,13 @@ protected:
 	UPrimitiveComponent* HitComponent = nullptr;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = "Item Durability")
+	UPROPERTY(EditDefaultsOnly, Category = "Item Info")
 	float Durability = 100;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Type")
+	UPROPERTY(EditDefaultsOnly, Category = "Item Info")
 	EItemTypes ItemType;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Item Socket")
+	UPROPERTY(EditDefaultsOnly, Category = "Item Info")
 	FName Socket;
 
 	UPROPERTY(EditDefaultsOnly)
@@ -70,4 +73,8 @@ protected:
 	FTimerHandle OverlapTimer;
 
 	bool bDoesInCombat = false;
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Item Info")
+	float ItemMass = 0.f;
 };

@@ -38,6 +38,7 @@ private:
 	void SetupItem(ABaseItem* Item, AActor* NewOwner);
 	void SetupItemCollision(const ABaseItem* Item, ABasePlayer* ItemOwner, const bool ShouldIgnore);
 	void AddToEquipment(const EItemTypes ItemType, ABaseItem* NewItem);
+	void CalculateInventoryMass();
 
 	void InitEquipmentMap();
 
@@ -45,6 +46,8 @@ private:
 	void DevDropInventory();
 
 private:
+	float InventoryMass = 0.f;
+	
 	UPROPERTY()
 	TMap<EItemTypes, ABaseItem*> Equipment;
 
