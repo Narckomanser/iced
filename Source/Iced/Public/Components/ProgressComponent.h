@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Iced/Public/CoreTypes.h"
 #include "ProgressComponent.generated.h"
+
+
+enum class EAttributes;
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -24,8 +26,4 @@ protected:
 
 private:
 	void FOnExperienceUpHandler(EAttributes Attribute, AActor* AttributeOwner);
-
-private:
-	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
-	TMap<EAttributes, FLevelData> AttributesData;
 };

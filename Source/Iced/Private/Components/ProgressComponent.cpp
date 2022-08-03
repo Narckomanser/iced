@@ -4,6 +4,8 @@
 #include "ProgressComponent.h"
 
 #include "BasePlayer.h"
+#include "Iced/Public/CoreTypes.h"
+#include "BasePlayerState.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogProgressComponent, All, All);
 
@@ -24,22 +26,27 @@ void UProgressComponent::BeginPlay()
 
 void UProgressComponent::FOnExperienceUpHandler(EAttributes Attribute, AActor* AttributeOwner)
 {
-	if (AttributeOwner == GetOwner())
-	{
-		auto& [AttributeLevel, AttributeExperience, ExpToLvlUp] = AttributesData[Attribute];
+	const auto Owner = GetOwner<ABasePlayer>();
+	if (!Owner) { return; }
 
-		if (AttributeLevel != ExpToLvlUp.Num())
+	const auto PlayerState = Cast<ABasePlayerState>(Owner->GetPlayerState());
+	if (!PlayerState) { return; }
+	
+	if (AttributeOwner == Owner)
+	{
+		if (auto& [AttributeLevel, AttributeExperience, ExpToLvlUp] = PlayerState->GetLevelData(Attribute);
+			AttributeLevel != ExpToLvlUp.Num())
 		{
-			++AttributeExperience;
-			
+			AttributeExperience++;
+
 			if (AttributeExperience == ExpToLvlUp[AttributeLevel])
 			{
 				AttributeLevel++;
 			}
 		}
-	}
 
-	UE_LOG(LogProgressComponent, Display, TEXT("LevelInfo: %s"), *AttributesData[Attribute].ToString());
+		UE_LOG(LogProgressComponent, Display, TEXT("LevelInfo: %s"), *PlayerState->GetLevelData(Attribute).ToString());
+	}
 }
 
 

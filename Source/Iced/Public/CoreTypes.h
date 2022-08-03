@@ -71,6 +71,7 @@ struct FLevelData
 	UPROPERTY(EditDefaultsOnly, Category = "Attribute Level", meta=(DisplayName = "Exp List To Next Lvl"))
 	TArray<uint8> ExpToLvlUp;
 
+	//TODO remove after UI impl
 	FString ToString() const { return FString::Printf(TEXT("Level: %i, Exp: %i"), AttributeLevel, AttributeExperience); }
 };
 

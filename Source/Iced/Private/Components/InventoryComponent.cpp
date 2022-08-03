@@ -183,7 +183,7 @@ void UInventoryComponent::CalculateInventoryMass()
 
 	InventoryMass = TempMass;
 
-	UE_LOG(LogInventoryComponent, Display, TEXT("Inventory Mass: %f"), InventoryMass);
+	UE_LOG(LogInventoryComponent, Display, TEXT("%s has Inventory Mass: %f"), *GetOwner()->GetName(), InventoryMass);
 }
 
 void UInventoryComponent::InitEquipmentMap()
