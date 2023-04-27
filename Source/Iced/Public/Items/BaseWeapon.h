@@ -37,8 +37,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	float DamageAmount = 10.f;
 
+	//TODO rename this map for more clarity
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	TMap<EAttackTypes, TSubclassOf<UDamageType>> DamageTypes;
 
+	//TODO maybe need to rename for more clarity??? CurrentAttackType
 	EAttackTypes LastAttackType;
 };

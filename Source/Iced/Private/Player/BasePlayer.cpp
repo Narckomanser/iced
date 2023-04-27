@@ -5,7 +5,6 @@
 #include "HealthComponent.h"
 #include "ReactionComponent.h"
 #include "CombatComponent.h"
-#include "BaseItem.h"
 #include "InventoryComponent.h"
 #include "ProgressComponent.h"
 
@@ -43,7 +42,7 @@ ABasePlayer::ABasePlayer(const FObjectInitializer& ObjectInitializer) :
 	HealthText->SetupAttachment(GetRootComponent());
 }
 
-void ABasePlayer::AllowMove(EMovementMode NewMovementMode) const
+void ABasePlayer::AllowMove(const EMovementMode NewMovementMode) const
 {
 	const auto MovementComponent = GetCharacterMovement();
 	if (!MovementComponent) return;
@@ -106,6 +105,7 @@ void ABasePlayer::Tick(float DeltaTime)
 	// TODO remove after UI implemented
 	HealthText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), HealthComponent->GetHealth())));
 }
+
 
 void ABasePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

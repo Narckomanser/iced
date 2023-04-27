@@ -32,7 +32,7 @@ public:
 
 	bool IsRunning() const { return bIsRun; }
 
-	void AllowMove(EMovementMode NewMovementMode) const;
+	void AllowMove(const EMovementMode NewMovementMode) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	float GetMovementDirection() const;
